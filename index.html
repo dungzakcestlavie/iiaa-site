@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#16364b" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="format-detection" content="telephone=no,address=no,email=no" />
+  <title>사단법인 인천국제미술협회 | IIAA</title>
+  <style>
+    :root{
+      --bg:#132f44;
+      --bg-mid:#16364b;
+      --bg-deep:#0b2232;
+      --surface:#18394f;
+      --surface-soft:rgba(24,57,79,.90);
+      --line:rgba(244,241,234,.08);
+      --line-strong:rgba(216,185,106,.30);
+      --text:#f4f1ea;
+      --muted:rgba(244,241,234,.70);
+      --gold:#d8b96a;
+      --gold-bright:#fff3c9;
+      --gold-mid:#f1d88a;
+      --gold-dark:#a8822f;
+      --gold-deep:#6e531a;
+      --max:1520px;
+      --side:300px;
+      --header-h:86px;
+      --radius:24px;
+      --ease:180ms ease;
+      --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Times New Roman","Noto Serif KR",serif;
+      --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
+      --shadow:0 20px 50px rgba(2,14,24,.24);
+      --shadow-soft:0 12px 28px rgba(2,14,24,.16);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      font-family:var(--serif);
+      line-height:1.74;
+      letter-spacing:.01em;
+      -webkit-text-size-adjust:100%;
+      text-rendering:optimizeLegibility;
+      background:
+        radial-gradient(circle at top left, rgba(216,185,106,.06), transparent 28%),
+        radial-gradient(circle at top right, rgba(255,255,255,.04), transparent 24%),
+        linear-gradient(180deg, #18394f 0%, #132f44 34%, #102b3b 66%, #0b2232 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    a{color:inherit;text-decoration:none}
+    button{font:inherit}
+    img{display:block;max-width:100%}
+    .ko,.en{display:block}
+    html[lang="ko"] .en{display:none !important}
+    html[lang="en"] .ko{display:none !important}
+    .site{min-height:100vh;width:100%}
+
+    .gold-text{
+      color:#d8b96a;
+      text-shadow:
+        0 0 6px rgba(216,185,106,.15),
+        0 0 12px rgba(216,185,106,.08);
+      -webkit-text-fill-color:initial;
+      background:none;
+    }
+
+    .mobile-topbar{
+      position:sticky;
+      top:0;
+      z-index:1000;
+      display:grid;
+      grid-template-columns:52px 1fr auto;
+      align-items:center;
+      gap:10px;
+      min-height:var(--header-h);
+      padding:
+        calc(env(safe-area-inset-top) + 12px)
+        max(16px, env(safe-area-inset-right))
+        12px
+        max(16px, env(safe-area-inset-left));
+      background:rgba(19,47,68,.94);
+      border-bottom:1px solid var(--line);
+      backdrop-filter:blur(14px);
+    }
+
+    .menu-btn,
+    .drawer-close{
+      width:42px;
+      height:42px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      border-radius:12px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      transition:var(--ease);
+      flex:0 0 auto;
+    }
+
+    .menu-btn:hover,
+    .drawer-close:hover,
+    .lang-btn:hover,
+    .desktop-nav button:hover,
+    .mobile-primary button:hover,
+    .drawer-links button:hover,
+    .bio-btn:hover,
+    .member-card:hover{
+      border-color:var(--line-strong);
+      color:var(--gold);
+      background:rgba(216,185,106,.05);
+    }
+
+    .hamburger{
+      width:18px;
+      height:12px;
+      position:relative;
+      display:block;
+    }
+
+    .hamburger::before,
+    .hamburger::after,
+    .hamburger span{
+      content:"";
+      position:absolute;
+      left:0;
+      width:100%;
+      height:1.5px;
+      background:currentColor;
+      transition:transform var(--ease), opacity var(--ease);
+    }
+
+    .hamburger::before{top:0}
+    .hamburger span{top:50%;transform:translateY(-50%)}
+    .hamburger::after{bottom:0}
+
+    .menu-btn.is-active .hamburger::before{transform:translateY(5px) rotate(45deg)}
+    .menu-btn.is-active .hamburger span{opacity:0}
+    .menu-btn.is-active .hamburger::after{transform:translateY(-5px) rotate(-45deg)}
+
+    .brand{
+      min-width:0;
+      text-align:center;
+      padding-inline:4px;
+    }
+
+    .brand-mark{
+      display:block;
+      font-size:1rem;
+      line-height:1.15;
+      font-weight:500;
+      letter-spacing:.04em;
+    }
+
+    .brand-name{
+      display:block;
+      opacity:1;
+      margin-top:5px;
+      color:var(--text);
+      opacity:.92;
+      font-size:.82rem;
+      line-height:1.28;
+      letter-spacing:.03em;
+      font-family:var(--sans);
+    }
+
+
+    .logo-blue{
+  color:#4f79b8;
+  text-shadow:
+    0 0 2px rgba(0,0,0,.28),
+    0 0 8px rgba(79,121,184,.28);
+  font-weight:800;
+  letter-spacing:.07em;
+  font-size:1rem;
+  line-height:1.15;
+}
+
+    .lang-switch{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding-right:2px;
+    }
+
+    .lang-btn{
+      min-width:52px;
+      height:40px;
+      padding:0 13px;
+      border-radius:999px;
+      border:1px solid rgba(216,185,106,.16);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      transition:
+        background 120ms ease,
+        border-color 120ms ease,
+        color 120ms ease,
+        transform 80ms ease,
+        box-shadow 120ms ease;
+      font-family:var(--sans);
+      font-size:.92rem;
+      font-weight:700;
+      letter-spacing:.03em;
+      outline:none;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+    }
+
+    .lang-btn.is-active{
+      border-color:rgba(216,185,106,.44);
+      color:var(--gold);
+      background:rgba(216,185,106,.11);
+      box-shadow:0 0 0 1px rgba(216,185,106,.12) inset;
+    }
+
+    .lang-btn:hover,
+    .lang-btn:focus-visible{
+      border-color:rgba(216,185,106,.34);
+      color:var(--gold);
+      background:rgba(216,185,106,.07);
+    }
+
+    .lang-btn:active{
+      transform:translateY(1px) scale(.985);
+    }
+
+    .mobile-primary{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+      padding:16px 16px 0;
+    }
+
+    .mobile-primary button{
+      min-height:58px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      width:100%;
+      padding:15px 16px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012)),
+        rgba(24,57,79,.88);
+      color:var(--text);
+      transition:var(--ease);
+      font-size:1rem;
+      font-family:var(--sans);
+      cursor:pointer;
+      text-align:left;
+    }
+
+    .mobile-primary button.is-active,
+    .desktop-nav button.is-active{
+      border-color:rgba(216,185,106,.34);
+      color:var(--gold);
+      background:rgba(216,185,106,.08);
+    }
+
+    .mobile-primary .arrow{opacity:.72}
+
+    .layout{
+      width:100%;
+      max-width:var(--max);
+      margin:0 auto;
+      display:block;
+    }
+
+    .sidebar{display:none}
+    .main{padding:22px 16px 110px}
+    .desktop-top{display:none}
+
+    .hero{
+      padding:10px 0 26px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:22px;
+    }
+
+    .hero h1{
+      margin:0;
+      font-size:2rem;
+      line-height:1.06;
+      font-weight:500;
+      letter-spacing:.02em;
+    }
+
+    .view{
+      display:none;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.024), rgba(255,255,255,.01)),
+        rgba(24,57,79,.9);
+      overflow:hidden;
+      box-shadow:var(--shadow-soft);
+    }
+
+    .view.is-active{display:block}
+
+    .view-head{
+      padding:22px 20px 18px;
+      border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+    }
+
+    .view-index{
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:.78rem;
+      letter-spacing:.16em;
+      margin-bottom:10px;
+    }
+
+    .view-title{
+      margin:0;
+      font-size:1.42rem;
+      line-height:1.14;
+      font-weight:500;
+    }
+
+    .view-body{
+      padding:22px 20px 24px;
+      color:var(--text);
+      font-family:var(--sans);
+      font-size:.98rem;
+      line-height:1.88;
+    }
+
+    .about-grid,
+    .exhib-grid,
+    .vision-grid,
+    .join-grid,
+    .contact-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:0;
+    }
+
+    .mini-block,
+    .member-card,
+    .member-work{
+      border:1px solid rgba(244,241,234,.07);
+      border-radius:15px;
+      background:rgba(255,255,255,.022);
+      padding:15px 15px;
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:.92rem;
+      line-height:1.74;
+    }
+
+    .mini-block strong,
+    .member-card strong,
+    .member-work strong{
+      display:block;
+      color:var(--text);
+      margin-bottom:3px;
+      font-weight:600;
+    }
+
+    .member-layout{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:18px;
+    }
+
+    .member-list{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .member-card{
+      cursor:pointer;
+      transition:var(--ease);
+    }
+
+    .member-card.is-active{
+      border-color:rgba(216,185,106,.34);
+      background:rgba(216,185,106,.08);
+    }
+
+    .member-name{
+      font-size:1rem;
+      font-weight:700;
+      line-height:1.3;
+      color:var(--text);
+    }
+
+    .member-summary{
+      margin-top:6px;
+      color:var(--muted);
+    }
+
+    .member-detail{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+    }
+
+    .artist-note{
+      margin:0;
+      padding:24px 24px 22px;
+      border-radius:22px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)),
+        rgba(24,57,79,.9);
+      border:1px solid rgba(216,185,106,.14);
+      box-shadow:var(--shadow-soft);
+    }
+
+    .artist-note-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      margin-bottom:12px;
+    }
+
+    .artist-note-title{
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+    }
+
+    .bio-btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:38px;
+      padding:0 14px;
+      border-radius:999px;
+      border:1px solid rgba(216,185,106,.22);
+      background:rgba(216,185,106,.06);
+      color:#e8cc82;
+      font-size:13px;
+      font-weight:800;
+      cursor:pointer;
+      transition:var(--ease);
+      white-space:nowrap;
+    }
+
+    .artist-note-copy{
+      margin:0;
+      color:var(--text);
+      white-space:pre-line;
+      line-height:1.78;
+    }
+
+    .member-works{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+
+    .member-work-title{
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+
+    .drawer{
+      position:fixed;
+      inset:0;
+      z-index:1200;
+      pointer-events:none;
+    }
+
+    .drawer.is-open{pointer-events:auto}
+
+    .drawer-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(8,14,22,.62);
+      opacity:0;
+      transition:opacity var(--ease);
+    }
+
+    .drawer-panel{
+      position:absolute;
+      top:0;
+      left:0;
+      width:min(86vw, 340px);
+      height:100%;
+      background:
+        linear-gradient(180deg, #18394f 0%, #132f44 40%, #0b2232 100%);
+      border-right:1px solid rgba(216,185,106,.14);
+      transform:translateX(-100%);
+      transition:transform var(--ease);
+      padding:
+        calc(env(safe-area-inset-top) + 18px)
+        18px
+        calc(28px + env(safe-area-inset-bottom));
+      display:flex;
+      flex-direction:column;
+      box-shadow:var(--shadow);
+    }
+
+    .drawer.is-open .drawer-backdrop{opacity:1}
+    .drawer.is-open .drawer-panel{transform:translateX(0)}
+
+    .drawer-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:22px;
+    }
+
+    .drawer-title{
+      margin:0;
+      font-size:1rem;
+      line-height:1;
+      letter-spacing:.06em;
+      font-weight:500;
+    }
+
+    .drawer-links{
+      display:grid;
+      gap:10px;
+    }
+
+    .drawer-links button{
+      min-height:52px;
+      display:flex;
+      align-items:center;
+      width:100%;
+      padding:12px 14px;
+      border:1px solid rgba(216,185,106,.12);
+      border-radius:14px;
+      background:rgba(22,52,71,.40);
+      cursor:pointer;
+      text-align:left;
+      transition:var(--ease);
+    }
+
+    .drawer-links .menu-text{
+      color:#d8b96a;
+      text-shadow:
+        0 0 6px rgba(216,185,106,.15),
+        0 0 12px rgba(216,185,106,.08);
+      font-family:var(--sans);
+      font-size:15px;
+      font-weight:700;
+      letter-spacing:.03em;
+      -webkit-text-fill-color:initial;
+      background:none;
+    }
+
+    .drawer-links button:hover{
+      border-color:rgba(216,185,106,.4);
+      box-shadow:0 0 0 1px rgba(216,185,106,.12) inset;
+    }
+
+    .footer{
+      padding:28px 16px calc(34px + env(safe-area-inset-bottom));
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:.84rem;
+      border-top:1px solid var(--line);
+    }
+
+    @media (min-width:980px){
+      .mobile-topbar,
+      .mobile-primary{
+        display:none;
+      }
+
+      .layout{
+        display:grid;
+        grid-template-columns:var(--side) minmax(0,1fr);
+        min-height:100vh;
+      }
+
+      .sidebar{
+        display:flex;
+        flex-direction:column;
+        position:sticky;
+        top:0;
+        min-height:100vh;
+        padding:34px 24px 30px 30px;
+        border-right:1px solid var(--line);
+      }
+
+      .sidebar-top{
+        display:flex;
+        justify-content:flex-end;
+        margin-bottom:20px;
+      }
+
+      .sidebar-brand{
+        padding:4px 0 28px;
+        border-bottom:1px solid var(--line);
+        margin-bottom:24px;
+      }
+
+      .sidebar-brand .brand-mark{
+        text-align:left;
+        font-size:1.18rem;
+      }
+
+      .sidebar-brand .brand-name{
+        text-align:left;
+        font-size:1rem;
+        margin-top:10px;
+      }
+
+      .desktop-nav{
+        display:grid;
+        gap:10px;
+      }
+
+      .desktop-nav button{
+        min-height:52px;
+        display:flex;
+        align-items:center;
+        width:100%;
+        padding:11px 14px;
+        border:1px solid transparent;
+        border-radius:15px;
+        transition:var(--ease);
+        color:var(--text);
+        font-family:var(--sans);
+        background:transparent;
+        cursor:pointer;
+        text-align:left;
+      }
+
+      .desktop-nav button:hover,
+      .desktop-nav button:focus-visible{
+        color:var(--gold);
+        border-color:var(--line);
+        background:rgba(255,255,255,.02);
+        outline:none;
+      }
+
+      .sidebar-bottom{
+        margin-top:auto;
+        padding-top:22px;
+        border-top:1px solid var(--line);
+        color:var(--muted);
+        font-family:var(--sans);
+        font-size:.8rem;
+        line-height:1.74;
+      }
+
+      .main{
+        padding:30px 40px 120px;
+      }
+
+      .desktop-top{
+        display:flex;
+        justify-content:flex-end;
+        align-items:center;
+        margin-bottom:12px;
+      }
+
+      .hero{
+        padding:4px 0 34px;
+        margin-bottom:26px;
+      }
+
+      .hero h1{font-size:2.56rem}
+
+      .view-head{padding:24px 24px 20px}
+      .view-body{padding:24px 24px 28px}
+      .view-title{font-size:1.62rem}
+
+      .about-grid,
+      .exhib-grid,
+      .vision-grid,
+      .join-grid,
+      .contact-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+        gap:14px;
+      }
+
+      .member-layout{
+        grid-template-columns:340px 1fr;
+        align-items:start;
+      }
+
+      .member-detail{gap:16px}
+
+      .member-works{
+        grid-template-columns:repeat(3, minmax(0,1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{transition:none !important;animation:none !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="mobile-topbar">
+      <button class="menu-btn" id="menuOpenBtn" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+        <span class="hamburger"><span></span></span>
+      </button>
+      <div class="brand" aria-label="IIAA">
+        <span class="brand-mark gold-text ko">사단법인 인천국제미술협회</span>
+        <span class="brand-mark gold-text en">Incheon International Art Association</span>
+        <span class="brand-name logo-blue">IIAA</span>
+      </div>
+      <div class="lang-switch" aria-label="Language switch">
+        <button class="lang-btn is-active" type="button" data-lang-btn="ko">KR</button>
+        <button class="lang-btn" type="button" data-lang-btn="en">EN</button>
+      </div>
+    </header>
+
+    <nav class="mobile-primary" aria-label="Primary">
+      <button type="button" data-view-btn="about"><span data-kr="협회소개" data-en="About">협회소개</span><span class="arrow">→</span></button>
+      <button type="button" data-view-btn="exhibitions"><span data-kr="전시" data-en="Exhibitions">전시</span><span class="arrow">→</span></button>
+      <button type="button" data-view-btn="member-works"><span data-kr="협회원 작품" data-en="Member Works">협회원 작품</span><span class="arrow">→</span></button>
+      <button type="button" data-view-btn="vision"><span data-kr="비전" data-en="Vision">비전</span><span class="arrow">→</span></button>
+      <button type="button" data-view-btn="join"><span data-kr="가입" data-en="Join">가입</span><span class="arrow">→</span></button>
+      <button type="button" data-view-btn="contact"><span data-kr="문의" data-en="Contact">문의</span><span class="arrow">→</span></button>
+    </nav>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="sidebar-top">
+          <button class="menu-btn" id="menuOpenBtnDesktop" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+            <span class="hamburger"><span></span></span>
+          </button>
+        </div>
+        <div class="sidebar-brand">
+          <span class="brand-mark gold-text ko">사단법인 인천국제미술협회</span>
+          <span class="brand-mark gold-text en">Incheon International Art Association</span>
+          <span class="brand-name logo-blue">IIAA</span>
+        </div>
+
+        <nav class="desktop-nav" aria-label="Primary">
+          <button type="button" data-view-btn="about" data-kr="협회소개" data-en="About">협회소개</button>
+          <button type="button" data-view-btn="exhibitions" data-kr="전시" data-en="Exhibitions">전시</button>
+          <button type="button" data-view-btn="member-works" data-kr="협회원 작품" data-en="Member Works">협회원 작품</button>
+          <button type="button" data-view-btn="vision" data-kr="비전" data-en="Vision">비전</button>
+          <button type="button" data-view-btn="join" data-kr="가입" data-en="Join">가입</button>
+          <button type="button" data-view-btn="contact" data-kr="문의" data-en="Contact">문의</button>
+        </nav>
+
+        <div class="sidebar-bottom"><span class="logo-blue">IIAA</span></div>
+      </aside>
+
+      <main class="main">
+        <div class="desktop-top">
+          <div class="lang-switch" aria-label="Language switch">
+            <button class="lang-btn is-active" type="button" data-lang-btn="ko">KR</button>
+            <button class="lang-btn" type="button" data-lang-btn="en">EN</button>
+          </div>
+        </div>
+
+        <section class="hero" aria-label="Site heading">
+          <h1 class="gold-text ko">사단법인 인천국제미술협회</h1>
+          <h1 class="gold-text en">Incheon International Art Association</h1>
+        </section>
+
+        <section class="view is-active" data-view="about">
+          <div class="view-head">
+            <div class="view-index">01</div>
+            <h2 class="view-title gold-text" data-kr="협회소개" data-en="About">협회소개</h2>
+          </div>
+          <div class="view-body">
+            <div class="about-grid">
+              <div class="mini-block"><strong data-kr="개요" data-en="Overview">개요</strong></div>
+              <div class="mini-block"><strong data-kr="역사" data-en="History">역사</strong></div>
+              <div class="mini-block"><strong data-kr="인사말" data-en="Message">인사말</strong></div>
+              <div class="mini-block"><strong data-kr="구조" data-en="Structure">구조</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="exhibitions">
+          <div class="view-head">
+            <div class="view-index">02</div>
+            <h2 class="view-title gold-text" data-kr="전시" data-en="Exhibitions">전시</h2>
+          </div>
+          <div class="view-body">
+            <div class="exhib-grid">
+              <div class="mini-block"><strong data-kr="현재 전시" data-en="Current">현재 전시</strong></div>
+              <div class="mini-block"><strong data-kr="예정 전시" data-en="Upcoming">예정 전시</strong></div>
+              <div class="mini-block"><strong data-kr="지난 전시" data-en="Past">지난 전시</strong></div>
+              <div class="mini-block"><strong data-kr="전시 아카이브" data-en="Archive">전시 아카이브</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="member-works">
+          <div class="view-head">
+            <div class="view-index">03</div>
+            <h2 class="view-title gold-text" data-kr="협회원 작품" data-en="Member Works">협회원 작품</h2>
+          </div>
+          <div class="view-body">
+            <div class="member-layout">
+              <div class="member-list" id="memberList"></div>
+
+              <div class="member-detail">
+                <div class="artist-note" id="artistNoteBox">
+                  <div class="artist-note-header">
+                    <div class="artist-note-title gold-text"><span class="ko">작가 노트</span><span class="en">Artist Note</span></div>
+                    <button class="bio-btn" id="toggleArtistNoteBtn" type="button"><span class="ko">작가노트 전체</span><span class="en">Full Artist Note</span></button>
+                  </div>
+                  <div class="artist-note-copy" id="artistNoteContent"></div>
+                </div>
+
+                <div class="member-works" id="memberWorks"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="vision">
+          <div class="view-head">
+            <div class="view-index">04</div>
+            <h2 class="view-title gold-text" data-kr="비전" data-en="Vision">비전</h2>
+          </div>
+          <div class="view-body">
+            <div class="vision-grid">
+              <div class="mini-block"><strong data-kr="비전" data-en="Vision">비전</strong></div>
+              <div class="mini-block"><strong data-kr="방향" data-en="Direction">방향</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="join">
+          <div class="view-head">
+            <div class="view-index">05</div>
+            <h2 class="view-title gold-text" data-kr="가입" data-en="Join">가입</h2>
+          </div>
+          <div class="view-body">
+            <div class="join-grid">
+              <div class="mini-block"><strong data-kr="가입 안내" data-en="Guide">가입 안내</strong></div>
+              <div class="mini-block"><strong data-kr="제출 구조" data-en="Submission">제출 구조</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="view" data-view="contact">
+          <div class="view-head">
+            <div class="view-index">06</div>
+            <h2 class="view-title gold-text" data-kr="문의" data-en="Contact">문의</h2>
+          </div>
+          <div class="view-body">
+            <div class="contact-grid">
+              <div class="mini-block"><strong data-kr="Contact" data-en="Contact">Contact</strong></div>
+              <div class="mini-block"><strong data-kr="Visit" data-en="Visit">Visit</strong></div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <footer class="footer">© IIAA — Incheon International Art Association</footer>
+
+    <div class="drawer" id="mobileDrawer" aria-hidden="true">
+      <div class="drawer-backdrop" id="drawerBackdrop"></div>
+      <aside class="drawer-panel" aria-label="Secondary menu">
+        <div class="drawer-head">
+          <h2 class="drawer-title gold-text">IIAA</h2>
+          <button class="drawer-close" id="menuCloseBtn" aria-label="Close menu">×</button>
+        </div>
+        <nav class="drawer-links">
+          <button type="button" data-drawer-view="notice"><span class="menu-text"><span class="ko">공지</span><span class="en">Notice</span></span></button>
+          <button type="button" data-drawer-view="visit"><span class="menu-text">Visit</span></button>
+          <button type="button" data-drawer-view="instagram"><span class="menu-text">Instagram</span></button>
+          <button type="button" data-drawer-view="youtube"><span class="menu-text">YouTube</span></button>
+          <button type="button" data-drawer-view="contact"><span class="menu-text">Contact</span></button>
+        </nav>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const langButtons = document.querySelectorAll("[data-lang-btn]");
+      const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
+      const drawer = document.getElementById("mobileDrawer");
+      const openBtn = document.getElementById("menuOpenBtn");
+      const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
+      const closeBtn = document.getElementById("menuCloseBtn");
+      const backdrop = document.getElementById("drawerBackdrop");
+      const mqDesktop = window.matchMedia("(min-width: 980px)");
+      const viewButtons = document.querySelectorAll("[data-view-btn]");
+      const views = document.querySelectorAll(".view");
+      const drawerButtons = document.querySelectorAll("[data-drawer-view]");
+
+      const memberList = document.getElementById("memberList");
+      const memberWorks = document.getElementById("memberWorks");
+      const artistNoteContent = document.getElementById("artistNoteContent");
+      const toggleArtistNoteBtn = document.getElementById("toggleArtistNoteBtn");
+
+      const members = [
+        {
+          id: "member-1",
+          name_kr: "김예시",
+          name_en: "Kim Example",
+          summary_kr: "회화와 기억의 층",
+          summary_en: "Layers of painting and memory",
+          note_kr: "김예시는 회화를 단순한 이미지가 아니라 시간과 기억이 겹쳐지는 장으로 다룬다.\n\n화면은 재현보다 감각의 축적을 통해 형성되며, 색과 구조는 내면의 리듬을 드러내는 방식으로 작동한다. 그의 작업은 조용하지만 깊은 밀도로 삶의 흔적을 읽게 만든다.",
+          note_en: "Kim Example approaches painting not as a simple image, but as a field where time and memory overlap.\n\nThe surface is formed through the accumulation of sensation rather than representation, and color and structure operate as ways of revealing an inner rhythm. The work remains quiet, yet allows traces of life to be read with depth.",
+          works: [
+            { title_kr:"작품 1", title_en:"Work 1", meta_kr:"oil on canvas / 91 × 73 cm / 2026", meta_en:"oil on canvas / 91 × 73 cm / 2026" },
+            { title_kr:"작품 2", title_en:"Work 2", meta_kr:"acrylic on canvas / 72 × 60 cm / 2025", meta_en:"acrylic on canvas / 72 × 60 cm / 2025" },
+            { title_kr:"작품 3", title_en:"Work 3", meta_kr:"mixed media / 53 × 45 cm / 2024", meta_en:"mixed media / 53 × 45 cm / 2024" }
+          ]
+        },
+        {
+          id: "member-2",
+          name_kr: "박예시",
+          name_en: "Park Example",
+          summary_kr: "형태와 빛의 관계",
+          summary_en: "The relation of form and light",
+          note_kr: "박예시는 형태가 빛 안에서 어떻게 다시 읽히는지를 질문한다.\n\n작업은 단단한 구조 위에 미세한 흔들림을 남기며, 그 틈에서 존재의 감각을 끌어올린다. 화면은 정지된 결과가 아니라 지속적으로 열리는 구조로 이해된다.",
+          note_en: "Park Example asks how form can be reread within light.\n\nThe work leaves a subtle vibration upon a firm structure, drawing up a sense of being from within that gap. The surface is understood not as a fixed result, but as a structure that keeps opening.",
+          works: [
+            { title_kr:"형태의 빛 1", title_en:"Light of Form 1", meta_kr:"oil on canvas / 80 × 80 cm / 2026", meta_en:"oil on canvas / 80 × 80 cm / 2026" },
+            { title_kr:"형태의 빛 2", title_en:"Light of Form 2", meta_kr:"oil on canvas / 65 × 53 cm / 2025", meta_en:"oil on canvas / 65 × 53 cm / 2025" },
+            { title_kr:"형태의 빛 3", title_en:"Light of Form 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
+          ]
+        },
+        {
+          id: "member-3",
+          name_kr: "이예시",
+          name_en: "Lee Example",
+          summary_kr: "공간과 감정의 리듬",
+          summary_en: "The rhythm of space and emotion",
+          note_kr: "이예시는 공간을 비어 있는 배경이 아니라 감정이 흐르는 구조로 본다.\n\n작업은 여백과 밀도의 대비를 통해 화면 안의 긴장을 만들고, 그 안에서 정서와 질서가 동시에 읽히도록 구성된다.",
+          note_en: "Lee Example views space not as an empty background, but as a structure through which emotion flows.\n\nThe work creates tension through the contrast between emptiness and density, allowing feeling and order to be read at the same time.",
+          works: [
+            { title_kr:"공간의 리듬 1", title_en:"Rhythm of Space 1", meta_kr:"oil on linen / 100 × 80 cm / 2026", meta_en:"oil on linen / 100 × 80 cm / 2026" },
+            { title_kr:"공간의 리듬 2", title_en:"Rhythm of Space 2", meta_kr:"mixed media / 72 × 60 cm / 2025", meta_en:"mixed media / 72 × 60 cm / 2025" },
+            { title_kr:"공간의 리듬 3", title_en:"Rhythm of Space 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
+          ]
+        }
+      ];
+
+      let activeMemberIndex = 0;
+      let noteExpanded = false;
+
+      function firstSentence(text, lang) {
+        const source = String(text || "").replace(/\s+/g, " ").trim();
+        if (!source) return "";
+        if (lang === "ko") {
+          const match = source.match(/^.*?(?:다\.|요\.|니다\.|[.!?])(?:\s|$)|^.+$/);
+          return (match ? match[0] : source).trim();
+        }
+        const match = source.match(/^.*?[.!?](?:\s|$)|^.+$/);
+        return (match ? match[0] : source).trim();
+      }
+
+      function currentLang() {
+        return html.lang === "en" ? "en" : "ko";
+      }
+
+      function setLanguage(lang) {
+        html.lang = lang === "en" ? "en" : "ko";
+        translatableNodes.forEach(node => {
+          const text = node.getAttribute(lang === "en" ? "data-en" : "data-kr");
+          if (text !== null) node.textContent = text;
+        });
+        langButtons.forEach(btn => {
+          const active = btn.dataset.langBtn === lang;
+          btn.classList.toggle("is-active", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        renderMembers();
+        try { localStorage.setItem("iiaa_lang_final", lang); } catch (e) {}
+      }
+
+      function setActiveView(viewName) {
+        views.forEach(view => {
+          view.classList.toggle("is-active", view.dataset.view === viewName);
+        });
+        viewButtons.forEach(btn => {
+          btn.classList.toggle("is-active", btn.dataset.viewBtn === viewName);
+        });
+        try { localStorage.setItem("iiaa_view_final", viewName); } catch (e) {}
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function openDrawer() {
+        if (!drawer) return;
+        drawer.classList.add("is-open");
+        drawer.setAttribute("aria-hidden", "false");
+        [openBtn, openBtnDesktop].forEach(btn => {
+          if (btn) {
+            btn.classList.add("is-active");
+            btn.setAttribute("aria-expanded", "true");
+          }
+        });
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDrawer() {
+        if (!drawer) return;
+        drawer.classList.remove("is-open");
+        drawer.setAttribute("aria-hidden", "true");
+        [openBtn, openBtnDesktop].forEach(btn => {
+          if (btn) {
+            btn.classList.remove("is-active");
+            btn.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.body.style.overflow = "";
+      }
+
+      function renderMembers() {
+        const lang = currentLang();
+        memberList.innerHTML = members.map((member, index) => `
+          <button type="button" class="member-card ${index === activeMemberIndex ? 'is-active' : ''}" data-member-index="${index}">
+            <strong class="member-name">${lang === "en" ? member.name_en : member.name_kr}</strong>
+            <div class="member-summary">${lang === "en" ? member.summary_en : member.summary_kr}</div>
+          </button>
+        `).join("");
+
+        memberList.querySelectorAll("[data-member-index]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            activeMemberIndex = Number(btn.dataset.memberIndex);
+            noteExpanded = false;
+            renderMembers();
+          });
+        });
+
+        const activeMember = members[activeMemberIndex];
+        const fullNote = lang === "en" ? activeMember.note_en : activeMember.note_kr;
+        artistNoteContent.textContent = noteExpanded ? fullNote : firstSentence(fullNote, lang);
+
+        memberWorks.innerHTML = activeMember.works.map(work => `
+          <div class="member-work">
+            <div class="member-work-title">${lang === "en" ? work.title_en : work.title_kr}</div>
+            <div>${lang === "en" ? work.meta_en : work.meta_kr}</div>
+          </div>
+        `).join("");
+      }
+
+      toggleArtistNoteBtn.addEventListener("click", () => {
+        noteExpanded = !noteExpanded;
+        renderMembers();
+      });
+
+      langButtons.forEach(btn => {
+        btn.addEventListener("click", () => setLanguage(btn.dataset.langBtn));
+      });
+
+      viewButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const viewName = btn.dataset.viewBtn;
+          if (viewName) setActiveView(viewName);
+          closeDrawer();
+        });
+      });
+
+      drawerButtons.forEach(btn => {
+        btn.addEventListener("click", () => closeDrawer());
+      });
+
+      if (openBtn) openBtn.addEventListener("click", openDrawer);
+      if (openBtnDesktop) openBtnDesktop.addEventListener("click", openDrawer);
+      if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+      if (backdrop) backdrop.addEventListener("click", closeDrawer);
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeDrawer();
+      });
+
+      if (mqDesktop.addEventListener) {
+        mqDesktop.addEventListener("change", e => {
+          if (e.matches) closeDrawer();
+        });
+      } else if (mqDesktop.addListener) {
+        mqDesktop.addListener(e => {
+          if (e.matches) closeDrawer();
+        });
+      }
+
+      let savedLang = "ko";
+      let savedView = "about";
+      try {
+        const lang = localStorage.getItem("iiaa_lang_final");
+        const view = localStorage.getItem("iiaa_view_final");
+        if (lang === "en") savedLang = "en";
+        if (view) savedView = view;
+      } catch (e) {}
+
+      setLanguage(savedLang);
+      setActiveView(savedView);
+      renderMembers();
+    })();
+  </script>
+</body>
+</html>
