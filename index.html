@@ -231,22 +231,140 @@
       transform:translateY(1px) scale(.985);
     }
 
+    .brand-mobile{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:0;
+    }
+
+    .brand-mobile-logo{
+      display:block;
+      color:#4f79b8;
+      font-family:var(--sans);
+      font-size:1.7rem;
+      font-weight:800;
+      letter-spacing:.12em;
+      line-height:1;
+      text-shadow:
+        0 0 2px rgba(0,0,0,.28),
+        0 0 10px rgba(79,121,184,.22);
+    }
+
+    .mobile-hero{
+      display:block;
+      padding:24px 16px 8px;
+    }
+
+    .mobile-hero-inner{
+      padding:8px 0 0;
+    }
+
+    .mobile-hero-title{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      margin:0;
+      color:var(--gold);
+      font-size:2.15rem;
+      line-height:1.15;
+      letter-spacing:-0.015em;
+      word-break:keep-all;
+      text-wrap:balance;
+      text-shadow:
+        0 0 6px rgba(216,185,106,.12),
+        0 0 12px rgba(216,185,106,.06);
+    }
+
+    .mobile-hero-title.en{
+      font-size:1.7rem;
+      line-height:1.18;
+    }
+
+    .mobile-hero-logo{
+      margin-top:14px;
+      color:#4f79b8;
+      font-family:var(--sans);
+      font-size:1.75rem;
+      font-weight:800;
+      letter-spacing:.14em;
+      line-height:1;
+      text-shadow:
+        0 0 2px rgba(0,0,0,.28),
+        0 0 10px rgba(79,121,184,.22);
+    }
+
+    .mobile-hero-desc{
+      margin:18px 0 0;
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:.95rem;
+      line-height:1.7;
+      letter-spacing:.01em;
+      word-break:keep-all;
+    }
+
+    .mobile-hero-figure{
+      margin-top:20px;
+      width:100%;
+      height:220px;
+      border-radius:22px;
+      border:1px solid rgba(216,185,106,.18);
+      background:
+        radial-gradient(circle at 18% 28%, rgba(216,185,106,.12), transparent 22%),
+        radial-gradient(circle at 78% 24%, rgba(79,121,184,.18), transparent 20%),
+        linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015)),
+        rgba(24,57,79,.92);
+      box-shadow:var(--shadow-soft);
+      display:flex;
+      align-items:flex-end;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .mobile-hero-figure::after{
+      content:"";
+      position:absolute;
+      inset:14px;
+      border-radius:18px;
+      border:1px solid rgba(244,241,234,.08);
+      pointer-events:none;
+    }
+
+    .mobile-hero-figure-label{
+      position:relative;
+      z-index:1;
+      margin:0 0 16px 16px;
+      padding:9px 14px;
+      border-radius:999px;
+      border:1px solid rgba(216,185,106,.20);
+      background:rgba(11,34,50,.55);
+      color:var(--gold);
+      font-family:var(--sans);
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      backdrop-filter:blur(8px);
+    }
+
+
     .mobile-primary{
       display:grid;
       grid-template-columns:1fr;
       gap:10px;
-      padding:16px 16px 0;
+      padding:8px 16px 0;
     }
 
     .mobile-primary button{
-      min-height:58px;
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       width:100%;
       padding:15px 16px;
       border:1px solid var(--line);
-      border-radius:15px;
+      border-radius:18px;
       background:
         linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.012)),
         rgba(24,57,79,.88);
@@ -349,7 +467,7 @@
     .member-card,
     .member-work{
       border:1px solid rgba(244,241,234,.07);
-      border-radius:15px;
+      border-radius:18px;
       background:rgba(255,255,255,.022);
       padding:15px 15px;
       color:var(--muted);
@@ -570,9 +688,42 @@
       border-top:1px solid var(--line);
     }
 
+
+    .sidebar-brand .brand-mobile-logo{display:none}
+
+    @media (max-width:979px){
+      .brand-mark,
+      .brand-name.logo-blue{
+        display:none;
+      }
+
+      .hero{
+        display:none;
+      }
+
+      .view{
+        border-radius:20px;
+      }
+
+      .view-head{
+        padding:20px 18px 16px;
+      }
+
+      .view-title{
+        font-size:1.32rem;
+        line-height:1.2;
+        word-break:keep-all;
+      }
+
+      .view-body{
+        padding:20px 18px 22px;
+      }
+    }
+
     @media (min-width:980px){
       .mobile-topbar,
-      .mobile-primary{
+      .mobile-primary,
+      .mobile-hero{
         display:none;
       }
 
@@ -627,7 +778,7 @@
         width:100%;
         padding:11px 14px;
         border:1px solid transparent;
-        border-radius:15px;
+        border-radius:18px;
         transition:var(--ease);
         color:var(--text);
         font-family:var(--sans);
@@ -709,16 +860,36 @@
       <button class="menu-btn" id="menuOpenBtn" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
         <span class="hamburger"><span></span></span>
       </button>
-      <div class="brand" aria-label="IIAA">
-        <span class="brand-mark gold-text ko">사단법인 인천국제미술협회</span>
-        <span class="brand-mark gold-text en">Incheon International Art Association</span>
-        <span class="brand-name logo-blue">IIAA</span>
+      <div class="brand brand-mobile" aria-label="IIAA">
+        <span class="brand-mobile-logo">IIAA</span>
       </div>
       <div class="lang-switch" aria-label="Language switch">
         <button class="lang-btn is-active" type="button" data-lang-btn="ko">KR</button>
         <button class="lang-btn" type="button" data-lang-btn="en">EN</button>
       </div>
     </header>
+
+    <section class="mobile-hero" aria-label="Mobile hero">
+      <div class="mobile-hero-inner">
+        <div class="mobile-hero-title ko">
+          <span>사단법인</span>
+          <span>인천국제미술협회</span>
+        </div>
+        <div class="mobile-hero-title en">
+          <span>Incheon International</span>
+          <span>Art Association</span>
+        </div>
+        <div class="mobile-hero-logo">IIAA</div>
+        <p class="mobile-hero-desc ko">전시와 협회원 작품, 비전과 구조를 잇는 공공적 미술 플랫폼</p>
+        <p class="mobile-hero-desc en">A public art platform connecting exhibitions, member works, vision, and structure.</p>
+        <div class="mobile-hero-figure" aria-hidden="true">
+          <div class="mobile-hero-figure-label">
+            <span class="ko">대표 이미지</span>
+            <span class="en">Current Exhibition</span>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <nav class="mobile-primary" aria-label="Primary">
       <button type="button" data-view-btn="about"><span data-kr="협회소개" data-en="About">협회소개</span><span class="arrow">→</span></button>
