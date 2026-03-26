@@ -10,46 +10,45 @@
   <style>
 
     :root{
-      --bg:#071a23;
-      --bg-mid:#0a1f2a;
-      --bg-deep:#06151d;
-      --surface:rgba(255,255,255,0.018);
-      --surface-soft:rgba(255,255,255,0.015);
-      --line:rgba(255,255,255,0.06);
-      --line-strong:rgba(122,90,30,.24);
-      --text:#f1ede6;
-      --muted:rgba(241,237,230,0.62);
-      --gold:#8b6a33;
-      --gold-bright:#8b6a33;
-      --gold-mid:#8b6a33;
-      --gold-dark:#7A5A1E;
-      --gold-deep:#6d511e;
-      --bronze:#7A5A1E;
-      --bronze-soft:#8b6a33;
+      --bg:#072F38;
+      --bg-mid:#062830;
+      --bg-deep:#041F25;
+      --surface:rgba(255,255,255,0.012);
+      --surface-soft:rgba(255,255,255,0.01);
+      --line:rgba(244,241,234,0.06);
+      --line-strong:rgba(184,150,62,0.22);
+      --text:#F4F1EA;
+      --muted:rgba(244,241,234,0.56);
+      --muted-soft:rgba(244,241,234,0.42);
+      --gold:#B8963E;
+      --bronze:#8A6A2F;
       --max:1520px;
       --side:88px;
-      --header-h:60px;
-      --radius:24px;
-      --ease:320ms ease;
+      --header-h:58px;
+      --radius:22px;
+      --ease:360ms ease;
       --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Times New Roman","Noto Serif KR",serif;
       --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
-      --shadow:none;
-      --shadow-soft:none;
     }
 
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
     body{
       margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
       color:var(--text);
+      background:#041F25;
+      background:linear-gradient(
+        to bottom,
+        #072F38 0%,
+        #041F25 100%
+      );
       font-family:var(--serif);
       line-height:1.72;
       letter-spacing:.005em;
       -webkit-text-size-adjust:100%;
       text-rendering:optimizeLegibility;
-      background:var(--bg);
-      min-height:100vh;
-      overflow-x:hidden;
     }
 
     a{color:inherit;text-decoration:none}
@@ -60,11 +59,7 @@
     html[lang="en"] .ko{display:none !important}
     .site{min-height:100vh;width:100%}
 
-    .gold-text{
-      color:var(--bronze-soft);
-      -webkit-text-fill-color:initial;
-      background:none;
-    }
+    .gold-text{color:var(--gold);background:none;-webkit-text-fill-color:initial}
 
     .mobile-topbar,
     .mobile-hero,
@@ -74,15 +69,15 @@
     .drawer-close{
       width:42px;
       height:42px;
-      border:1px solid rgba(255,255,255,0.06);
-      background:rgba(255,255,255,.015);
+      border:1px solid var(--line);
+      background:transparent;
       color:var(--text);
       border-radius:12px;
       display:inline-flex;
       align-items:center;
       justify-content:center;
       cursor:pointer;
-      transition:all var(--ease);
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
       flex:0 0 auto;
     }
 
@@ -94,9 +89,9 @@
     .drawer-links button:hover,
     .bio-btn:hover,
     .member-card:hover{
-      border-color:rgba(122,90,30,.18);
-      color:var(--bronze-soft);
-      background:rgba(255,255,255,.02);
+      border-color:rgba(184,150,62,.18);
+      color:var(--gold);
+      background:rgba(255,255,255,.012);
     }
 
     .hamburger{
@@ -126,11 +121,9 @@
     .menu-btn.is-active .hamburger span{opacity:0}
     .menu-btn.is-active .hamburger::after{transform:translateY(-5px) rotate(-45deg)}
 
-    .brand{min-width:0;text-align:center;padding-inline:4px}
+    .brand{min-width:0;text-align:center}
     .brand-mark,
     .brand-name{display:none !important}
-
-    .logo-blue{color:var(--bronze);font-family:var(--serif);font-weight:600;letter-spacing:.24em;font-size:1rem;line-height:1.15}
 
     .lang-switch{
       display:flex;
@@ -140,18 +133,18 @@
     }
 
     .lang-btn{
-      min-width:50px;
-      height:38px;
-      padding:0 13px;
+      min-width:48px;
+      height:36px;
+      padding:0 12px;
       border-radius:999px;
-      border:1px solid rgba(122,90,30,.18);
-      background:rgba(255,255,255,.018);
+      border:1px solid rgba(244,241,234,.08);
+      background:transparent;
       color:var(--text);
       cursor:pointer;
-      transition:all var(--ease);
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
       font-family:var(--sans);
-      font-size:.88rem;
-      font-weight:700;
+      font-size:.84rem;
+      font-weight:600;
       letter-spacing:.02em;
       outline:none;
       -webkit-tap-highlight-color:transparent;
@@ -159,35 +152,30 @@
     }
 
     .lang-btn.is-active{
-      border-color:rgba(122,90,30,.34);
-      color:var(--bronze-soft);
-      background:rgba(255,255,255,.024);
+      border-color:rgba(184,150,62,.28);
+      color:var(--gold);
+      background:rgba(255,255,255,.012);
       box-shadow:none;
     }
 
     .lang-btn:active{transform:translateY(1px) scale(.985)}
 
     .brand-mobile{display:flex;align-items:center;justify-content:center;min-width:0}
-
     .brand-mobile-logo,
-    .mobile-hero-logo,
     .iiaa-logo{
       color:var(--bronze);
       font-family:"Georgia", serif;
-      font-weight:700;
-      letter-spacing:0.30em;
+      font-weight:600;
+      letter-spacing:.28em;
       text-transform:uppercase;
       line-height:1;
       text-align:center;
     }
-
-    .brand-mobile-logo{display:block;font-size:1.28rem}
-    .mobile-hero-logo{display:none !important}
+    .brand-mobile-logo{display:block;font-size:1.1rem}
 
     .layout{
       width:100%;
       min-width:0;
-      max-width:none;
       margin:0;
       display:grid;
       grid-template-columns:88px minmax(0,1fr);
@@ -220,25 +208,25 @@
       margin:0;
       font-size:1.8rem;
       line-height:1.12;
-      font-weight:500;
+      font-weight:600;
       letter-spacing:-0.01em;
       word-break:keep-all;
+      color:var(--gold);
     }
 
     .view{
       display:none;
-      border:1px solid rgba(255,255,255,0.05);
-      border-radius:26px;
-      background:rgba(255,255,255,0.018);
+      border:1px solid rgba(244,241,234,0.045);
+      border-radius:24px;
+      background:rgba(255,255,255,0.012);
       overflow:hidden;
       box-shadow:none;
     }
-
     .view.is-active{display:block}
 
     .view-head{
       padding:20px 18px 16px;
-      border-bottom:1px solid rgba(255,255,255,0.05);
+      border-bottom:1px solid rgba(244,241,234,0.045);
       background:none;
     }
 
@@ -252,18 +240,18 @@
 
     .view-title{
       margin:0;
-      font-size:1.34rem;
+      font-size:1.28rem;
       line-height:1.12;
-      font-weight:500;
-      color:var(--bronze-soft);
+      font-weight:600;
+      color:var(--gold);
     }
 
     .view-body{
       padding:16px 18px 18px;
       color:var(--text);
       font-family:var(--sans);
-      font-size:.96rem;
-      line-height:1.82;
+      font-size:.95rem;
+      line-height:1.8;
     }
 
     .about-grid,
@@ -280,15 +268,15 @@
     .mini-block,
     .member-card,
     .member-work{
-      border:1px solid rgba(255,255,255,0.045);
+      border:1px solid rgba(244,241,234,0.035);
       border-radius:16px;
-      background:rgba(255,255,255,0.015);
-      padding:14px 14px;
+      background:rgba(255,255,255,0.01);
+      padding:13px 14px;
       color:var(--muted);
       font-family:var(--sans);
       font-size:.92rem;
-      line-height:1.7;
-      transition:background var(--ease), border-color var(--ease), color var(--ease);
+      line-height:1.68;
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
     }
 
     .mini-block strong,
@@ -308,42 +296,45 @@
     .member-list,.member-works{gap:12px}
 
     .member-card{cursor:pointer}
-    .member-card.is-active{border-color:rgba(122,90,30,.20);background:rgba(255,255,255,.022)}
+    .member-card.is-active{
+      border-color:rgba(184,150,62,.18);
+      background:rgba(255,255,255,.012);
+    }
 
-    .member-name{font-size:1rem;font-weight:700;line-height:1.3;color:var(--text)}
+    .member-name{font-size:1rem;font-weight:600;line-height:1.3;color:var(--text)}
     .member-summary{margin-top:6px;color:var(--muted)}
 
     .artist-note{
       margin:0;
-      padding:20px 20px 18px;
-      border-radius:20px;
-      background:rgba(255,255,255,0.016);
-      border:1px solid rgba(122,90,30,.12);
+      padding:18px 18px 16px;
+      border-radius:18px;
+      background:rgba(255,255,255,0.01);
+      border:1px solid rgba(184,150,62,.12);
       box-shadow:none;
     }
 
     .artist-note-header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}
-    .artist-note-title{font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+    .artist-note-title{font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 
     .bio-btn{
       display:inline-flex;
       align-items:center;
       justify-content:center;
-      min-height:36px;
+      min-height:34px;
       padding:0 14px;
       border-radius:999px;
-      border:1px solid rgba(122,90,30,.20);
-      background:rgba(255,255,255,.015);
-      color:var(--bronze-soft);
+      border:1px solid rgba(184,150,62,.16);
+      background:transparent;
+      color:var(--gold);
       font-size:12px;
-      font-weight:800;
+      font-weight:600;
       cursor:pointer;
-      transition:all var(--ease);
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
       white-space:nowrap;
     }
 
-    .artist-note-copy{margin:0;color:var(--text);white-space:pre-line;line-height:1.78}
-    .member-work-title{font-weight:700;color:var(--text);margin-bottom:4px}
+    .artist-note-copy{margin:0;color:var(--text);white-space:pre-line;line-height:1.76}
+    .member-work-title{font-weight:600;color:var(--text);margin-bottom:4px}
 
     .drawer{
       position:fixed;
@@ -352,7 +343,13 @@
       pointer-events:none;
     }
     .drawer.is-open{pointer-events:auto}
-    .drawer-backdrop{position:absolute;inset:0;background:rgba(8,14,22,.62);opacity:0;transition:opacity var(--ease)}
+    .drawer-backdrop{
+      position:absolute;
+      inset:0;
+      background:rgba(6,21,29,.6);
+      opacity:0;
+      transition:opacity var(--ease);
+    }
 
     .drawer-panel{
       position:absolute;
@@ -361,7 +358,7 @@
       width:min(84vw, 320px);
       height:100%;
       background:var(--bg-mid);
-      border-right:1px solid rgba(255,255,255,0.05);
+      border-right:1px solid rgba(244,241,234,0.045);
       transform:translateX(-100%);
       transition:transform var(--ease);
       padding:calc(env(safe-area-inset-top) + 16px) 16px calc(24px + env(safe-area-inset-bottom));
@@ -374,31 +371,38 @@
     .drawer.is-open .drawer-panel{transform:translateX(0)}
 
     .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
-    .drawer-title{margin:0;font-size:1rem;line-height:1;letter-spacing:.06em;font-weight:500}
+    .drawer-title{margin:0;font-size:1rem;line-height:1;letter-spacing:.06em;font-weight:600;color:var(--gold)}
     .drawer-links{display:grid;gap:8px}
 
     .drawer-links button{
-      min-height:50px;
+      min-height:48px;
       display:flex;
       align-items:center;
       width:100%;
-      padding:12px 13px;
-      border:1px solid rgba(255,255,255,0.045);
+      padding:11px 13px;
+      border:1px solid rgba(244,241,234,0.04);
       border-radius:14px;
-      background:rgba(255,255,255,.015);
+      background:transparent;
       cursor:pointer;
       text-align:left;
-      transition:all var(--ease);
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
     }
 
-    .drawer-links .menu-text{color:var(--bronze-soft);font-family:var(--sans);font-size:14px;font-weight:700;letter-spacing:.02em;background:none}
+    .drawer-links .menu-text{
+      color:var(--text);
+      font-family:var(--sans);
+      font-size:14px;
+      font-weight:600;
+      letter-spacing:.02em;
+      background:none;
+    }
 
     .footer{
       padding:22px 14px calc(28px + env(safe-area-inset-bottom));
-      color:var(--muted);
+      color:var(--muted-soft);
       font-family:var(--sans);
       font-size:.8rem;
-      border-top:1px solid rgba(255,255,255,0.05);
+      border-top:1px solid rgba(244,241,234,0.05);
     }
 
     .desktop-nav{display:grid;gap:8px}
@@ -411,7 +415,7 @@
       padding:10px 10px;
       border:1px solid transparent;
       border-radius:16px;
-      transition:background var(--ease), border-color var(--ease), color var(--ease), transform 140ms ease;
+      transition:border-color var(--ease), color var(--ease), background var(--ease);
       color:var(--text);
       font-family:var(--sans);
       background:transparent;
@@ -421,14 +425,14 @@
     }
 
     .desktop-nav button.is-active{
-      border-color:rgba(122,90,30,.22);
-      color:var(--bronze-soft);
-      background:rgba(255,255,255,.02);
+      border-color:rgba(184,150,62,.18);
+      color:var(--gold);
+      background:rgba(255,255,255,.012);
     }
 
     .sidebar-top{display:flex;justify-content:center;margin-bottom:18px}
     .sidebar-brand{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:6px 0 22px;border-bottom:1px solid var(--line);margin-bottom:20px}
-    .sidebar-bottom{margin-top:auto;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-family:var(--sans);font-size:.8rem;line-height:1.74}
+    .sidebar-bottom{margin-top:auto;padding-top:22px;border-top:1px solid var(--line);color:var(--muted-soft);font-family:var(--sans);font-size:.8rem;line-height:1.74}
 
     .view,
     .view-head,
@@ -453,107 +457,134 @@
         position:sticky;
         top:0;
         z-index:1000;
-        grid-template-columns:44px 1fr auto;
+        grid-template-columns:40px 1fr auto;
         align-items:center;
         gap:10px;
-        min-height:60px;
-        padding:calc(env(safe-area-inset-top) + 8px) 14px 8px 14px;
-        background:rgba(7,26,35,.94);
-        border-bottom:1px solid rgba(255,255,255,0.05);
-        backdrop-filter:blur(12px);
+        min-height:var(--header-h);
+        padding:calc(env(safe-area-inset-top) + 6px) 14px 6px 14px;
+        background:var(--bg);
+        border-bottom:1px solid rgba(244,241,234,0.045);
+      }
+
+      .mobile-topbar .brand-mobile{
+        position:absolute;
+        left:50%;
+        transform:translateX(-50%);
+        width:max-content;
+        pointer-events:none;
+      }
+
+      .mobile-topbar .lang-switch{
+        justify-self:end;
+        position:relative;
+        z-index:1;
       }
 
       .menu-btn,
-      .drawer-close{width:40px;height:40px;border-radius:12px}
+      .drawer-close{
+        width:38px;
+        height:38px;
+        border-radius:12px;
+      }
 
-      .brand-mobile{display:flex;align-items:center;justify-content:center;min-width:0}
-      .brand-mobile-logo{display:block;font-size:1.28rem;text-align:center}
+      .brand-mobile-logo{
+        font-size:1.02rem;
+        font-weight:600;
+        letter-spacing:.28em;
+        color:var(--bronze);
+      }
 
-      .mobile-hero{display:block;padding:14px 14px 6px}
+      .mobile-hero{
+        display:block;
+        padding:14px 16px 0;
+      }
       .mobile-hero-inner{padding:0}
 
-      .mobile-hero-title{
-        display:flex;
-        flex-direction:column;
-        gap:1px;
-        margin:0;
-        color:var(--bronze-soft);
-        font-size:1.68rem;
-        line-height:1.14;
+      .mobile-hero-heading{
+        display:block;
+      }
+
+      .mobile-hero-label{
+        color:rgba(244,241,234,.6);
+        font-family:var(--sans);
+        font-size:.82rem;
+        line-height:1.3;
+        letter-spacing:.02em;
+        margin:0 0 4px;
+      }
+
+      .mobile-hero-name{
+        color:var(--gold);
+        font-size:1.58rem;
+        line-height:1.18;
+        font-weight:600;
         letter-spacing:-0.012em;
         word-break:keep-all;
         text-wrap:balance;
       }
 
-      .mobile-hero-title.en{font-size:1.44rem;line-height:1.16;letter-spacing:-0.006em}
-      .mobile-hero-desc{margin:9px 0 0;color:var(--muted);font-family:var(--sans);font-size:.9rem;line-height:1.58;letter-spacing:.005em;word-break:keep-all}
-
-      .mobile-hero-figure{
-        margin-top:12px;
-        width:100%;
-        height:168px;
-        border-radius:20px;
-        border:1px solid rgba(255,255,255,0.045);
-        background:rgba(255,255,255,0.015);
-        overflow:hidden;
-        position:relative;
-        display:flex;
-        align-items:flex-end;
+      html[lang="en"] .mobile-hero-name{
+        font-size:1.32rem;
+        line-height:1.2;
+        letter-spacing:-0.006em;
       }
 
-      .mobile-hero-figure::after{
-        content:"";
-        position:absolute;
-        inset:10px;
-        border-radius:16px;
-        border:1px solid rgba(255,255,255,.05);
-        pointer-events:none;
-      }
-
-      .mobile-hero-figure-label{
-        position:relative;
-        z-index:1;
-        margin:0 0 14px 14px;
-        padding:8px 12px;
-        border-radius:999px;
-        border:1px solid rgba(122,90,30,.18);
-        background:rgba(7,26,35,.44);
-        color:var(--bronze-soft);
+      .mobile-hero-desc{
+        margin:10px 0 0;
+        color:var(--muted);
         font-family:var(--sans);
-        font-size:.74rem;
-        font-weight:800;
-        letter-spacing:.10em;
-        text-transform:uppercase;
-        backdrop-filter:blur(6px);
+        font-size:.9rem;
+        line-height:1.58;
+        letter-spacing:0;
+        word-break:keep-all;
+        max-width:34ch;
+      }
+
+      .mobile-hero-figure,
+      .mobile-hero-figure-label{
+        display:none !important;
       }
 
       .mobile-primary{
         display:grid;
         grid-template-columns:1fr;
-        gap:8px;
-        padding:10px 14px 0;
+        gap:7px;
+        padding:12px 16px 0;
       }
 
       .mobile-primary button{
-        min-height:54px;
+        min-height:48px;
         display:flex;
         align-items:center;
         justify-content:space-between;
         width:100%;
-        padding:12px 14px;
-        border:1px solid rgba(255,255,255,0.045);
-        border-radius:16px;
-        background:rgba(255,255,255,0.015);
+        padding:10px 12px;
+        border:1px solid rgba(244,241,234,0.035);
+        border-radius:14px;
+        background:rgba(255,255,255,0.01);
         color:var(--text);
-        transition:all var(--ease);
-        font-size:.94rem;
+        transition:border-color var(--ease), color var(--ease), background var(--ease);
+        font-size:.93rem;
         font-family:var(--sans);
         cursor:pointer;
         text-align:left;
       }
 
-      .mobile-primary button.is-active{border-color:rgba(122,90,30,.20);color:var(--bronze-soft);background:rgba(255,255,255,.02)}
-      .lang-btn{height:36px;min-width:46px;font-size:.84rem}
+      .mobile-primary button.is-active{
+        border-color:rgba(184,150,62,.18);
+        color:var(--gold);
+        background:rgba(255,255,255,.012);
+      }
+
+      .mobile-primary .arrow{
+        color:rgba(244,241,234,.48);
+      }
+
+      .lang-btn{
+        height:34px;
+        min-width:44px;
+        font-size:.82rem;
+      }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -578,26 +609,22 @@
       </div>
     </header>
 
+    
     <section class="mobile-hero" aria-label="Mobile hero">
       <div class="mobile-hero-inner">
-        <div class="mobile-hero-title ko">
-          <span>사단법인</span>
-          <span>인천국제미술협회</span>
+        <div class="mobile-hero-heading ko">
+          <div class="mobile-hero-label">사단법인</div>
+          <div class="mobile-hero-name">인천국제미술협회</div>
         </div>
-        <div class="mobile-hero-title en">
-          <span>Incheon International</span>
-          <span>Art Association</span>
+        <div class="mobile-hero-heading en">
+          <div class="mobile-hero-label">Incorporated Association</div>
+          <div class="mobile-hero-name">Incheon International Art Association</div>
         </div>
         <p class="mobile-hero-desc ko">전시와 협회원 작품, 비전과 구조를 잇는 공공적 미술 플랫폼</p>
         <p class="mobile-hero-desc en">A public art platform connecting exhibitions, member works, vision, and structure.</p>
-        <div class="mobile-hero-figure" aria-hidden="true">
-          <div class="mobile-hero-figure-label">
-            <span class="ko">대표 이미지</span>
-            <span class="en">Current Exhibition</span>
-          </div>
-        </div>
       </div>
     </section>
+
 
     <nav class="mobile-primary" aria-label="Primary">
       <button type="button" data-view-btn="about"><span data-kr="협회소개" data-en="About">협회소개</span><span class="arrow">→</span></button>
@@ -758,6 +785,224 @@
       </aside>
     </div>
   </div>
+
+  <script>
+    (function () {
+      const html = document.documentElement;
+      const langButtons = document.querySelectorAll("[data-lang-btn]");
+      const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
+      const drawer = document.getElementById("mobileDrawer");
+      const openBtn = document.getElementById("menuOpenBtn");
+      const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
+      const closeBtn = document.getElementById("menuCloseBtn");
+      const backdrop = document.getElementById("drawerBackdrop");
+      const mqDesktop = window.matchMedia("(min-width: 980px)");
+      const viewButtons = document.querySelectorAll("[data-view-btn]");
+      const views = document.querySelectorAll(".view");
+      const drawerButtons = document.querySelectorAll("[data-drawer-view]");
+
+      const memberList = document.getElementById("memberList");
+      const memberWorks = document.getElementById("memberWorks");
+      const artistNoteContent = document.getElementById("artistNoteContent");
+      const toggleArtistNoteBtn = document.getElementById("toggleArtistNoteBtn");
+
+      const members = [
+        {
+          id: "member-1",
+          name_kr: "김예시",
+          name_en: "Kim Example",
+          summary_kr: "회화와 기억의 층",
+          summary_en: "Layers of painting and memory",
+          note_kr: "김예시는 회화를 단순한 이미지가 아니라 시간과 기억이 겹쳐지는 장으로 다룬다.\n\n화면은 재현보다 감각의 축적을 통해 형성되며, 색과 구조는 내면의 리듬을 드러내는 방식으로 작동한다. 그의 작업은 조용하지만 깊은 밀도로 삶의 흔적을 읽게 만든다.",
+          note_en: "Kim Example approaches painting not as a simple image, but as a field where time and memory overlap.\n\nThe surface is formed through the accumulation of sensation rather than representation, and color and structure operate as ways of revealing an inner rhythm. The work remains quiet, yet allows traces of life to be read with depth.",
+          works: [
+            { title_kr:"작품 1", title_en:"Work 1", meta_kr:"oil on canvas / 91 × 73 cm / 2026", meta_en:"oil on canvas / 91 × 73 cm / 2026" },
+            { title_kr:"작품 2", title_en:"Work 2", meta_kr:"acrylic on canvas / 72 × 60 cm / 2025", meta_en:"acrylic on canvas / 72 × 60 cm / 2025" },
+            { title_kr:"작품 3", title_en:"Work 3", meta_kr:"mixed media / 53 × 45 cm / 2024", meta_en:"mixed media / 53 × 45 cm / 2024" }
+          ]
+        },
+        {
+          id: "member-2",
+          name_kr: "박예시",
+          name_en: "Park Example",
+          summary_kr: "형태와 빛의 관계",
+          summary_en: "The relation of form and light",
+          note_kr: "박예시는 형태가 빛 안에서 어떻게 다시 읽히는지를 질문한다.\n\n작업은 단단한 구조 위에 미세한 흔들림을 남기며, 그 틈에서 존재의 감각을 끌어올린다. 화면은 정지된 결과가 아니라 지속적으로 열리는 구조로 이해된다.",
+          note_en: "Park Example asks how form can be reread within light.\n\nThe work leaves a subtle vibration upon a firm structure, drawing up a sense of being from within that gap. The surface is understood not as a fixed result, but as a structure that keeps opening.",
+          works: [
+            { title_kr:"형태의 빛 1", title_en:"Light of Form 1", meta_kr:"oil on canvas / 80 × 80 cm / 2026", meta_en:"oil on canvas / 80 × 80 cm / 2026" },
+            { title_kr:"형태의 빛 2", title_en:"Light of Form 2", meta_kr:"oil on canvas / 65 × 53 cm / 2025", meta_en:"oil on canvas / 65 × 53 cm / 2025" },
+            { title_kr:"형태의 빛 3", title_en:"Light of Form 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
+          ]
+        },
+        {
+          id: "member-3",
+          name_kr: "이예시",
+          name_en: "Lee Example",
+          summary_kr: "공간과 감정의 리듬",
+          summary_en: "The rhythm of space and emotion",
+          note_kr: "이예시는 공간을 비어 있는 배경이 아니라 감정이 흐르는 구조로 본다.\n\n작업은 여백과 밀도의 대비를 통해 화면 안의 긴장을 만들고, 그 안에서 정서와 질서가 동시에 읽히도록 구성된다.",
+          note_en: "Lee Example views space not as an empty background, but as a structure through which emotion flows.\n\nThe work creates tension through the contrast between emptiness and density, allowing feeling and order to be read at the same time.",
+          works: [
+            { title_kr:"공간의 리듬 1", title_en:"Rhythm of Space 1", meta_kr:"oil on linen / 100 × 80 cm / 2026", meta_en:"oil on linen / 100 × 80 cm / 2026" },
+            { title_kr:"공간의 리듬 2", title_en:"Rhythm of Space 2", meta_kr:"mixed media / 72 × 60 cm / 2025", meta_en:"mixed media / 72 × 60 cm / 2025" },
+            { title_kr:"공간의 리듬 3", title_en:"Rhythm of Space 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
+          ]
+        }
+      ];
+
+      let activeMemberIndex = 0;
+      let noteExpanded = false;
+
+      function firstSentence(text, lang) {
+        const source = String(text || "").replace(/\s+/g, " ").trim();
+        if (!source) return "";
+        if (lang === "ko") {
+          const match = source.match(/^.*?(?:다\.|요\.|니다\.|[.!?])(?:\s|$)|^.+$/);
+          return (match ? match[0] : source).trim();
+        }
+        const match = source.match(/^.*?[.!?](?:\s|$)|^.+$/);
+        return (match ? match[0] : source).trim();
+      }
+
+      function currentLang() {
+        return html.lang === "en" ? "en" : "ko";
+      }
+
+      function setLanguage(lang) {
+        html.lang = lang === "en" ? "en" : "ko";
+        translatableNodes.forEach(node => {
+          const text = node.getAttribute(lang === "en" ? "data-en" : "data-kr");
+          if (text !== null) node.textContent = text;
+        });
+        langButtons.forEach(btn => {
+          const active = btn.dataset.langBtn === lang;
+          btn.classList.toggle("is-active", active);
+          btn.setAttribute("aria-pressed", active ? "true" : "false");
+        });
+        renderMembers();
+        try { localStorage.setItem("iiaa_lang_final", lang); } catch (e) {}
+      }
+
+      function setActiveView(viewName) {
+        views.forEach(view => {
+          view.classList.toggle("is-active", view.dataset.view === viewName);
+        });
+        viewButtons.forEach(btn => {
+          btn.classList.toggle("is-active", btn.dataset.viewBtn === viewName);
+        });
+        try { localStorage.setItem("iiaa_view_final", viewName); } catch (e) {}
+      }
+
+      function openDrawer() {
+        if (!drawer) return;
+        drawer.classList.add("is-open");
+        drawer.setAttribute("aria-hidden", "false");
+        [openBtn, openBtnDesktop].forEach(btn => {
+          if (btn) {
+            btn.classList.add("is-active");
+            btn.setAttribute("aria-expanded", "true");
+          }
+        });
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDrawer() {
+        if (!drawer) return;
+        drawer.classList.remove("is-open");
+        drawer.setAttribute("aria-hidden", "true");
+        [openBtn, openBtnDesktop].forEach(btn => {
+          if (btn) {
+            btn.classList.remove("is-active");
+            btn.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.body.style.overflow = "";
+      }
+
+      function renderMembers() {
+        const lang = currentLang();
+        memberList.innerHTML = members.map((member, index) => `
+          <button type="button" class="member-card ${index === activeMemberIndex ? 'is-active' : ''}" data-member-index="${index}">
+            <strong class="member-name">${lang === "en" ? member.name_en : member.name_kr}</strong>
+            <div class="member-summary">${lang === "en" ? member.summary_en : member.summary_kr}</div>
+          </button>
+        `).join("");
+
+        memberList.querySelectorAll("[data-member-index]").forEach(btn => {
+          btn.addEventListener("click", () => {
+            activeMemberIndex = Number(btn.dataset.memberIndex);
+            noteExpanded = false;
+            renderMembers();
+          });
+        });
+
+        const activeMember = members[activeMemberIndex];
+        const fullNote = lang === "en" ? activeMember.note_en : activeMember.note_kr;
+        artistNoteContent.textContent = noteExpanded ? fullNote : firstSentence(fullNote, lang);
+
+        memberWorks.innerHTML = activeMember.works.map(work => `
+          <div class="member-work">
+            <div class="member-work-title">${lang === "en" ? work.title_en : work.title_kr}</div>
+            <div>${lang === "en" ? work.meta_en : work.meta_kr}</div>
+          </div>
+        `).join("");
+      }
+
+      toggleArtistNoteBtn.addEventListener("click", () => {
+        noteExpanded = !noteExpanded;
+        renderMembers();
+      });
+
+      langButtons.forEach(btn => {
+        btn.addEventListener("click", () => setLanguage(btn.dataset.langBtn));
+      });
+
+      viewButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const viewName = btn.dataset.viewBtn;
+          if (viewName) setActiveView(viewName);
+          closeDrawer();
+        });
+      });
+
+      drawerButtons.forEach(btn => {
+        btn.addEventListener("click", () => closeDrawer());
+      });
+
+      if (openBtn) openBtn.addEventListener("click", openDrawer);
+      if (openBtnDesktop) openBtnDesktop.addEventListener("click", openDrawer);
+      if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+      if (backdrop) backdrop.addEventListener("click", closeDrawer);
+
+      document.addEventListener("keydown", e => {
+        if (e.key === "Escape") closeDrawer();
+      });
+
+      if (mqDesktop.addEventListener) {
+        mqDesktop.addEventListener("change", e => {
+          if (e.matches) closeDrawer();
+        });
+      } else if (mqDesktop.addListener) {
+        mqDesktop.addListener(e => {
+          if (e.matches) closeDrawer();
+        });
+      }
+
+      let savedLang = "ko";
+      let savedView = "about";
+      try {
+        const lang = localStorage.getItem("iiaa_lang_final");
+        const view = localStorage.getItem("iiaa_view_final");
+        if (lang === "en") savedLang = "en";
+        if (view) savedView = view;
+      } catch (e) {}
+
+      setLanguage(savedLang);
+      setActiveView(savedView);
+      renderMembers();
+    })();
+  </script>
 
   <script>
     (function () {
