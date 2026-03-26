@@ -21,6 +21,8 @@
       --muted:rgba(244,241,234,0.56);
       --muted-soft:rgba(244,241,234,0.42);
       --gold:#B8963E;
+      --gold-soft:rgba(184,150,62,0.7);
+      --gold-border:rgba(184,150,62,0.35);
       --bronze:#8A6A2F;
       --max:1520px;
       --side:88px;
@@ -89,7 +91,7 @@
     .drawer-links button:hover,
     .bio-btn:hover,
     .member-card:hover{
-      border-color:rgba(184,150,62,.18);
+      border-color:var(--gold-border);
       color:var(--gold);
       background:rgba(255,255,255,.012);
     }
@@ -152,7 +154,7 @@
     }
 
     .lang-btn.is-active{
-      border-color:rgba(184,150,62,.28);
+      border-color:var(--gold-border);
       color:var(--gold);
       background:rgba(255,255,255,.012);
       box-shadow:none;
@@ -297,7 +299,7 @@
 
     .member-card{cursor:pointer}
     .member-card.is-active{
-      border-color:rgba(184,150,62,.18);
+      border-color:var(--gold-border);
       background:rgba(255,255,255,.012);
     }
 
@@ -425,7 +427,7 @@
     }
 
     .desktop-nav button.is-active{
-      border-color:rgba(184,150,62,.18);
+      border-color:var(--gold-border);
       color:var(--gold);
       background:rgba(255,255,255,.012);
     }
@@ -572,13 +574,17 @@
       }
 
       .mobile-primary button.is-active{
-        border-color:rgba(184,150,62,.20);
+        border-color:var(--gold-border);
         color:var(--gold);
         background:rgba(255,255,255,.028);
       }
 
       .mobile-primary .arrow{
         color:rgba(244,241,234,.48);
+      }
+
+      .mobile-primary button.is-active .arrow{
+        color:var(--gold-soft);
       }
 
       .lang-btn{
