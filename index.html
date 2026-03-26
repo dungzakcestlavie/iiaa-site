@@ -216,9 +216,9 @@
 
     .view{
       display:none;
-      border:1px solid rgba(244,241,234,0.045);
+      border:1px solid rgba(244,241,234,0.07);
       border-radius:24px;
-      background:rgba(255,255,255,0.012);
+      background:rgba(255,255,255,0.018);
       overflow:hidden;
       box-shadow:none;
     }
@@ -268,9 +268,9 @@
     .mini-block,
     .member-card,
     .member-work{
-      border:1px solid rgba(244,241,234,0.035);
+      border:1px solid rgba(244,241,234,0.085);
       border-radius:16px;
-      background:rgba(255,255,255,0.01);
+      background:rgba(255,255,255,0.024);
       padding:13px 14px;
       color:var(--muted);
       font-family:var(--sans);
@@ -462,7 +462,8 @@
         gap:10px;
         min-height:var(--header-h);
         padding:calc(env(safe-area-inset-top) + 6px) 14px 6px 14px;
-        background:var(--bg);
+        background:rgba(7,47,56,0.88);
+        backdrop-filter:blur(8px);
         border-bottom:1px solid rgba(244,241,234,0.045);
       }
 
@@ -559,9 +560,9 @@
         justify-content:space-between;
         width:100%;
         padding:10px 12px;
-        border:1px solid rgba(244,241,234,0.035);
+        border:1px solid rgba(244,241,234,0.09);
         border-radius:14px;
-        background:rgba(255,255,255,0.01);
+        background:rgba(255,255,255,0.024);
         color:var(--text);
         transition:border-color var(--ease), color var(--ease), background var(--ease);
         font-size:.93rem;
@@ -571,9 +572,9 @@
       }
 
       .mobile-primary button.is-active{
-        border-color:rgba(184,150,62,.18);
+        border-color:rgba(184,150,62,.20);
         color:var(--gold);
-        background:rgba(255,255,255,.012);
+        background:rgba(255,255,255,.028);
       }
 
       .mobile-primary .arrow{
@@ -1004,222 +1005,6 @@
     })();
   </script>
 
-  <script>
-    (function () {
-      const html = document.documentElement;
-      const langButtons = document.querySelectorAll("[data-lang-btn]");
-      const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
-      const drawer = document.getElementById("mobileDrawer");
-      const openBtn = document.getElementById("menuOpenBtn");
-      const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
-      const closeBtn = document.getElementById("menuCloseBtn");
-      const backdrop = document.getElementById("drawerBackdrop");
-      const mqDesktop = window.matchMedia("(min-width: 980px)");
-      const viewButtons = document.querySelectorAll("[data-view-btn]");
-      const views = document.querySelectorAll(".view");
-      const drawerButtons = document.querySelectorAll("[data-drawer-view]");
-
-      const memberList = document.getElementById("memberList");
-      const memberWorks = document.getElementById("memberWorks");
-      const artistNoteContent = document.getElementById("artistNoteContent");
-      const toggleArtistNoteBtn = document.getElementById("toggleArtistNoteBtn");
-
-      const members = [
-        {
-          id: "member-1",
-          name_kr: "김예시",
-          name_en: "Kim Example",
-          summary_kr: "회화와 기억의 층",
-          summary_en: "Layers of painting and memory",
-          note_kr: "김예시는 회화를 단순한 이미지가 아니라 시간과 기억이 겹쳐지는 장으로 다룬다.\n\n화면은 재현보다 감각의 축적을 통해 형성되며, 색과 구조는 내면의 리듬을 드러내는 방식으로 작동한다. 그의 작업은 조용하지만 깊은 밀도로 삶의 흔적을 읽게 만든다.",
-          note_en: "Kim Example approaches painting not as a simple image, but as a field where time and memory overlap.\n\nThe surface is formed through the accumulation of sensation rather than representation, and color and structure operate as ways of revealing an inner rhythm. The work remains quiet, yet allows traces of life to be read with depth.",
-          works: [
-            { title_kr:"작품 1", title_en:"Work 1", meta_kr:"oil on canvas / 91 × 73 cm / 2026", meta_en:"oil on canvas / 91 × 73 cm / 2026" },
-            { title_kr:"작품 2", title_en:"Work 2", meta_kr:"acrylic on canvas / 72 × 60 cm / 2025", meta_en:"acrylic on canvas / 72 × 60 cm / 2025" },
-            { title_kr:"작품 3", title_en:"Work 3", meta_kr:"mixed media / 53 × 45 cm / 2024", meta_en:"mixed media / 53 × 45 cm / 2024" }
-          ]
-        },
-        {
-          id: "member-2",
-          name_kr: "박예시",
-          name_en: "Park Example",
-          summary_kr: "형태와 빛의 관계",
-          summary_en: "The relation of form and light",
-          note_kr: "박예시는 형태가 빛 안에서 어떻게 다시 읽히는지를 질문한다.\n\n작업은 단단한 구조 위에 미세한 흔들림을 남기며, 그 틈에서 존재의 감각을 끌어올린다. 화면은 정지된 결과가 아니라 지속적으로 열리는 구조로 이해된다.",
-          note_en: "Park Example asks how form can be reread within light.\n\nThe work leaves a subtle vibration upon a firm structure, drawing up a sense of being from within that gap. The surface is understood not as a fixed result, but as a structure that keeps opening.",
-          works: [
-            { title_kr:"형태의 빛 1", title_en:"Light of Form 1", meta_kr:"oil on canvas / 80 × 80 cm / 2026", meta_en:"oil on canvas / 80 × 80 cm / 2026" },
-            { title_kr:"형태의 빛 2", title_en:"Light of Form 2", meta_kr:"oil on canvas / 65 × 53 cm / 2025", meta_en:"oil on canvas / 65 × 53 cm / 2025" },
-            { title_kr:"형태의 빛 3", title_en:"Light of Form 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
-          ]
-        },
-        {
-          id: "member-3",
-          name_kr: "이예시",
-          name_en: "Lee Example",
-          summary_kr: "공간과 감정의 리듬",
-          summary_en: "The rhythm of space and emotion",
-          note_kr: "이예시는 공간을 비어 있는 배경이 아니라 감정이 흐르는 구조로 본다.\n\n작업은 여백과 밀도의 대비를 통해 화면 안의 긴장을 만들고, 그 안에서 정서와 질서가 동시에 읽히도록 구성된다.",
-          note_en: "Lee Example views space not as an empty background, but as a structure through which emotion flows.\n\nThe work creates tension through the contrast between emptiness and density, allowing feeling and order to be read at the same time.",
-          works: [
-            { title_kr:"공간의 리듬 1", title_en:"Rhythm of Space 1", meta_kr:"oil on linen / 100 × 80 cm / 2026", meta_en:"oil on linen / 100 × 80 cm / 2026" },
-            { title_kr:"공간의 리듬 2", title_en:"Rhythm of Space 2", meta_kr:"mixed media / 72 × 60 cm / 2025", meta_en:"mixed media / 72 × 60 cm / 2025" },
-            { title_kr:"공간의 리듬 3", title_en:"Rhythm of Space 3", meta_kr:"paper / 42 × 29.7 cm / 2024", meta_en:"paper / 42 × 29.7 cm / 2024" }
-          ]
-        }
-      ];
-
-      let activeMemberIndex = 0;
-      let noteExpanded = false;
-
-      function firstSentence(text, lang) {
-        const source = String(text || "").replace(/\s+/g, " ").trim();
-        if (!source) return "";
-        if (lang === "ko") {
-          const match = source.match(/^.*?(?:다\.|요\.|니다\.|[.!?])(?:\s|$)|^.+$/);
-          return (match ? match[0] : source).trim();
-        }
-        const match = source.match(/^.*?[.!?](?:\s|$)|^.+$/);
-        return (match ? match[0] : source).trim();
-      }
-
-      function currentLang() {
-        return html.lang === "en" ? "en" : "ko";
-      }
-
-      function setLanguage(lang) {
-        html.lang = lang === "en" ? "en" : "ko";
-        translatableNodes.forEach(node => {
-          const text = node.getAttribute(lang === "en" ? "data-en" : "data-kr");
-          if (text !== null) node.textContent = text;
-        });
-        langButtons.forEach(btn => {
-          const active = btn.dataset.langBtn === lang;
-          btn.classList.toggle("is-active", active);
-          btn.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-        renderMembers();
-        try { localStorage.setItem("iiaa_lang_final", lang); } catch (e) {}
-      }
-
-      function setActiveView(viewName) {
-        views.forEach(view => {
-          view.classList.toggle("is-active", view.dataset.view === viewName);
-        });
-        viewButtons.forEach(btn => {
-          btn.classList.toggle("is-active", btn.dataset.viewBtn === viewName);
-        });
-        try { localStorage.setItem("iiaa_view_final", viewName); } catch (e) {}
-      }
-
-      function openDrawer() {
-        if (!drawer) return;
-        drawer.classList.add("is-open");
-        drawer.setAttribute("aria-hidden", "false");
-        [openBtn, openBtnDesktop].forEach(btn => {
-          if (btn) {
-            btn.classList.add("is-active");
-            btn.setAttribute("aria-expanded", "true");
-          }
-        });
-        document.body.style.overflow = "hidden";
-      }
-
-      function closeDrawer() {
-        if (!drawer) return;
-        drawer.classList.remove("is-open");
-        drawer.setAttribute("aria-hidden", "true");
-        [openBtn, openBtnDesktop].forEach(btn => {
-          if (btn) {
-            btn.classList.remove("is-active");
-            btn.setAttribute("aria-expanded", "false");
-          }
-        });
-        document.body.style.overflow = "";
-      }
-
-      function renderMembers() {
-        const lang = currentLang();
-        memberList.innerHTML = members.map((member, index) => `
-          <button type="button" class="member-card ${index === activeMemberIndex ? 'is-active' : ''}" data-member-index="${index}">
-            <strong class="member-name">${lang === "en" ? member.name_en : member.name_kr}</strong>
-            <div class="member-summary">${lang === "en" ? member.summary_en : member.summary_kr}</div>
-          </button>
-        `).join("");
-
-        memberList.querySelectorAll("[data-member-index]").forEach(btn => {
-          btn.addEventListener("click", () => {
-            activeMemberIndex = Number(btn.dataset.memberIndex);
-            noteExpanded = false;
-            renderMembers();
-          });
-        });
-
-        const activeMember = members[activeMemberIndex];
-        const fullNote = lang === "en" ? activeMember.note_en : activeMember.note_kr;
-        artistNoteContent.textContent = noteExpanded ? fullNote : firstSentence(fullNote, lang);
-
-        memberWorks.innerHTML = activeMember.works.map(work => `
-          <div class="member-work">
-            <div class="member-work-title">${lang === "en" ? work.title_en : work.title_kr}</div>
-            <div>${lang === "en" ? work.meta_en : work.meta_kr}</div>
-          </div>
-        `).join("");
-      }
-
-      toggleArtistNoteBtn.addEventListener("click", () => {
-        noteExpanded = !noteExpanded;
-        renderMembers();
-      });
-
-      langButtons.forEach(btn => {
-        btn.addEventListener("click", () => setLanguage(btn.dataset.langBtn));
-      });
-
-      viewButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const viewName = btn.dataset.viewBtn;
-          if (viewName) setActiveView(viewName);
-          closeDrawer();
-        });
-      });
-
-      drawerButtons.forEach(btn => {
-        btn.addEventListener("click", () => closeDrawer());
-      });
-
-      if (openBtn) openBtn.addEventListener("click", openDrawer);
-      if (openBtnDesktop) openBtnDesktop.addEventListener("click", openDrawer);
-      if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
-      if (backdrop) backdrop.addEventListener("click", closeDrawer);
-
-      document.addEventListener("keydown", e => {
-        if (e.key === "Escape") closeDrawer();
-      });
-
-      if (mqDesktop.addEventListener) {
-        mqDesktop.addEventListener("change", e => {
-          if (e.matches) closeDrawer();
-        });
-      } else if (mqDesktop.addListener) {
-        mqDesktop.addListener(e => {
-          if (e.matches) closeDrawer();
-        });
-      }
-
-      let savedLang = "ko";
-      let savedView = "about";
-      try {
-        const lang = localStorage.getItem("iiaa_lang_final");
-        const view = localStorage.getItem("iiaa_view_final");
-        if (lang === "en") savedLang = "en";
-        if (view) savedView = view;
-      } catch (e) {}
-
-      setLanguage(savedLang);
-      setActiveView(savedView);
-      renderMembers();
-    })();
-  </script>
+  
 </body>
 </html>
