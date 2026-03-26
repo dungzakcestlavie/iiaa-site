@@ -23,6 +23,7 @@
       --gold-mid:#f1d88a;
       --gold-dark:#a8822f;
       --gold-deep:#6e531a;
+      --bronze:#9A7A45;
       --max:1520px;
       --side:300px;
       --header-h:86px;
@@ -172,12 +173,11 @@
 
 
     .logo-blue{
-  color:#4f79b8;
-  text-shadow:
-    0 0 2px rgba(0,0,0,.28),
-    0 0 8px rgba(79,121,184,.28);
-  font-weight:800;
-  letter-spacing:.07em;
+  color:#9A7A45;
+  text-shadow:none;
+  font-family:var(--serif);
+  font-weight:600;
+  letter-spacing:.28em;
   font-size:1rem;
   line-height:1.15;
 }
@@ -240,15 +240,13 @@
 
     .brand-mobile-logo{
       display:block;
-      color:#4f79b8;
-      font-family:var(--sans);
+      color:var(--bronze);
+      font-family:var(--serif);
       font-size:1.7rem;
-      font-weight:800;
-      letter-spacing:.12em;
+      font-weight:500;
+      letter-spacing:.22em;
       line-height:1;
-      text-shadow:
-        0 0 2px rgba(0,0,0,.28),
-        0 0 10px rgba(79,121,184,.22);
+      text-align:center;
     }
 
     .mobile-hero{
@@ -283,15 +281,13 @@
 
     .mobile-hero-logo{
       margin-top:14px;
-      color:#4f79b8;
-      font-family:var(--sans);
-      font-size:1.75rem;
-      font-weight:800;
-      letter-spacing:.14em;
+      color:var(--bronze);
+      font-family:var(--serif);
+      font-size:1.8rem;
+      font-weight:500;
+      letter-spacing:.22em;
       line-height:1;
-      text-shadow:
-        0 0 2px rgba(0,0,0,.28),
-        0 0 10px rgba(79,121,184,.22);
+      text-align:left;
     }
 
     .mobile-hero-desc{
@@ -411,7 +407,7 @@
     }
 
     .view{
-      display:none;
+      display:block;
       border:1px solid var(--line);
       border-radius:var(--radius);
       background:
@@ -419,14 +415,35 @@
         rgba(24,57,79,.9);
       overflow:hidden;
       box-shadow:var(--shadow-soft);
+      transition:border-color .35s cubic-bezier(0.4,0,0.2,1), background-color .35s cubic-bezier(0.4,0,0.2,1);
     }
 
-    .view.is-active{display:block}
+    .view.is-active{
+      border-color:rgba(176,141,87,.34);
+      background:
+        linear-gradient(180deg, rgba(176,141,87,.04), rgba(255,255,255,.01)),
+        rgba(24,57,79,.94);
+    }
 
     .view-head{
-      padding:22px 20px 18px;
-      border-bottom:1px solid var(--line);
+      width:100%;
+      min-height:56px;
+      padding:18px 20px;
+      border:0;
+      border-bottom:1px solid transparent;
       background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0));
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      cursor:pointer;
+      text-align:left;
+      transition:color .35s cubic-bezier(0.4,0,0.2,1), border-color .35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .view.is-active .view-head{
+      color:var(--bronze);
+      border-bottom-color:var(--line);
     }
 
     .view-index{
@@ -435,6 +452,48 @@
       font-size:.78rem;
       letter-spacing:.16em;
       margin-bottom:10px;
+    }
+
+    .view-head-main{
+      flex:1 1 auto;
+      min-width:0;
+    }
+
+    .view-indicator{
+      position:relative;
+      width:18px;
+      height:18px;
+      flex:0 0 18px;
+      color:currentColor;
+    }
+
+    .view-indicator::before,
+    .view-indicator::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:100%;
+      height:1.5px;
+      background:currentColor;
+      transform:translate(-50%,-50%);
+      transition:transform .35s cubic-bezier(0.4,0,0.2,1), opacity .35s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .view-indicator::after{
+      transform:translate(-50%,-50%) rotate(90deg);
+    }
+
+    .view.is-active .view-indicator::after{
+      opacity:0;
+      transform:translate(-50%,-50%) rotate(90deg) scaleX(.2);
+    }
+
+    .view-panel{
+      height:0;
+      overflow:hidden;
+      transition:height .35s cubic-bezier(0.4,0,0.2,1);
+      will-change:height;
     }
 
     .view-title{
@@ -891,15 +950,6 @@
       </div>
     </section>
 
-    <nav class="mobile-primary" aria-label="Primary">
-      <button type="button" data-view-btn="about"><span data-kr="협회소개" data-en="About">협회소개</span><span class="arrow">→</span></button>
-      <button type="button" data-view-btn="exhibitions"><span data-kr="전시" data-en="Exhibitions">전시</span><span class="arrow">→</span></button>
-      <button type="button" data-view-btn="member-works"><span data-kr="협회원 작품" data-en="Member Works">협회원 작품</span><span class="arrow">→</span></button>
-      <button type="button" data-view-btn="vision"><span data-kr="비전" data-en="Vision">비전</span><span class="arrow">→</span></button>
-      <button type="button" data-view-btn="join"><span data-kr="가입" data-en="Join">가입</span><span class="arrow">→</span></button>
-      <button type="button" data-view-btn="contact"><span data-kr="문의" data-en="Contact">문의</span><span class="arrow">→</span></button>
-    </nav>
-
     <div class="layout">
       <aside class="sidebar">
         <div class="sidebar-top">
@@ -912,15 +962,6 @@
           <span class="brand-mark gold-text en">Incheon International Art Association</span>
           <span class="brand-name logo-blue">IIAA</span>
         </div>
-
-        <nav class="desktop-nav" aria-label="Primary">
-          <button type="button" data-view-btn="about" data-kr="협회소개" data-en="About">협회소개</button>
-          <button type="button" data-view-btn="exhibitions" data-kr="전시" data-en="Exhibitions">전시</button>
-          <button type="button" data-view-btn="member-works" data-kr="협회원 작품" data-en="Member Works">협회원 작품</button>
-          <button type="button" data-view-btn="vision" data-kr="비전" data-en="Vision">비전</button>
-          <button type="button" data-view-btn="join" data-kr="가입" data-en="Join">가입</button>
-          <button type="button" data-view-btn="contact" data-kr="문의" data-en="Contact">문의</button>
-        </nav>
 
         <div class="sidebar-bottom"><span class="logo-blue">IIAA</span></div>
       </aside>
@@ -938,11 +979,15 @@
           <h1 class="gold-text en">Incheon International Art Association</h1>
         </section>
 
-        <section class="view is-active" data-view="about">
-          <div class="view-head">
-            <div class="view-index">01</div>
-            <h2 class="view-title gold-text" data-kr="협회소개" data-en="About">협회소개</h2>
-          </div>
+        <section class="view is-active accordion-item" data-view="about">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">01</div>
+              <h2 class="view-title gold-text" data-kr="협회소개" data-en="About">협회소개</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="about-grid">
               <div class="mini-block"><strong data-kr="개요" data-en="Overview">개요</strong></div>
@@ -951,13 +996,18 @@
               <div class="mini-block"><strong data-kr="구조" data-en="Structure">구조</strong></div>
             </div>
           </div>
+          </div>
         </section>
 
-        <section class="view" data-view="exhibitions">
-          <div class="view-head">
-            <div class="view-index">02</div>
-            <h2 class="view-title gold-text" data-kr="전시" data-en="Exhibitions">전시</h2>
-          </div>
+        <section class="view accordion-item" data-view="exhibitions">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">02</div>
+              <h2 class="view-title gold-text" data-kr="전시" data-en="Exhibitions">전시</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="exhib-grid">
               <div class="mini-block"><strong data-kr="현재 전시" data-en="Current">현재 전시</strong></div>
@@ -966,13 +1016,18 @@
               <div class="mini-block"><strong data-kr="전시 아카이브" data-en="Archive">전시 아카이브</strong></div>
             </div>
           </div>
+          </div>
         </section>
 
-        <section class="view" data-view="member-works">
-          <div class="view-head">
-            <div class="view-index">03</div>
-            <h2 class="view-title gold-text" data-kr="협회원 작품" data-en="Member Works">협회원 작품</h2>
-          </div>
+        <section class="view accordion-item" data-view="member-works">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">03</div>
+              <h2 class="view-title gold-text" data-kr="협회원 작품" data-en="Member Works">협회원 작품</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="member-layout">
               <div class="member-list" id="memberList"></div>
@@ -990,44 +1045,60 @@
               </div>
             </div>
           </div>
+          </div>
         </section>
 
-        <section class="view" data-view="vision">
-          <div class="view-head">
-            <div class="view-index">04</div>
-            <h2 class="view-title gold-text" data-kr="비전" data-en="Vision">비전</h2>
-          </div>
+        <section class="view accordion-item" data-view="vision">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">04</div>
+              <h2 class="view-title gold-text" data-kr="비전" data-en="Vision">비전</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="vision-grid">
               <div class="mini-block"><strong data-kr="비전" data-en="Vision">비전</strong></div>
               <div class="mini-block"><strong data-kr="방향" data-en="Direction">방향</strong></div>
             </div>
           </div>
+          </div>
         </section>
 
-        <section class="view" data-view="join">
-          <div class="view-head">
-            <div class="view-index">05</div>
-            <h2 class="view-title gold-text" data-kr="가입" data-en="Join">가입</h2>
-          </div>
+        <section class="view accordion-item" data-view="join">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">05</div>
+              <h2 class="view-title gold-text" data-kr="가입" data-en="Join">가입</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="join-grid">
               <div class="mini-block"><strong data-kr="가입 안내" data-en="Guide">가입 안내</strong></div>
               <div class="mini-block"><strong data-kr="제출 구조" data-en="Submission">제출 구조</strong></div>
             </div>
           </div>
+          </div>
         </section>
 
-        <section class="view" data-view="contact">
-          <div class="view-head">
-            <div class="view-index">06</div>
-            <h2 class="view-title gold-text" data-kr="문의" data-en="Contact">문의</h2>
-          </div>
+        <section class="view accordion-item" data-view="contact">
+          <button class="view-head" type="button" aria-expanded="false">
+            <div class="view-head-main">
+              <div class="view-index">06</div>
+              <h2 class="view-title gold-text" data-kr="문의" data-en="Contact">문의</h2>
+            </div>
+            <span class="view-indicator" aria-hidden="true"></span>
+          </button>
+          <div class="view-panel">
           <div class="view-body">
             <div class="contact-grid">
               <div class="mini-block"><strong data-kr="Contact" data-en="Contact">Contact</strong></div>
               <div class="mini-block"><strong data-kr="Visit" data-en="Visit">Visit</strong></div>
             </div>
+          </div>
           </div>
         </section>
       </main>
@@ -1053,6 +1124,7 @@
     </div>
   </div>
 
+  
   <script>
     (function () {
       const html = document.documentElement;
@@ -1064,14 +1136,14 @@
       const closeBtn = document.getElementById("menuCloseBtn");
       const backdrop = document.getElementById("drawerBackdrop");
       const mqDesktop = window.matchMedia("(min-width: 980px)");
-      const viewButtons = document.querySelectorAll("[data-view-btn]");
-      const views = document.querySelectorAll(".view");
       const drawerButtons = document.querySelectorAll("[data-drawer-view]");
 
       const memberList = document.getElementById("memberList");
       const memberWorks = document.getElementById("memberWorks");
       const artistNoteContent = document.getElementById("artistNoteContent");
       const toggleArtistNoteBtn = document.getElementById("toggleArtistNoteBtn");
+
+      const accordionItems = Array.from(document.querySelectorAll(".accordion-item"));
 
       const members = [
         {
@@ -1149,17 +1221,7 @@
         });
         renderMembers();
         try { localStorage.setItem("iiaa_lang_final", lang); } catch (e) {}
-      }
-
-      function setActiveView(viewName) {
-        views.forEach(view => {
-          view.classList.toggle("is-active", view.dataset.view === viewName);
-        });
-        viewButtons.forEach(btn => {
-          btn.classList.toggle("is-active", btn.dataset.viewBtn === viewName);
-        });
-        try { localStorage.setItem("iiaa_view_final", viewName); } catch (e) {}
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        requestAnimationFrame(updateOpenPanelHeights);
       }
 
       function openDrawer() {
@@ -1202,6 +1264,7 @@
             activeMemberIndex = Number(btn.dataset.memberIndex);
             noteExpanded = false;
             renderMembers();
+            requestAnimationFrame(updateOpenPanelHeights);
           });
         });
 
@@ -1217,25 +1280,59 @@
         `).join("");
       }
 
+      function setPanelHeight(item, open) {
+        const panel = item.querySelector(".view-panel");
+        const button = item.querySelector(".view-head");
+        item.classList.toggle("is-active", open);
+        button.setAttribute("aria-expanded", open ? "true" : "false");
+        panel.style.height = open ? panel.scrollHeight + "px" : "0px";
+      }
+
+      function toggleItem(targetItem) {
+        const isOpen = targetItem.classList.contains("is-active");
+        accordionItems.forEach(item => setPanelHeight(item, false));
+        if (!isOpen) {
+          setPanelHeight(targetItem, true);
+        }
+      }
+
+      function updateOpenPanelHeights() {
+        accordionItems.forEach(item => {
+          if (item.classList.contains("is-active")) {
+            const panel = item.querySelector(".view-panel");
+            panel.style.height = panel.scrollHeight + "px";
+          }
+        });
+      }
+
       toggleArtistNoteBtn.addEventListener("click", () => {
         noteExpanded = !noteExpanded;
         renderMembers();
+        requestAnimationFrame(updateOpenPanelHeights);
       });
 
       langButtons.forEach(btn => {
         btn.addEventListener("click", () => setLanguage(btn.dataset.langBtn));
       });
 
-      viewButtons.forEach(btn => {
-        btn.addEventListener("click", () => {
-          const viewName = btn.dataset.viewBtn;
-          if (viewName) setActiveView(viewName);
-          closeDrawer();
+      accordionItems.forEach(item => {
+        const button = item.querySelector(".view-head");
+        button.addEventListener("click", () => toggleItem(item));
+        button.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggleItem(item);
+          }
         });
       });
 
       drawerButtons.forEach(btn => {
-        btn.addEventListener("click", () => closeDrawer());
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.drawerView;
+          const item = accordionItems.find(el => el.dataset.view === target);
+          closeDrawer();
+          if (item) toggleItem(item);
+        });
       });
 
       if (openBtn) openBtn.addEventListener("click", openDrawer);
@@ -1250,26 +1347,32 @@
       if (mqDesktop.addEventListener) {
         mqDesktop.addEventListener("change", e => {
           if (e.matches) closeDrawer();
+          requestAnimationFrame(updateOpenPanelHeights);
         });
       } else if (mqDesktop.addListener) {
         mqDesktop.addListener(e => {
           if (e.matches) closeDrawer();
+          requestAnimationFrame(updateOpenPanelHeights);
         });
       }
 
       let savedLang = "ko";
-      let savedView = "about";
       try {
         const lang = localStorage.getItem("iiaa_lang_final");
-        const view = localStorage.getItem("iiaa_view_final");
         if (lang === "en") savedLang = "en";
-        if (view) savedView = view;
       } catch (e) {}
 
       setLanguage(savedLang);
-      setActiveView(savedView);
       renderMembers();
+      accordionItems.forEach(item => {
+        const open = item.classList.contains("is-active");
+        setPanelHeight(item, open);
+      });
+      requestAnimationFrame(updateOpenPanelHeights);
+
+      window.addEventListener("resize", updateOpenPanelHeights);
     })();
   </script>
+
 </body>
 </html>
