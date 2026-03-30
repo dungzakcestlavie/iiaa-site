@@ -17,13 +17,13 @@
       --line:rgba(244,241,234,0.08);
       --line-strong:rgba(184,150,62,0.24);
       --text:#F4F1EA;
-      --muted:rgba(244,241,234,0.62);
+      --muted:rgba(244,241,234,0.65);
       --muted-soft:rgba(244,241,234,0.44);
       --gold:#B8963E;
       --gold-soft:rgba(184,150,62,0.74);
       --gold-border:rgba(184,150,62,0.34);
       --bronze:#8A6A2F;
-      --ease:280ms ease;
+      --ease:350ms ease;
       --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Times New Roman","Noto Serif KR",serif;
       --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
     }
@@ -155,7 +155,7 @@
       background:transparent;
     }
 
-    .main{min-width:0;padding:22px 26px 96px}
+    .main{min-width:0;padding:20px 24px 96px}
     .desktop-top{display:flex;justify-content:flex-end;align-items:center;margin-bottom:10px}
 
     .hero{
@@ -174,38 +174,51 @@
     }
 
     .view{
-      display:none;
-      border:1px solid rgba(244,241,234,0.07);
-      border-radius:24px;
-      background:rgba(255,255,255,0.018);
+      display:block;
+      border:1px solid rgba(244,241,234,0.10);
+      border-radius:22px;
+      background:rgba(255,255,255,0.03);
       overflow:hidden;
+      margin-bottom:14px;
+      transition:border-color var(--ease), background var(--ease), transform var(--ease);
     }
-    .view.is-active{display:block}
-
+    .view:hover{border-color:rgba(244,241,234,0.14)}
+    .view.is-active{border-color:rgba(184,150,62,0.24)}
     .view-head{
-      padding:20px 18px 16px;
+      padding:18px 18px 16px;
       border-bottom:1px solid rgba(244,241,234,0.045);
+      cursor:pointer;
+      transition:border-color var(--ease), background var(--ease);
     }
     .view-index{
       color:var(--muted);
       font-family:var(--sans);
-      font-size:.76rem;
+      font-size:.72rem;
       letter-spacing:.14em;
       margin-bottom:8px;
     }
     .view-title{
       margin:0;
-      font-size:1.28rem;
-      line-height:1.12;
+      font-size:1.14rem;
+      line-height:1.16;
       font-weight:600;
       color:var(--gold);
     }
     .view-body{
-      padding:16px 18px 18px;
+      max-height:0;
+      opacity:0;
+      overflow:hidden;
+      padding:0 18px;
       color:var(--text);
       font-family:var(--sans);
-      font-size:.95rem;
-      line-height:1.8;
+      font-size:.92rem;
+      line-height:1.9;
+      transition:max-height var(--ease), opacity var(--ease), padding var(--ease);
+    }
+    .view.is-active .view-body{
+      max-height:2400px;
+      opacity:1;
+      padding:16px 18px 18px;
     }
 
     .about-grid,.exhib-grid,.vision-grid,.join-grid,.contact-grid{
@@ -216,15 +229,15 @@
     }
 
     .mini-block,.member-card,.contact-card{
-      border:1px solid rgba(244,241,234,0.13);
-      border-radius:16px;
-      background:rgba(255,255,255,0.038);
-      padding:13px 14px;
+      border:1px solid rgba(244,241,234,0.10);
+      border-radius:20px;
+      background:rgba(255,255,255,0.03);
+      padding:14px 15px;
       color:var(--muted);
       font-family:var(--sans);
-      font-size:.92rem;
-      line-height:1.68;
-      transition:border-color var(--ease), color var(--ease), background var(--ease);
+      font-size:.9rem;
+      line-height:1.8;
+      transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
     }
 
     .mini-block strong,.member-card strong,.contact-card strong{
@@ -236,8 +249,9 @@
 
     .member-layout{
       display:grid;
-      grid-template-columns:minmax(270px, 330px) minmax(0,1fr);
+      grid-template-columns:minmax(260px, 320px) minmax(0,1fr);
       gap:18px;
+      align-items:start;
     }
 
     .member-sidebar{
@@ -283,12 +297,13 @@
     }
 
     .member-card{cursor:pointer;text-align:left}
+    .member-card:hover{transform:scale(1.01)}
     .member-card.is-active{
-      border-color:var(--gold-border);
-      background:rgba(255,255,255,.012);
+      border-color:rgba(184,150,62,0.32);
+      background:rgba(255,255,255,0.04);
     }
     .member-name{
-      font-size:1rem;
+      font-size:.98rem;
       font-weight:600;
       line-height:1.3;
       color:var(--text);
@@ -296,6 +311,10 @@
     .member-summary{
       margin-top:6px;
       color:var(--muted);
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
     }
 
     .member-detail{
@@ -303,6 +322,10 @@
       grid-template-columns:1fr;
       gap:16px;
       min-width:0;
+      padding:18px;
+      border:1px solid rgba(244,241,234,0.10);
+      border-radius:22px;
+      background:rgba(255,255,255,0.03);
     }
 
     .artist-header{
@@ -312,23 +335,23 @@
     }
     .artist-main-name{
       color:var(--text);
-      font-size:1.28rem;
+      font-size:1.32rem;
       font-weight:600;
-      line-height:1.2;
+      line-height:1.22;
       word-break:keep-all;
     }
     .artist-sub-name{
       color:var(--muted);
-      font-size:.94rem;
-      line-height:1.4;
+      font-size:.9rem;
+      line-height:1.55;
     }
 
     .artist-note{
       margin:0;
       padding:18px;
-      border-radius:18px;
-      background:rgba(255,255,255,0.01);
-      border:1px solid rgba(184,150,62,.12);
+      border-radius:20px;
+      background:rgba(255,255,255,0.03);
+      border:1px solid rgba(244,241,234,0.10);
     }
 
     .artist-note-header{
@@ -367,6 +390,27 @@
       opacity:.45;
       cursor:default;
     }
+    .works-more-wrap{
+      display:flex;
+      justify-content:flex-start;
+    }
+    .works-more-btn{
+      display:none;
+      min-height:38px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid rgba(184,150,62,0.18);
+      background:transparent;
+      color:var(--gold);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.02em;
+      cursor:pointer;
+      transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+    }
+    .works-more-btn.is-visible{display:inline-flex;align-items:center;justify-content:center}
+    .works-more-btn:hover{transform:scale(1.01);border-color:rgba(184,150,62,0.34);background:rgba(255,255,255,0.03)}
+
 
     .artist-note-copy{
       margin:0;
@@ -377,20 +421,23 @@
 
     .works-grid{
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:14px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:12px;
     }
 
     .work-card{
-      border:1px solid rgba(244,241,234,0.11);
-      border-radius:18px;
+      border:1px solid rgba(244,241,234,0.10);
+      border-radius:20px;
       overflow:hidden;
-      background:rgba(255,255,255,0.024);
+      background:rgba(255,255,255,0.03);
       cursor:pointer;
       transition:border-color var(--ease), background var(--ease), transform var(--ease);
       min-width:0;
     }
-    .work-card:hover{transform:translateY(-2px)}
+    .work-card:hover{
+      transform:scale(1.01);
+      border-color:rgba(244,241,234,0.16);
+    }
     .work-thumb{
       aspect-ratio:1/1;
       overflow:hidden;
@@ -402,23 +449,25 @@
       object-fit:cover;
     }
     .work-meta{
-      padding:12px 12px 13px;
+      padding:11px 12px 13px;
       font-family:var(--sans);
+      text-align:left;
     }
     .work-title{
-      font-size:.98rem;
+      font-size:.92rem;
       color:var(--text);
       font-weight:600;
-      line-height:1.35;
-      margin-bottom:6px;
+      line-height:1.45;
+      margin-bottom:5px;
       min-height:2.6em;
       word-break:keep-all;
     }
     .work-line{
       color:var(--muted);
-      font-size:.88rem;
-      line-height:1.55;
+      font-size:.82rem;
+      line-height:1.65;
       word-break:break-word;
+      text-align:left;
     }
 
     .contact-grid{
@@ -593,8 +642,12 @@
       cursor:pointer;
     }
 
+    @media (min-width:769px){
+      .works-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+
     @media (max-width:1200px){
-      .works-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .works-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
 
     @media (max-width:980px){
@@ -604,11 +657,7 @@
     }
 
     @media (max-width:768px){
-      .sidebar,.desktop-top,.hero{display:none !important}
-      .layout{
-        display:block !important;
-        grid-template-columns:1fr !important;
-      }
+      .layout,.sidebar,.desktop-top,.hero{display:none !important}
 
       .mobile-topbar{
         display:grid;
@@ -683,22 +732,22 @@
       .mobile-primary{
         display:grid;
         grid-template-columns:1fr;
-        gap:6px;
-        padding:12px 16px 0;
+        gap:8px;
+        padding:10px 16px 0;
       }
       .mobile-primary button{
-        min-height:48px;
+        min-height:46px;
         display:flex;
         align-items:center;
         justify-content:space-between;
         width:100%;
-        padding:10px 11px;
-        border:1px solid rgba(244,241,234,0.09);
-        border-radius:14px;
-        background:rgba(255,255,255,0.024);
+        padding:11px 13px;
+        border:1px solid rgba(244,241,234,0.10);
+        border-radius:18px;
+        background:rgba(255,255,255,0.03);
         color:var(--text);
-        transition:border-color var(--ease), color var(--ease), background var(--ease);
-        font-size:.93rem;
+        transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+        font-size:.9rem;
         font-family:var(--sans);
         cursor:pointer;
         text-align:left;
@@ -712,10 +761,7 @@
       .mobile-primary button.is-active .arrow{color:var(--gold-soft)}
       .lang-btn{height:34px;min-width:44px;font-size:.82rem}
 
-      .main{
-        display:block !important;
-        padding:0 16px 92px;
-      }
+      .main{padding:0 16px 92px}
       .view{border-radius:18px}
       .view-body{padding:14px}
       .works-grid{grid-template-columns:1fr}
@@ -917,6 +963,7 @@
                 </div>
 
                 <div class="works-grid" id="memberWorks"></div>
+                <div class="works-more-wrap"><button class="works-more-btn" id="worksMoreBtn" type="button">More</button></div>
               </div>
             </div>
           </div>
@@ -1083,14 +1130,14 @@
       email: "iiaaart2025@gmail.com"
     };
 
-    const INLINE_ARTISTS_DATA = {
+    const ARTISTS_DATA = {
       artists: [
         {
           id: "artist-001",
           name_kr: "방선영",
           name_en: "Celin Bang",
-        summary_kr: "사물을 바라보는 시선을 보다 깊이 있게 볼 수 있게 하는 회화 작업.",
-summary_en: "A painting practice that enables a deeper way of seeing and perceiving objects.",
+          summary_kr: "꿈과 환상, 설렘과 즐거움을 꽃과 정원의 이미지로 풀어내는 회화 작업.",
+          summary_en: "A painting practice that unfolds dreams, fantasy, excitement, and joy through the imagery of flowers and garden-like scenes.",
           note_kr: "",
           note_en: "",
           works: [
@@ -1276,126 +1323,6 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
       ]
     };
 
-
-    function cloneData(data){
-      return JSON.parse(JSON.stringify(data || { artists: [] }));
-    }
-
-    function isAbsoluteUrl(value){
-      return /^https?:\/\//i.test(String(value || ""));
-    }
-
-    function normalizeAssetPath(value){
-      const path = String(value || "").trim();
-      if (!path) return "";
-      if (isAbsoluteUrl(path)) return path;
-      return `https://raw.githubusercontent.com/dungzakcestlavie/iiaa-images/main/${path.replace(/^\/+/, "").replace(/^images\//, "")}`;
-    }
-
-    function normalizeArtistRecord(artist){
-      return {
-        id: artist.id || "",
-        name_kr: artist.name_kr || "",
-        name_en: artist.name_en || "",
-        summary_kr: artist.summary_kr || artist.bio_kr || "",
-        summary_en: artist.summary_en || artist.bio_en || "",
-        note_kr: artist.note_kr || artist.artist_note_kr || artist.bio_kr || "",
-        note_en: artist.note_en || artist.artist_note_en || artist.bio_en || "",
-        works: Array.isArray(artist.works) ? artist.works.map(normalizeWorkRecord) : []
-      };
-    }
-
-    function normalizeWorkRecord(work){
-      return {
-        id: work.id || "",
-        artist_id: work.artist_id || work.artistId || "",
-        title_kr: work.title_kr || "",
-        title_en: work.title_en || "",
-        medium_kr: work.medium_kr || work.material_kr || "",
-        medium_en: work.medium_en || work.material_en || "",
-        size_kr: work.size_kr || "",
-        size_en: work.size_en || "",
-        year: work.year || "",
-        image: normalizeAssetPath(work.image),
-        zoom: normalizeAssetPath(work.zoom || work.image)
-      };
-    }
-
-    async function fetchJsonOrNull(path){
-      try{
-        const response = await fetch(path, { cache: "no-store" });
-        if (!response.ok) return null;
-        return await response.json();
-      }catch(error){
-        return null;
-      }
-    }
-
-    async function loadExternalData(){
-      const [artistsJson, worksJson] = await Promise.all([
-        fetchJsonOrNull("data/artists.json"),
-        fetchJsonOrNull("data/works.json")
-      ]);
-
-      const baseArtists = cloneData(INLINE_ARTISTS_DATA).artists.map(normalizeArtistRecord);
-      const externalArtists = Array.isArray(artistsJson?.artists)
-        ? artistsJson.artists.map(normalizeArtistRecord)
-        : [];
-
-      const artistsSeed = externalArtists.length ? externalArtists : baseArtists;
-      const artistMap = new Map(artistsSeed.map(artist => [artist.id, { ...artist, works: Array.isArray(artist.works) ? artist.works.map(normalizeWorkRecord) : [] }]));
-
-      const inlineWorks = baseArtists.flatMap(artist =>
-        (artist.works || []).map(work => ({ ...normalizeWorkRecord(work), artist_id: work.artist_id || artist.id }))
-      );
-
-      const externalWorks = Array.isArray(worksJson?.works)
-        ? worksJson.works.map(normalizeWorkRecord)
-        : [];
-
-      const mergedWorks = externalWorks.length ? externalWorks : inlineWorks;
-
-      const seenWorks = new Set();
-
-      mergedWorks.forEach(work => {
-        const targetArtistId = work.artist_id || artistsSeed[0]?.id || baseArtists[0]?.id || "";
-        if (!targetArtistId) return;
-        if (!artistMap.has(targetArtistId)) {
-          artistMap.set(targetArtistId, normalizeArtistRecord({
-            id: targetArtistId,
-            name_kr: targetArtistId,
-            name_en: targetArtistId,
-            summary_kr: "",
-            summary_en: "",
-            note_kr: "",
-            note_en: "",
-            works: []
-          }));
-        }
-
-        const workKey = `${targetArtistId}::${work.id || work.image || work.zoom}`;
-        if (seenWorks.has(workKey)) return;
-        seenWorks.add(workKey);
-
-        artistMap.get(targetArtistId).works.push({ ...work, artist_id: targetArtistId });
-      });
-
-      return {
-        artists: Array.from(artistMap.values()).map(artist => ({
-          ...artist,
-          works: (artist.works || []).reduce((acc, work) => {
-            const key = `${artist.id}::${work.id || work.image || work.zoom}`;
-            if (acc._seen.has(key)) return acc;
-            acc._seen.add(key);
-            acc.items.push(normalizeWorkRecord(work));
-            return acc;
-          }, { _seen: new Set(), items: [] }).items
-        }))
-      };
-    }
-
-    let SITE_DATA = cloneData(INLINE_ARTISTS_DATA);
-
     const html = document.documentElement;
     const langButtons = document.querySelectorAll("[data-lang-btn]");
     const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
@@ -1414,6 +1341,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
     const artistSubName = document.getElementById("artistSubName");
     const artistNoteContent = document.getElementById("artistNoteContent");
     const toggleArtistNoteBtn = document.getElementById("toggleArtistNoteBtn");
+    const worksMoreBtn = document.getElementById("worksMoreBtn");
     const artistSearchInput = document.getElementById("artistSearchInput");
 
     const lightbox = document.getElementById("lightbox");
@@ -1423,9 +1351,16 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
 
     const mqDesktop = window.matchMedia("(min-width: 980px)");
 
-    let activeArtistId = null;
+    let activeArtistId = ARTISTS_DATA.artists[0]?.id || null;
     let noteExpanded = false;
     let searchQuery = "";
+
+    function resolveAssetPath(value){
+      const path = String(value || "").trim();
+      if (!path) return "";
+      if (/^https?:\/\//i.test(path)) return path;
+      return `https://raw.githubusercontent.com/dungzakcestlavie/iiaa-images/main/${path.replace(/^\/+/, "").replace(/^images\//, "")}`;
+    }
 
     function currentLang(){
       return html.lang === "en" ? "en" : "ko";
@@ -1454,15 +1389,22 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
     }
 
     function setActiveView(viewName){
+      const currentlyActive = document.querySelector(".view.is-active")?.dataset.view || "";
+      const nextView = currentlyActive === viewName ? "" : viewName;
+
       views.forEach(view => {
-        view.classList.toggle("is-active", view.dataset.view === viewName);
+        const isActive = view.dataset.view === nextView;
+        view.classList.toggle("is-active", isActive);
+        view.setAttribute("aria-hidden", isActive ? "false" : "true");
       });
 
       viewButtons.forEach(btn => {
-        btn.classList.toggle("is-active", btn.dataset.viewBtn === viewName);
+        const isActive = btn.dataset.viewBtn === nextView;
+        btn.classList.toggle("is-active", isActive);
+        btn.setAttribute("aria-expanded", isActive ? "true" : "false");
       });
 
-      try { localStorage.setItem("iiaa_view_final", viewName); } catch (e) {}
+      try { localStorage.setItem("iiaa_view_final", nextView || ""); } catch (e) {}
     }
 
     function openDrawer(){
@@ -1497,9 +1439,9 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
 
     function filteredArtists(){
       const q = normalize(searchQuery);
-      if (!q) return SITE_DATA.artists;
+      if (!q) return ARTISTS_DATA.artists;
 
-      return SITE_DATA.artists.filter(artist => {
+      return ARTISTS_DATA.artists.filter(artist => {
         const pool = [
           artist.name_kr,
           artist.name_en,
@@ -1552,6 +1494,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
         btn.addEventListener("click", () => {
           activeArtistId = btn.dataset.artistId;
           noteExpanded = false;
+          worksExpanded = false;
           renderArtists();
         });
       });
@@ -1559,8 +1502,8 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
 
     function workTitle(work, lang){
       return lang === "en"
-        ? (work.title_en || work.title_kr || work.id || "")
-        : (work.title_kr || work.title_en || work.id || "");
+        ? (work.title_en || work.title_kr || "")
+        : (work.title_kr || work.title_en || "");
     }
 
     function workMedium(work, lang){
@@ -1599,7 +1542,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
       memberWorks.innerHTML = (artist.works || []).map(work => `
         <article class="work-card" data-work-id="${work.id}">
           <div class="work-thumb">
-            <img src="${work.image}" alt="${escapeHtml(workTitle(work, lang))}">
+            <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(workTitle(work, lang))}">
           </div>
           <div class="work-meta">
             <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
@@ -1609,16 +1552,6 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
           </div>
         </article>
       `).join("");
-
-      if (!artist.works || !artist.works.length) {
-        memberWorks.innerHTML = `
-          <div class="member-card" style="grid-column:1 / -1; cursor:default;">
-            <strong class="member-name">${currentLang() === "en" ? "No Works Yet" : "등록된 작품 없음"}</strong>
-            <div class="member-summary">${currentLang() === "en" ? "Works will be added here over time." : "작품은 이 영역에 순차적으로 추가됩니다."}</div>
-          </div>
-        `;
-        return;
-      }
 
       memberWorks.querySelectorAll("[data-work-id]").forEach(card => {
         const work = (artist.works || []).find(w => w.id === card.dataset.workId);
@@ -1654,7 +1587,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
 
     function openLightbox(work, artist){
       const lang = currentLang();
-      lightboxImg.src = work.zoom || work.image;
+      lightboxImg.src = resolveAssetPath(work.zoom || work.image);
       lightboxImg.alt = workTitle(work, lang);
       lightboxCaption.textContent = [
         workTitle(work, lang),
@@ -1685,7 +1618,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
     }
 
     toggleArtistNoteBtn.addEventListener("click", () => {
-      const artist = SITE_DATA.artists.find(a => a.id === activeArtistId);
+      const artist = ARTISTS_DATA.artists.find(a => a.id === activeArtistId);
       if (!artist) return;
       const fullNote = getFullNote(artist, currentLang());
       if (!fullNote || !fullNote.trim()) return;
@@ -1697,6 +1630,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
       artistSearchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value;
         noteExpanded = false;
+        worksExpanded = false;
         renderArtists();
       });
     }
@@ -1704,6 +1638,7 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
     langButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         noteExpanded = false;
+        worksExpanded = false;
         setLanguage(btn.dataset.langBtn);
       });
     });
@@ -1713,6 +1648,13 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
         const viewName = btn.dataset.viewBtn;
         if (viewName) setActiveView(viewName);
         closeDrawer();
+      });
+    });
+    document.querySelectorAll(".view-head").forEach(head => {
+      head.addEventListener("click", () => {
+        const parentView = head.closest(".view");
+        const viewName = parentView?.dataset.view;
+        if (viewName) setActiveView(viewName);
       });
     });
 
@@ -1752,18 +1694,9 @@ summary_en: "A painting practice that enables a deeper way of seeing and perceiv
       if (view) savedView = view;
     } catch (e) {}
 
-    async function init(){
-      const externalData = await loadExternalData();
-      if (Array.isArray(externalData?.artists) && externalData.artists.length) {
-        SITE_DATA = externalData;
-      }
-      activeArtistId = SITE_DATA.artists[0]?.id || null;
-      setLanguage(savedLang);
-      setActiveView(savedView);
-      renderArtists();
-    }
-
-    init();
+    setLanguage(savedLang);
+    setActiveView(savedView);
+    renderArtists();
   </script>
 </body>
 </html>
