@@ -1,0 +1,40 @@
+{
+  "works": [
+    {
+      "id": "CB-001",
+      "title_kr": "",
+      "title_en": "A caw from a dream",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "45.5 × 53 cm",
+      "size_en": "45.5 × 53 cm",
+      "year": "2021",
+      "image": "images/standard/CB-001.jpg",
+      "zoom": "images/zoom/CB-001.jpg"
+    },
+    {
+      "id": "CB-002",
+      "title_kr": "",
+      "title_en": "Moments of Life Series #1: Sunny-Side Up",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "17 × 17 cm",
+      "size_en": "17 × 17 cm",
+      "year": "2025",
+      "image": "images/standard/CB-002.jpg",
+      "zoom": "images/zoom/CB-002.jpg"
+    },
+    {
+      "id": "CB-003",
+      "title_kr": "",
+      "title_en": "Moments of Life Series #2: A Lager",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "17 × 17 cm",
+      "size_en": "17 × 17 cm",
+      "year": "2025",
+      "image": "images/standard/CB-003.jpg",
+      "zoom": "images/zoom/CB-003.jpg"
+    }
+  ]
+}
