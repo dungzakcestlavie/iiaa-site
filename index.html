@@ -304,6 +304,57 @@
     .member-list.is-detail-open .member-card:not(.is-active){
       opacity:.72;
     }
+    .member-layout.is-focus-mode .member-sidebar{
+      gap:0;
+    }
+    .member-layout.is-focus-mode .search-wrap{
+      display:none;
+    }
+    .member-layout.is-focus-mode .member-list{
+      max-height:none;
+      overflow:visible;
+      padding-right:0;
+    }
+    .member-layout.is-focus-mode .member-card{
+      display:none;
+    }
+    .member-layout.is-focus-mode .member-card.is-active{
+      display:block;
+      width:100%;
+      margin-bottom:16px;
+    }
+    .member-layout.is-focus-mode .member-card.is-active::after{
+      display:none;
+    }
+    .member-layout.is-focus-mode .member-detail{
+      grid-column:1 / -1;
+      width:100%;
+    }
+
+    .back-to-list{
+      display:none;
+      align-items:center;
+      justify-content:flex-start;
+      gap:8px;
+      min-height:36px;
+      padding:0 2px;
+      border:0;
+      background:transparent;
+      color:var(--gold);
+      font-size:.88rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      cursor:pointer;
+      transition:opacity var(--ease), transform var(--ease), color var(--ease);
+    }
+    .back-to-list.is-visible{
+      display:inline-flex;
+    }
+    .back-to-list:hover{
+      opacity:.82;
+      transform:translateX(-1px);
+    }
+
 
     .member-card::after{
       content:"→";
@@ -979,7 +1030,7 @@
             <h2 class="view-title gold-text" data-kr="협회원 작품" data-en="Member Works">협회원 작품</h2>
           </div>
           <div class="view-body">
-            <div class="member-layout">
+            <div class="member-layout" id="memberLayout">
               <div class="member-sidebar">
                 <div class="search-wrap">
                   <label class="search-label">
@@ -1008,6 +1059,10 @@
                     <span class="en">Choose one artist from the list to reveal the artist note and works in this area.</span>
                   </div>
                 </div>
+                <button class="back-to-list" id="backToListBtn" type="button">
+                  <span class="ko">← 목록으로 돌아가기</span>
+                  <span class="en">← Back to list</span>
+                </button>
                 <div class="artist-header">
                   <div class="artist-main-name" id="artistMainName"></div>
                   <div class="artist-sub-name" id="artistSubName"></div>
@@ -1402,6 +1457,7 @@
     const logoHomeMobile = document.getElementById("logoHomeMobile");
     const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
+    const memberLayout = document.getElementById("memberLayout");
     const memberList = document.getElementById("memberList");
     const memberWorks = document.getElementById("memberWorks");
     const artistMainName = document.getElementById("artistMainName");
@@ -1412,6 +1468,7 @@
     const artistSearchInput = document.getElementById("artistSearchInput");
     const memberDetailPanel = document.getElementById("memberDetailPanel");
     const memberDetailEmpty = document.getElementById("memberDetailEmpty");
+    const backToListBtn = document.getElementById("backToListBtn");
 
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightboxImg");
@@ -1572,6 +1629,7 @@
     function renderMemberList(list){
       const lang = currentLang();
       memberList.classList.toggle("is-detail-open", !!activeArtistId);
+      if (memberLayout) memberLayout.classList.toggle("is-focus-mode", !!activeArtistId);
 
       memberList.innerHTML = list.map(artist => `
         <button type="button" class="member-card ${artist.id === activeArtistId ? "is-active" : ""}" data-artist-id="${artist.id}">
@@ -1616,6 +1674,7 @@
       if (!artist) {
         memberDetailPanel.classList.remove("is-open");
         if (memberDetailEmpty) memberDetailEmpty.style.display = "grid";
+        if (backToListBtn) backToListBtn.classList.remove("is-visible");
         artistMainName.textContent = "";
         artistSubName.textContent = "";
         artistNoteContent.textContent = "";
@@ -1631,6 +1690,7 @@
 
       memberDetailPanel.classList.add("is-open");
       if (memberDetailEmpty) memberDetailEmpty.style.display = "none";
+      if (backToListBtn) backToListBtn.classList.add("is-visible");
 
       const summary = getSummary(artist, lang) || "";
       const fullNote = getFullNote(artist, lang) || "";
@@ -1722,6 +1782,13 @@
       const activeArtist = getActiveArtist(list);
       renderMemberList(list);
       renderArtistDetail(activeArtistId ? activeArtist : null);
+
+      if (activeArtistId && memberLayout) {
+        requestAnimationFrame(() => {
+          const top = Math.max(memberLayout.getBoundingClientRect().top + window.scrollY - 84, 0);
+          window.scrollTo({ top, behavior: "smooth" });
+        });
+      }
     }
 
     function openLightbox(work, artist){
@@ -1767,6 +1834,14 @@
     if (worksMoreBtn) {
       worksMoreBtn.addEventListener("click", () => {
         worksExpanded = !worksExpanded;
+        renderArtists();
+      });
+    }
+    if (backToListBtn) {
+      backToListBtn.addEventListener("click", () => {
+        activeArtistId = null;
+        noteExpanded = false;
+        worksExpanded = false;
         renderArtists();
       });
     }
