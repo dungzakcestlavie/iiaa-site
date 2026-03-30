@@ -657,7 +657,8 @@
     }
 
     @media (max-width:768px){
-      .layout,.sidebar,.desktop-top,.hero{display:none !important}
+      .sidebar,.desktop-top,.hero{display:none !important}
+      .layout{display:block !important;grid-template-columns:1fr !important}
 
       .mobile-topbar{
         display:grid;
@@ -761,7 +762,7 @@
       .mobile-primary button.is-active .arrow{color:var(--gold-soft)}
       .lang-btn{height:34px;min-width:44px;font-size:.82rem}
 
-      .main{padding:0 16px 92px}
+      .main{display:block !important;padding:0 16px 92px}
       .view{border-radius:18px}
       .view-body{padding:14px}
       .works-grid{grid-template-columns:1fr}
@@ -1353,6 +1354,7 @@
 
     let activeArtistId = ARTISTS_DATA.artists[0]?.id || null;
     let noteExpanded = false;
+    let worksExpanded = false;
     let searchQuery = "";
 
     function resolveAssetPath(value){
