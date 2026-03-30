@@ -337,6 +337,8 @@
       justify-content:flex-start;
       gap:8px;
       min-height:36px;
+      margin-top:18px;
+      margin-bottom:6px;
       padding:0 2px;
       border:0;
       background:transparent;
@@ -424,9 +426,9 @@
     .member-detail{
       display:grid;
       grid-template-columns:1fr;
-      gap:16px;
+      gap:18px;
       min-width:0;
-      padding:18px;
+      padding:20px;
       border:1px solid rgba(244,241,234,0.10);
       border-radius:22px;
       background:rgba(255,255,255,0.03);
@@ -481,14 +483,19 @@
       min-height:34px;
       padding:0 14px;
       border-radius:999px;
-      border:1px solid rgba(184,150,62,.16);
-      background:transparent;
-      color:var(--gold);
+      border:1px solid rgba(184,150,62,.10);
+      background:rgba(255,255,255,0.01);
+      color:rgba(184,150,62,.78);
       font-size:12px;
       font-weight:600;
       cursor:pointer;
-      transition:border-color var(--ease), color var(--ease), background var(--ease);
+      transition:border-color var(--ease), color var(--ease), background var(--ease), opacity var(--ease);
       white-space:nowrap;
+    }
+    .note-toggle:hover{
+      border-color:rgba(184,150,62,.22);
+      color:var(--gold);
+      background:rgba(255,255,255,0.018);
     }
     .note-toggle[disabled]{
       opacity:.45;
@@ -526,7 +533,8 @@
     .works-grid{
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:12px;
+      gap:14px;
+      margin-top:20px;
     }
 
     .work-card{
@@ -553,23 +561,23 @@
       object-fit:cover;
     }
     .work-meta{
-      padding:11px 12px 13px;
+      padding:12px 12px 14px;
       font-family:var(--sans);
       text-align:left;
     }
     .work-title{
-      font-size:.92rem;
+      font-size:.9rem;
       color:var(--text);
       font-weight:600;
-      line-height:1.45;
-      margin-bottom:5px;
-      min-height:2.6em;
+      line-height:1.5;
+      margin-bottom:6px;
+      min-height:2.7em;
       word-break:keep-all;
     }
     .work-line{
       color:var(--muted);
-      font-size:.82rem;
-      line-height:1.65;
+      font-size:.8rem;
+      line-height:1.72;
       word-break:break-word;
       text-align:left;
     }
@@ -870,7 +878,9 @@
       .main{display:block !important;padding:0 16px 92px}
       .view{border-radius:18px}
       .view-body{padding:14px}
-      .works-grid{grid-template-columns:1fr}
+      .member-detail{padding:18px;gap:16px}
+      .back-to-list{margin-top:14px;margin-bottom:4px}
+      .works-grid{grid-template-columns:1fr;gap:12px;margin-top:18px}
       .artist-note-header{flex-direction:column;align-items:flex-start}
     }
 
