@@ -130,7 +130,13 @@
       text-transform:uppercase;
       line-height:1;
       text-align:center;
+      transition:opacity var(--ease), transform var(--ease);
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color:transparent;
     }
+    .brand-mobile-logo:hover,.iiaa-logo:hover{opacity:.86}
+    .brand-mobile-logo:active,.iiaa-logo:active{opacity:.72;transform:scale(.985)}
     .brand-mobile-logo{display:block;font-size:1.1rem}
 
     .layout{
@@ -782,7 +788,7 @@
         <span class="hamburger"><span></span></span>
       </button>
       <div class="brand brand-mobile" aria-label="IIAA">
-        <span class="brand-mobile-logo">IIAA</span>
+        <span class="brand-mobile-logo" id="logoHomeMobile" role="button" tabindex="0" aria-label="Go to top and reset">IIAA</span>
       </div>
       <div class="lang-switch" aria-label="Language switch">
         <button class="lang-btn is-active" type="button" data-lang-btn="ko">KR</button>
@@ -821,7 +827,7 @@
         </div>
 
         <div class="sidebar-brand">
-          <span class="iiaa-logo">IIAA</span>
+          <span class="iiaa-logo" id="logoHomeDesktop" role="button" tabindex="0" aria-label="Go to top and reset">IIAA</span>
         </div>
 
         <nav class="desktop-nav" aria-label="Primary">
@@ -1335,6 +1341,8 @@
     const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
     const closeBtn = document.getElementById("menuCloseBtn");
     const backdrop = document.getElementById("drawerBackdrop");
+    const logoHomeMobile = document.getElementById("logoHomeMobile");
+    const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     const memberList = document.getElementById("memberList");
     const memberWorks = document.getElementById("memberWorks");
@@ -1407,6 +1415,21 @@
       });
 
       try { localStorage.setItem("iiaa_view_final", nextView || ""); } catch (e) {}
+    }
+
+    function resetToHome(){
+      closeDrawer();
+      views.forEach(view => {
+        view.classList.remove("is-active");
+        view.setAttribute("aria-hidden", "true");
+      });
+      viewButtons.forEach(btn => {
+        btn.classList.remove("is-active");
+        btn.setAttribute("aria-expanded", "false");
+      });
+      if (lightbox.classList.contains("is-open")) closeLightbox();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      try { localStorage.setItem("iiaa_view_final", ""); } catch (e) {}
     }
 
     function openDrawer(){
@@ -1657,6 +1680,17 @@
         const parentView = head.closest(".view");
         const viewName = parentView?.dataset.view;
         if (viewName) setActiveView(viewName);
+      });
+    });
+
+    [logoHomeMobile, logoHomeDesktop].forEach(logo => {
+      if (!logo) return;
+      logo.addEventListener("click", resetToHome);
+      logo.addEventListener("keydown", e => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          resetToHome();
+        }
       });
     });
 
