@@ -2,6 +2,7 @@
   "works": [
     {
       "id": "CB-001",
+      "artist_id": "artist-001",
       "title_kr": "",
       "title_en": "A caw from a dream",
       "material_kr": "oil on canvas",
@@ -14,6 +15,7 @@
     },
     {
       "id": "CB-002",
+      "artist_id": "artist-001",
       "title_kr": "",
       "title_en": "Moments of Life Series #1: Sunny-Side Up",
       "material_kr": "oil on canvas",
@@ -26,6 +28,7 @@
     },
     {
       "id": "CB-003",
+      "artist_id": "artist-001",
       "title_kr": "",
       "title_en": "Moments of Life Series #2: A Lager",
       "material_kr": "oil on canvas",
@@ -35,6 +38,126 @@
       "year": "2025",
       "image": "images/standard/CB-003.jpg",
       "zoom": "images/zoom/CB-003.jpg"
+    },
+
+    {
+      "id": "EX-001",
+      "artist_id": "artist-002",
+      "title_kr": "",
+      "title_en": "Baobab",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "130.3 × 97 cm",
+      "size_en": "130.3 × 97 cm",
+      "year": "2026",
+      "image": "images/standard/EX-001.jpg",
+      "zoom": "images/zoom/EX-001.jpg"
+    },
+    {
+      "id": "EX-002",
+      "artist_id": "artist-002",
+      "title_kr": "",
+      "title_en": "A Shelter",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "130.3 × 97 cm",
+      "size_en": "130.3 × 97 cm",
+      "year": "2025",
+      "image": "images/standard/EX-002.jpg",
+      "zoom": "images/zoom/EX-002.jpg"
+    },
+    {
+      "id": "EX-003",
+      "artist_id": "artist-002",
+      "title_kr": "",
+      "title_en": "A Love from the Star",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "130.3 × 97 cm",
+      "size_en": "130.3 × 97 cm",
+      "year": "2025",
+      "image": "images/standard/EX-003.jpg",
+      "zoom": "images/zoom/EX-003.jpg"
+    },
+
+    {
+      "id": "FL-001",
+      "artist_id": "artist-003",
+      "title_kr": "아리랑고개",
+      "title_en": "Arirang Pass",
+      "material_kr": "oil, acrylic on canvas",
+      "material_en": "oil, acrylic on canvas",
+      "size_kr": "91.0 × 116.8 cm",
+      "size_en": "91.0 × 116.8 cm",
+      "year": "2025",
+      "image": "images/standard/FL-001.jpg",
+      "zoom": "images/zoom/FL-001.jpg"
+    },
+    {
+      "id": "FL-002",
+      "artist_id": "artist-003",
+      "title_kr": "遊戲",
+      "title_en": "Game",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "60.6 × 72.7 cm",
+      "size_en": "60.6 × 72.7 cm",
+      "year": "2025",
+      "image": "images/standard/FL-002.jpg",
+      "zoom": "images/zoom/FL-002.jpg"
+    },
+    {
+      "id": "FL-003",
+      "artist_id": "artist-003",
+      "title_kr": "꽃과 여인",
+      "title_en": "Flowers and Woman",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "45.5 × 53.0 cm",
+      "size_en": "45.5 × 53.0 cm",
+      "year": "2025",
+      "image": "images/standard/FL-003.jpg",
+      "zoom": "images/zoom/FL-003.jpg"
+    },
+
+    {
+      "id": "JE-001",
+      "artist_id": "artist-004",
+      "title_kr": "나를 찾아 떠나는 여행",
+      "title_en": "A Journey to Find Myself",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "31.8 × 31.8 cm",
+      "size_en": "31.8 × 31.8 cm",
+      "year": "2025",
+      "image": "images/standard/JE-001.jpg",
+      "zoom": "images/zoom/JE-001.jpg"
+    },
+    {
+      "id": "JE-002",
+      "artist_id": "artist-004",
+      "title_kr": "너는 어떤 꿈을 꾸고 있니?",
+      "title_en": "What Kind of Dream Are You Dreaming?",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "116.8 × 80.3 cm",
+      "size_en": "116.8 × 80.3 cm",
+      "year": "2025",
+      "image": "images/standard/JE-002.jpg",
+      "zoom": "images/zoom/JE-002.jpg"
+    },
+    {
+      "id": "JE-003",
+      "artist_id": "artist-004",
+      "title_kr": "내 꿈은 달콤해",
+      "title_en": "My Dream Is Sweet",
+      "material_kr": "oil on canvas",
+      "material_en": "oil on canvas",
+      "size_kr": "72.7 × 60.6 cm",
+      "size_en": "72.7 × 60.6 cm",
+      "year": "2026",
+      "image": "images/standard/JE-003.jpg",
+      "zoom": "images/zoom/JE-003.jpg"
     }
   ]
 }
