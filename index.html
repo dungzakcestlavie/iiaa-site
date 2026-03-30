@@ -1076,14 +1076,14 @@
       email: "iiaaart2025@gmail.com"
     };
 
-    const ARTISTS_DATA = {
+    const INLINE_ARTISTS_DATA = {
       artists: [
         {
           id: "artist-001",
           name_kr: "방선영",
           name_en: "Celin Bang",
-          summary_kr: "꿈과 환상, 설렘과 즐거움을 꽃과 정원의 이미지로 풀어내는 회화 작업.",
-          summary_en: "A painting practice that unfolds dreams, fantasy, excitement, and joy through the imagery of flowers and garden-like scenes.",
+        summary_kr: "사물을 바라보는 시선을 보다 깊이 있게 볼 수 있게 하는 회화 작업.",
+summary_en: "A painting practice that enables a deeper way of seeing and perceiving objects.",
           note_kr: "",
           note_en: "",
           works: [
@@ -1269,6 +1269,126 @@
       ]
     };
 
+
+    function cloneData(data){
+      return JSON.parse(JSON.stringify(data || { artists: [] }));
+    }
+
+    function isAbsoluteUrl(value){
+      return /^https?:\/\//i.test(String(value || ""));
+    }
+
+    function normalizeAssetPath(value){
+      const path = String(value || "").trim();
+      if (!path) return "";
+      if (isAbsoluteUrl(path)) return path;
+      return `https://raw.githubusercontent.com/dungzakcestlavie/iiaa-images/main/${path.replace(/^\/+/, "").replace(/^images\//, "")}`;
+    }
+
+    function normalizeArtistRecord(artist){
+      return {
+        id: artist.id || "",
+        name_kr: artist.name_kr || "",
+        name_en: artist.name_en || "",
+        summary_kr: artist.summary_kr || artist.bio_kr || "",
+        summary_en: artist.summary_en || artist.bio_en || "",
+        note_kr: artist.note_kr || artist.artist_note_kr || artist.bio_kr || "",
+        note_en: artist.note_en || artist.artist_note_en || artist.bio_en || "",
+        works: Array.isArray(artist.works) ? artist.works.map(normalizeWorkRecord) : []
+      };
+    }
+
+    function normalizeWorkRecord(work){
+      return {
+        id: work.id || "",
+        artist_id: work.artist_id || work.artistId || "",
+        title_kr: work.title_kr || "",
+        title_en: work.title_en || "",
+        medium_kr: work.medium_kr || work.material_kr || "",
+        medium_en: work.medium_en || work.material_en || "",
+        size_kr: work.size_kr || "",
+        size_en: work.size_en || "",
+        year: work.year || "",
+        image: normalizeAssetPath(work.image),
+        zoom: normalizeAssetPath(work.zoom || work.image)
+      };
+    }
+
+    async function fetchJsonOrNull(path){
+      try{
+        const response = await fetch(path, { cache: "no-store" });
+        if (!response.ok) return null;
+        return await response.json();
+      }catch(error){
+        return null;
+      }
+    }
+
+    async function loadExternalData(){
+      const [artistsJson, worksJson] = await Promise.all([
+        fetchJsonOrNull("data/artists.json"),
+        fetchJsonOrNull("data/works.json")
+      ]);
+
+      const baseArtists = cloneData(INLINE_ARTISTS_DATA).artists.map(normalizeArtistRecord);
+      const externalArtists = Array.isArray(artistsJson?.artists)
+        ? artistsJson.artists.map(normalizeArtistRecord)
+        : [];
+
+      const artistsSeed = externalArtists.length ? externalArtists : baseArtists;
+      const artistMap = new Map(artistsSeed.map(artist => [artist.id, { ...artist, works: Array.isArray(artist.works) ? artist.works.map(normalizeWorkRecord) : [] }]));
+
+      const inlineWorks = baseArtists.flatMap(artist =>
+        (artist.works || []).map(work => ({ ...normalizeWorkRecord(work), artist_id: work.artist_id || artist.id }))
+      );
+
+      const externalWorks = Array.isArray(worksJson?.works)
+        ? worksJson.works.map(normalizeWorkRecord)
+        : [];
+
+      const mergedWorks = externalWorks.length ? externalWorks : inlineWorks;
+
+      const seenWorks = new Set();
+
+      mergedWorks.forEach(work => {
+        const targetArtistId = work.artist_id || artistsSeed[0]?.id || baseArtists[0]?.id || "";
+        if (!targetArtistId) return;
+        if (!artistMap.has(targetArtistId)) {
+          artistMap.set(targetArtistId, normalizeArtistRecord({
+            id: targetArtistId,
+            name_kr: targetArtistId,
+            name_en: targetArtistId,
+            summary_kr: "",
+            summary_en: "",
+            note_kr: "",
+            note_en: "",
+            works: []
+          }));
+        }
+
+        const workKey = `${targetArtistId}::${work.id || work.image || work.zoom}`;
+        if (seenWorks.has(workKey)) return;
+        seenWorks.add(workKey);
+
+        artistMap.get(targetArtistId).works.push({ ...work, artist_id: targetArtistId });
+      });
+
+      return {
+        artists: Array.from(artistMap.values()).map(artist => ({
+          ...artist,
+          works: (artist.works || []).reduce((acc, work) => {
+            const key = `${artist.id}::${work.id || work.image || work.zoom}`;
+            if (acc._seen.has(key)) return acc;
+            acc._seen.add(key);
+            acc.items.push(normalizeWorkRecord(work));
+            return acc;
+          }, { _seen: new Set(), items: [] }).items
+        }))
+      };
+    }
+
+    let SITE_DATA = cloneData(INLINE_ARTISTS_DATA);
+
     const html = document.documentElement;
     const langButtons = document.querySelectorAll("[data-lang-btn]");
     const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
@@ -1296,7 +1416,7 @@
 
     const mqDesktop = window.matchMedia("(min-width: 980px)");
 
-    let activeArtistId = ARTISTS_DATA.artists[0]?.id || null;
+    let activeArtistId = null;
     let noteExpanded = false;
     let searchQuery = "";
 
@@ -1370,9 +1490,9 @@
 
     function filteredArtists(){
       const q = normalize(searchQuery);
-      if (!q) return ARTISTS_DATA.artists;
+      if (!q) return SITE_DATA.artists;
 
-      return ARTISTS_DATA.artists.filter(artist => {
+      return SITE_DATA.artists.filter(artist => {
         const pool = [
           artist.name_kr,
           artist.name_en,
@@ -1432,8 +1552,8 @@
 
     function workTitle(work, lang){
       return lang === "en"
-        ? (work.title_en || work.title_kr || "")
-        : (work.title_kr || work.title_en || "");
+        ? (work.title_en || work.title_kr || work.id || "")
+        : (work.title_kr || work.title_en || work.id || "");
     }
 
     function workMedium(work, lang){
@@ -1482,6 +1602,16 @@
           </div>
         </article>
       `).join("");
+
+      if (!artist.works || !artist.works.length) {
+        memberWorks.innerHTML = `
+          <div class="member-card" style="grid-column:1 / -1; cursor:default;">
+            <strong class="member-name">${currentLang() === "en" ? "No Works Yet" : "등록된 작품 없음"}</strong>
+            <div class="member-summary">${currentLang() === "en" ? "Works will be added here over time." : "작품은 이 영역에 순차적으로 추가됩니다."}</div>
+          </div>
+        `;
+        return;
+      }
 
       memberWorks.querySelectorAll("[data-work-id]").forEach(card => {
         const work = (artist.works || []).find(w => w.id === card.dataset.workId);
@@ -1548,7 +1678,7 @@
     }
 
     toggleArtistNoteBtn.addEventListener("click", () => {
-      const artist = ARTISTS_DATA.artists.find(a => a.id === activeArtistId);
+      const artist = SITE_DATA.artists.find(a => a.id === activeArtistId);
       if (!artist) return;
       const fullNote = getFullNote(artist, currentLang());
       if (!fullNote || !fullNote.trim()) return;
@@ -1615,9 +1745,18 @@
       if (view) savedView = view;
     } catch (e) {}
 
-    setLanguage(savedLang);
-    setActiveView(savedView);
-    renderArtists();
+    async function init(){
+      const externalData = await loadExternalData();
+      if (Array.isArray(externalData?.artists) && externalData.artists.length) {
+        SITE_DATA = externalData;
+      }
+      activeArtistId = SITE_DATA.artists[0]?.id || null;
+      setLanguage(savedLang);
+      setActiveView(savedView);
+      renderArtists();
+    }
+
+    init();
   </script>
 </body>
 </html>
