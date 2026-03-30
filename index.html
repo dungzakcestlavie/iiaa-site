@@ -23,7 +23,7 @@
       --gold-soft:rgba(184,150,62,0.74);
       --gold-border:rgba(184,150,62,0.34);
       --bronze:#8A6A2F;
-      --ease:350ms ease;
+      --ease:180ms cubic-bezier(0.25, 0.8, 0.25, 1);
       --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Times New Roman","Noto Serif KR",serif;
       --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
     }
@@ -67,7 +67,7 @@
       align-items:center;
       justify-content:center;
       cursor:pointer;
-      transition:border-color var(--ease), color var(--ease), background var(--ease);
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
       flex:0 0 auto;
     }
 
@@ -77,6 +77,20 @@
       border-color:var(--gold-border);
       color:var(--gold);
       background:rgba(255,255,255,.012);
+    }
+
+    button:active,
+    .member-card:active,
+    .work-card:active,
+    .menu-btn:active,
+    .drawer-links button:active,
+    .desktop-nav button:active,
+    .mobile-primary button:active,
+    .lang-btn:active,
+    .note-toggle:active,
+    .back-to-list:active{
+      transform:scale(0.97);
+      opacity:0.85;
     }
 
     .hamburger{width:18px;height:12px;position:relative;display:block}
@@ -106,7 +120,7 @@
       background:transparent;
       color:var(--text);
       cursor:pointer;
-      transition:border-color var(--ease), color var(--ease), background var(--ease);
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease;
       font-family:var(--sans);
       font-size:.84rem;
       font-weight:600;
@@ -219,7 +233,7 @@
       font-family:var(--sans);
       font-size:.92rem;
       line-height:1.9;
-      transition:max-height var(--ease), opacity var(--ease), padding var(--ease);
+      transition:max-height 0.24s ease, opacity 0.18s ease, padding 0.18s ease;
     }
     .view.is-active .view-body{
       max-height:2400px;
@@ -243,7 +257,7 @@
       font-family:var(--sans);
       font-size:.9rem;
       line-height:1.8;
-      transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.14s ease;
     }
 
     .mini-block strong,.member-card strong,.contact-card strong{
@@ -517,7 +531,7 @@
       font-weight:600;
       letter-spacing:.02em;
       cursor:pointer;
-      transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.14s ease;
     }
     .works-more-btn.is-visible{display:inline-flex;align-items:center;justify-content:center}
     .works-more-btn:hover{transform:scale(1.01);border-color:rgba(184,150,62,0.34);background:rgba(255,255,255,0.03)}
@@ -598,7 +612,7 @@
       inset:0;
       background:rgba(6,21,29,.6);
       opacity:0;
-      transition:opacity var(--ease);
+      transition:opacity 0.18s ease;
     }
     .drawer-panel{
       position:absolute;
@@ -609,7 +623,7 @@
       background:var(--bg-mid);
       border-right:1px solid rgba(244,241,234,0.045);
       transform:translateX(-100%);
-      transition:transform var(--ease);
+      transition:transform 0.22s ease;
       padding:calc(env(safe-area-inset-top) + 16px) 16px calc(24px + env(safe-area-inset-bottom));
       display:flex;
       flex-direction:column;
@@ -860,7 +874,7 @@
         border-radius:18px;
         background:rgba(255,255,255,0.03);
         color:var(--text);
-        transition:border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+        transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.14s ease;
         font-size:.9rem;
         font-family:var(--sans);
         cursor:pointer;
@@ -1511,6 +1525,52 @@ and invites the viewer to form a renewed relationship with the subject.`,
       return `https://raw.githubusercontent.com/dungzakcestlavie/iiaa-images/main/${path.replace(/^\/+/, "").replace(/^images\//, "")}`;
     }
 
+    function getHeaderOffset(){
+      const mobileHeader = document.querySelector(".mobile-topbar");
+      const desktopTop = document.querySelector(".desktop-top");
+      if (window.innerWidth <= 768 && mobileHeader) return mobileHeader.offsetHeight + 8;
+      if (desktopTop) return 16;
+      return 16;
+    }
+
+    function isViewCleanlyVisible(viewName){
+      const target = document.querySelector(`.view[data-view="${viewName}"]`);
+      if (!target) return false;
+      const rect = target.getBoundingClientRect();
+      const offset = getHeaderOffset();
+      return rect.top >= offset && rect.top <= offset + 32;
+    }
+
+    function scrollToView(viewName, force = false){
+      const target = document.querySelector(`.view[data-view="${viewName}"]`);
+      if (!target) return;
+      if (!force && isViewCleanlyVisible(viewName)) return;
+
+      const offset = getHeaderOffset();
+      const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
+
+      window.scrollTo({
+        top,
+        behavior: "smooth"
+      });
+    }
+
+    function activateAndScrollToView(viewName, options = {}){
+      if (!viewName) return;
+      const { forceScroll = false, closeMenu = false } = options;
+      const current = document.querySelector(".view.is-active")?.dataset.view || "";
+
+      if (closeMenu) closeDrawer();
+
+      if (current !== viewName) {
+        setActiveView(viewName);
+      }
+
+      requestAnimationFrame(() => {
+        scrollToView(viewName, forceScroll || current !== viewName);
+      });
+    }
+
     function currentLang(){
       return html.lang === "en" ? "en" : "ko";
     }
@@ -1807,7 +1867,7 @@ and invites the viewer to form a renewed relationship with the subject.`,
 
       if (activeArtistId && memberLayout) {
         requestAnimationFrame(() => {
-          const top = Math.max(memberLayout.getBoundingClientRect().top + window.scrollY - 84, 0);
+          const top = Math.max(memberLayout.getBoundingClientRect().top + window.scrollY - getHeaderOffset(), 0);
           window.scrollTo({ top, behavior: "smooth" });
         });
       }
@@ -1888,15 +1948,37 @@ and invites the viewer to form a renewed relationship with the subject.`,
     viewButtons.forEach(btn => {
       btn.addEventListener("click", () => {
         const viewName = btn.dataset.viewBtn;
-        if (viewName) setActiveView(viewName);
-        closeDrawer();
+        if (!viewName) return;
+
+        const isDrawerButton = !!btn.closest(".drawer-links");
+        const alreadyVisible = isViewCleanlyVisible(viewName);
+        const isActive = document.querySelector(".view.is-active")?.dataset.view === viewName;
+
+        if (isDrawerButton && isActive && alreadyVisible) {
+          closeDrawer();
+          return;
+        }
+
+        activateAndScrollToView(viewName, {
+          forceScroll: !alreadyVisible,
+          closeMenu: isDrawerButton
+        });
       });
     });
     document.querySelectorAll(".view-head").forEach(head => {
       head.addEventListener("click", () => {
         const parentView = head.closest(".view");
         const viewName = parentView?.dataset.view;
-        if (viewName) setActiveView(viewName);
+        if (!viewName) return;
+
+        const isActive = parentView.classList.contains("is-active");
+        setActiveView(viewName);
+
+        if (!isActive) {
+          requestAnimationFrame(() => {
+            scrollToView(viewName, true);
+          });
+        }
       });
     });
 
