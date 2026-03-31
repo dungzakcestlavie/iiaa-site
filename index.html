@@ -2,11 +2,40 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#16364b" />
   <meta name="color-scheme" content="dark" />
   <meta name="format-detection" content="telephone=no,address=no,email=no" />
-  <title>사단법인 인천국제미술협회 | IIAA</title>
+  <meta name="description" content="Incheon International Art Association (IIAA) is a public art platform connecting exhibitions and member works through a structured archive system." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+
+  <title>IIAA | Incheon International Art Association</title>
+
+  <link rel="canonical" href="https://iiaa.or.kr/" />
+
+  <meta property="og:title" content="IIAA | Incheon International Art Association" />
+  <meta property="og:description" content="A public art platform connecting exhibitions and member works through a structured system." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://iiaa.or.kr/" />
+  <meta property="og:image" content="https://iiaa.or.kr/og-image.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="IIAA | Incheon International Art Association" />
+  <meta name="twitter:description" content="Public art platform connecting exhibitions and member works." />
+  <meta name="twitter:image" content="https://iiaa.or.kr/og-image.jpg" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Incheon International Art Association",
+    "alternateName": "사단법인 인천국제미술협회",
+    "url": "https://iiaa.or.kr/",
+    "description": "Incheon International Art Association is a public art platform connecting exhibitions and member works through a structured archive system.",
+    "email": "iiaaart2025@gmail.com"
+  }
+  </script>
+
   <style>
     :root{
       --bg:#072F38;
@@ -55,6 +84,18 @@
     .gold-text{color:var(--gold)}
     .mobile-topbar,.mobile-hero,.mobile-primary{display:none}
 
+    .sr-only{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
     .menu-btn,
     .drawer-close{
       width:42px;
@@ -73,7 +114,7 @@
 
     .menu-btn:hover,.drawer-close:hover,.lang-btn:hover,.desktop-nav button:hover,.mobile-primary button:hover,
     .drawer-links button:hover,.member-card:hover,.note-toggle:hover,.work-card:hover,.contact-card:hover,
-    .search-input:focus{
+    .search-input:focus,.lightbox-nav:hover,.lightbox-close:hover{
       border-color:var(--gold-border);
       color:var(--gold);
       background:rgba(255,255,255,.012);
@@ -88,7 +129,9 @@
     .mobile-primary button:active,
     .lang-btn:active,
     .note-toggle:active,
-    .back-to-list:active{
+    .back-to-list:active,
+    .lightbox-nav:active,
+    .lightbox-close:active{
       transform:scale(0.97);
       opacity:0.85;
     }
@@ -192,6 +235,13 @@
       word-break:keep-all;
       color:var(--gold);
     }
+    .hero-subtitle{
+      margin-top:6px;
+      color:var(--muted);
+      font-family:var(--sans);
+      font-size:.95rem;
+      line-height:1.55;
+    }
 
     .view{
       display:block;
@@ -236,7 +286,7 @@
       transition:max-height 0.24s ease, opacity 0.18s ease, padding 0.18s ease;
     }
     .view.is-active .view-body{
-      max-height:2400px;
+      max-height:3200px;
       opacity:1;
       padding:16px 18px 18px;
     }
@@ -371,7 +421,6 @@
       transform:translateX(-1px);
     }
 
-
     .member-card::after{
       content:"→";
       display:inline-block;
@@ -414,7 +463,6 @@
       line-height:1.75;
       font-family:var(--sans);
     }
-
 
     .member-card{cursor:pointer;text-align:left}
     .member-card:hover{transform:scale(1.01)}
@@ -535,7 +583,6 @@
     }
     .works-more-btn.is-visible{display:inline-flex;align-items:center;justify-content:center}
     .works-more-btn:hover{transform:scale(1.01);border-color:rgba(184,150,62,0.34);background:rgba(255,255,255,0.03)}
-
 
     .artist-note-copy{
       margin:0;
@@ -726,46 +773,110 @@
       display:none;
       align-items:center;
       justify-content:center;
-      background:rgba(4,16,21,.92);
+      background:rgba(4,16,21,.96);
       z-index:2000;
-      padding:28px;
+      padding:max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      touch-action:none;
     }
     .lightbox.is-open{display:flex}
     .lightbox-inner{
-      max-width:min(92vw, 1200px);
-      max-height:90vh;
+      position:relative;
+      width:100%;
+      height:100%;
       display:grid;
-      grid-template-columns:minmax(0,1fr);
-      gap:14px;
+      grid-template-columns:1fr;
+      grid-template-rows:minmax(0,1fr) auto;
+      gap:10px;
+      align-items:center;
+      justify-items:center;
+      overflow:hidden;
+    }
+    .lightbox-stage{
+      position:relative;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+    .lightbox-img-wrap{
+      position:relative;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      transform:translate3d(0,0,0);
+      transition:transform 220ms ease, opacity 180ms ease;
+      will-change:transform, opacity;
+    }
+    .lightbox-img-wrap.is-dragging{
+      transition:none !important;
     }
     .lightbox-img{
-      max-width:100%;
-      max-height:74vh;
+      max-width:96vw;
+      max-height:88vh;
       width:auto;
       height:auto;
-      margin:0 auto;
       object-fit:contain;
-      border-radius:12px;
+      border-radius:10px;
+      user-select:none;
+      -webkit-user-drag:none;
+      margin:0 auto;
+      box-shadow:none;
     }
     .lightbox-caption{
+      width:min(100%, 900px);
       text-align:center;
       font-family:var(--sans);
       color:var(--text);
       line-height:1.7;
       white-space:pre-line;
+      padding:0 10px 4px;
+      font-size:.92rem;
     }
     .lightbox-close{
       position:absolute;
-      top:18px;
-      right:18px;
+      top:14px;
+      right:14px;
+      z-index:3;
       width:42px;
       height:42px;
       border-radius:999px;
       border:1px solid rgba(244,241,234,.14);
-      background:transparent;
+      background:rgba(255,255,255,.02);
       color:var(--text);
       font-size:22px;
       cursor:pointer;
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.14s ease;
+    }
+
+    .lightbox-nav{
+      position:absolute;
+      top:50%;
+      transform:translateY(-50%);
+      z-index:2;
+      width:42px;
+      height:42px;
+      border-radius:999px;
+      border:1px solid rgba(244,241,234,.14);
+      background:rgba(255,255,255,.02);
+      color:rgba(244,241,234,.8);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-size:18px;
+      cursor:pointer;
+      transition:border-color 0.14s ease, color 0.14s ease, background 0.14s ease, transform 0.14s ease, opacity 0.14s ease;
+      opacity:.48;
+    }
+    .lightbox-nav:hover{opacity:.82}
+    .lightbox-nav.prev{left:12px}
+    .lightbox-nav.next{right:12px}
+    .lightbox-nav[disabled]{
+      opacity:.18;
+      cursor:default;
     }
 
     @media (min-width:769px){
@@ -896,6 +1007,29 @@
       .back-to-list{margin-top:14px;margin-bottom:4px}
       .works-grid{grid-template-columns:1fr;gap:12px;margin-top:18px}
       .artist-note-header{flex-direction:column;align-items:flex-start}
+
+      .lightbox{
+        padding:max(12px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+      }
+      .lightbox-img{
+        max-width:100%;
+        max-height:84vh;
+        border-radius:8px;
+      }
+      .lightbox-caption{
+        font-size:.86rem;
+        line-height:1.65;
+      }
+      .lightbox-nav{
+        display:none;
+      }
+      .lightbox-close{
+        top:10px;
+        right:10px;
+        width:38px;
+        height:38px;
+        font-size:20px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -920,6 +1054,7 @@
     </header>
 
     <section class="mobile-hero" aria-label="Mobile hero">
+      <h1 class="sr-only">Incheon International Art Association</h1>
       <div class="mobile-hero-heading ko">
         <div class="mobile-hero-label">사단법인</div>
         <div class="mobile-hero-name">인천국제미술협회</div>
@@ -972,8 +1107,9 @@
         </div>
 
         <section class="hero" aria-label="Site heading">
-          <h1 class="gold-text ko">사단법인 인천국제미술협회</h1>
-          <h1 class="gold-text en">Incheon International Art Association</h1>
+          <h1 class="gold-text">Incheon International Art Association</h1>
+          <div class="hero-subtitle ko">사단법인 인천국제미술협회</div>
+          <div class="hero-subtitle en">A public art platform connecting exhibitions and member works through a structured archive system.</div>
         </section>
 
         <section class="view is-active" data-view="about">
@@ -1020,7 +1156,7 @@
             <div class="member-layout" id="memberLayout">
               <div class="member-sidebar">
                 <div class="search-wrap">
-                  <label class="search-label">
+                  <label class="search-label" for="artistSearchInput">
                     <span class="ko">작가 검색</span>
                     <span class="en">Search Artists</span>
                   </label>
@@ -1032,10 +1168,10 @@
                     aria-label="Search artists"
                   />
                 </div>
-                <div class="member-list" id="memberList"></div>
+                <div class="member-list" id="memberList" aria-live="polite"></div>
               </div>
 
-              <div class="member-detail" id="memberDetailPanel">
+              <article class="member-detail" id="memberDetailPanel">
                 <div class="member-detail-empty" id="memberDetailEmpty">
                   <div class="member-detail-empty-title">
                     <span class="ko">작가를 선택해 상세 내용을 읽어보세요</span>
@@ -1050,28 +1186,32 @@
                   <span class="ko">← 목록으로 돌아가기</span>
                   <span class="en">← Back to list</span>
                 </button>
-                <div class="artist-header">
-                  <div class="artist-main-name" id="artistMainName"></div>
+                <header class="artist-header">
+                  <h3 class="artist-main-name" id="artistMainName"></h3>
                   <div class="artist-sub-name" id="artistSubName"></div>
-                </div>
+                </header>
 
-                <div class="artist-note">
+                <section class="artist-note">
                   <div class="artist-note-header">
                     <div class="artist-note-title">
                       <span class="ko">작가 노트</span>
                       <span class="en">Artist Note</span>
                     </div>
-                    <button class="note-toggle" id="toggleArtistNoteBtn" type="button">
+                    <button class="note-toggle" id="toggleArtistNoteBtn" type="button" aria-label="Read full artist note">
                       <span class="ko">작가노트 전문 보기</span>
                       <span class="en">Read Full Artist Note</span>
                     </button>
                   </div>
                   <div class="artist-note-copy" id="artistNoteContent"></div>
-                </div>
+                </section>
 
-                <div class="works-grid" id="memberWorks"></div>
-                <div class="works-more-wrap"><button class="works-more-btn" id="worksMoreBtn" type="button">More</button></div>
-              </div>
+                <section aria-label="Artist works">
+                  <div class="works-grid" id="memberWorks"></div>
+                  <div class="works-more-wrap">
+                    <button class="works-more-btn" id="worksMoreBtn" type="button" aria-label="More works">More Works</button>
+                  </div>
+                </section>
+              </article>
             </div>
           </div>
         </section>
@@ -1215,8 +1355,15 @@
 
     <div class="lightbox" id="lightbox" aria-hidden="true">
       <button class="lightbox-close" id="lightboxCloseBtn" aria-label="Close image">×</button>
+      <button class="lightbox-nav prev" id="lightboxPrevBtn" aria-label="Previous artwork">←</button>
+      <button class="lightbox-nav next" id="lightboxNextBtn" aria-label="Next artwork">→</button>
+
       <div class="lightbox-inner">
-        <img class="lightbox-img" id="lightboxImg" alt="" />
+        <div class="lightbox-stage" id="lightboxStage">
+          <div class="lightbox-img-wrap" id="lightboxImgWrap">
+            <img class="lightbox-img" id="lightboxImg" alt="" draggable="false" />
+          </div>
+        </div>
         <div class="lightbox-caption" id="lightboxCaption"></div>
       </div>
     </div>
@@ -1303,8 +1450,22 @@ and invites the viewer to form a renewed relationship with the subject.`,
           name_en: "Seon-ah Oh",
           summary_kr: "존재의 고뇌와 기쁨, 고독과 연결, 유한한 시간과 무한한 감각의 경계를 다루는 회화 작업.",
           summary_en: "A painting practice that explores the boundary between anguish and joy, solitude and connection, finite time and infinite sensation.",
-          note_kr: "존재한다는 것은 이미 아름다움이고 신비이다. 삶 속에서 필연적으로 마주하게 되는 고뇌 또한 다른 시선에서 바라보면, 삶이 지닌 깊고 본질적인 기쁨의 한 얼굴일지도 모른다. 존재함으로부터 비롯되는 고뇌를 우리는 과연 밀어낼 수 있을까? 그 고뇌는 제거해야 할 대상이 아니라 바라보고 느끼고 통과해야 할 감각에 가깝다. 아파하고, 흔들리고, 때로는 무너지는 그 과정마저도 삶의 일부로서 기쁨과 맞닿아 있다. 그것은 밝고 경쾌한 기쁨이 아니라, 그윽하고 깊으며 어딘가 슬픔을 머금은 기쁨이다. 나는 이 모순된 감정의 결을 우주적 존재로서 인간이 지닌 본질적 상태라 생각한다.\n\n우리는 살아가면서 끊임없이 보고 듣고 또한 보여지고 들려지는 존재이다. 때로는 홀로 사유하고 침묵 속에서 자신을 마주하며, 그 순간 신의 숨결과도 닿을 수 있는 우주적 존재로서의 자신을 인식하게 된다. 나의 작업은 바로 그 지점 - 고독과 연결, 고뇌와 기쁨, 유한한 시간과 무한한 감각이 교차하는 경계에서 출발한다.\n\n흘러가는 시간 속에서 변화하는 우리의 모습, 그 찰나의 감정과 존재의 흔적들을 화폭위에 담아내며, 관람자와 함께 고요하고 그윽한 기쁨의 공간을 함께 하고자 한다. 이 공간은 존재 그 자체를 행복으로 받아들이는 자리이며, 우리는 이미 충분히 아름답고 의미있는 존재임을 스스로 느끼는 하나의 숨결이 되기를 바란다.",
-          note_en: "To exist is, in itself, already a kind of beauty and mystery.\n\nThe anguish we inevitably encounter in life, when viewed from another perspective, may be one face of the deep and essential joy inherent in living.\n\nCan we truly push away the suffering that arises from existence?\n\nThat anguish is not something to be eliminated, but rather a sensation to be observed, felt, and passed through. The process of hurting, wavering, and even collapsing at times is also a part of life, touching joy at its edges. This is not a bright or lighthearted joy, but one that is profound and subdued, carrying within it a trace of sorrow. I believe this paradoxical texture of emotion to be the fundamental state of human beings as cosmic entities.\n\nAs we live, we are beings who constantly see and hear, and who are also seen and heard. At times, we engage in solitary contemplation, facing ourselves in silence, and in those moments, we come to recognize ourselves as cosmic beings capable of touching the breath of the divine. My work begins precisely at that point—the boundary where solitude and connection, anguish and joy, finite time and infinite sensation intersect.\n\nBy capturing on canvas the transformations we undergo as time flows, along with fleeting emotions and traces of existence, I wish to share with the viewer a space of quiet and profound joy. This space is one where existence itself is embraced as happiness, and where we may become a single breath that allows us to feel, on our own, that we are already sufficiently beautiful and meaningful beings.",
+          note_kr: `존재한다는 것은 이미 아름다움이고 신비이다. 삶 속에서 필연적으로 마주하게 되는 고뇌 또한 다른 시선에서 바라보면, 삶이 지닌 깊고 본질적인 기쁨의 한 얼굴일지도 모른다. 존재함으로부터 비롯되는 고뇌를 우리는 과연 밀어낼 수 있을까? 그 고뇌는 제거해야 할 대상이 아니라 바라보고 느끼고 통과해야 할 감각에 가깝다. 아파하고, 흔들리고, 때로는 무너지는 그 과정마저도 삶의 일부로서 기쁨과 맞닿아 있다. 그것은 밝고 경쾌한 기쁨이 아니라, 그윽하고 깊으며 어딘가 슬픔을 머금은 기쁨이다. 나는 이 모순된 감정의 결을 우주적 존재로서 인간이 지닌 본질적 상태라 생각한다.
+
+우리는 살아가면서 끊임없이 보고 듣고 또한 보여지고 들려지는 존재이다. 때로는 홀로 사유하고 침묵 속에서 자신을 마주하며, 그 순간 신의 숨결과도 닿을 수 있는 우주적 존재로서의 자신을 인식하게 된다. 나의 작업은 바로 그 지점 - 고독과 연결, 고뇌와 기쁨, 유한한 시간과 무한한 감각이 교차하는 경계에서 출발한다.
+
+흘러가는 시간 속에서 변화하는 우리의 모습, 그 찰나의 감정과 존재의 흔적들을 화폭위에 담아내며, 관람자와 함께 고요하고 그윽한 기쁨의 공간을 함께 하고자 한다. 이 공간은 존재 그 자체를 행복으로 받아들이는 자리이며, 우리는 이미 충분히 아름답고 의미있는 존재임을 스스로 느끼는 하나의 숨결이 되기를 바란다.`,
+          note_en: `To exist is, in itself, already a kind of beauty and mystery.
+
+The anguish we inevitably encounter in life, when viewed from another perspective, may be one face of the deep and essential joy inherent in living.
+
+Can we truly push away the suffering that arises from existence?
+
+That anguish is not something to be eliminated, but rather a sensation to be observed, felt, and passed through. The process of hurting, wavering, and even collapsing at times is also a part of life, touching joy at its edges. This is not a bright or lighthearted joy, but one that is profound and subdued, carrying within it a trace of sorrow. I believe this paradoxical texture of emotion to be the fundamental state of human beings as cosmic entities.
+
+As we live, we are beings who constantly see and hear, and who are also seen and heard. At times, we engage in solitary contemplation, facing ourselves in silence, and in those moments, we come to recognize ourselves as cosmic beings capable of touching the breath of the divine. My work begins precisely at that point—the boundary where solitude and connection, anguish and joy, finite time and infinite sensation intersect.
+
+By capturing on canvas the transformations we undergo as time flows, along with fleeting emotions and traces of existence, I wish to share with the viewer a space of quiet and profound joy. This space is one where existence itself is embraced as happiness, and where we may become a single breath that allows us to feel, on our own, that we are already sufficiently beautiful and meaningful beings.`,
           works: [
             {
               id: "EX-001",
@@ -1350,8 +1511,22 @@ and invites the viewer to form a renewed relationship with the subject.`,
           name_en: "Grace",
           summary_kr: "꽃과 한국의 미, 그리고 디지털 확장을 통해 꿈과 환상, 위로의 정서를 풀어내는 작업.",
           summary_en: "A practice that unfolds dreams, fantasy, and consolation through flowers, Korean beauty, and digital expansion.",
-          note_kr: "현직에서 물러나면서 그저 생활에 쫓기며 달려왔던 시간들이 멈추고 주위를 돌아보면서 나를 마주하는 시간이 주어졌다.\n\n아쉬움과 후회와 그리움이 뒤섞인 지나온 세월을 바라보며 이제 제2의 인생을 시작해야겠다는 생각으로 그림을 시작했다. 뒤돌아보면 아프고 힘들었던 시간들 속에도 그리움이 묻어있다.\n\n많은 나라들을 여행했고 다양한 삶의 모습을 보면서 차곡차곡 쌓여온 이미지들이 연결되어 커다란 정원이 만들어졌다. 다채롭고 화사한 꽃들로 꾸며진 정원에서 꿈과 환상, 설레임, 즐거움을 이야기하지만 중심에는 마음의 고향과도 같은 '한국의 美' 가 자리 잡고 있다.\n\n전통적인 우리의 문화와 글로벌 시대를 살고 있는 현재를 아우르고 회화뿐만 아니라 다양한 디지털 매체를 활용하여 표현방식의 범위를 확장했다. 2D와 3D 디지털 작업으로 공간을 넘나드는 움직임이 추가되면서 작품은 생동감이 더해졌다. 앞으로 VR 등 새로운 매체를 적극 활용해 볼 생각이다.\n\n작품을 대하는 사람들에게 꿈과 희망을 주고 현대사회의 복잡함 속에서 지친 마음을 달래주며 조금이나마 힘과 위로가 되었으면 하는 바람이다.",
-          note_en: "After stepping away from my former profession, the relentless pace of life finally came to a halt, allowing me the time to look around and face myself. As I reflected on the years that had passed—filled with regret, longing, and lingering emotions—I came to believe that it was time to begin a second chapter of life, and so I turned to painting. Looking back, even within those painful and difficult times, there remains a sense of yearning.\n\nHaving traveled to many countries and encountered diverse ways of living, the images that accumulated over time began to connect, forming a vast garden. Within this garden, adorned with vibrant and colorful flowers, I speak of dreams, fantasy, excitement, and joy. At its center, however, lies a sense of “Korean beauty,” like a spiritual homeland of the heart.\n\nMy work embraces both traditional Korean culture and the contemporary global era, expanding beyond painting through the use of various digital media. With the addition of movement that traverses space through 2D and 3D digital work, the pieces gain a greater sense of vitality. Moving forward, I intend to actively explore new media such as VR.\n\nI hope that my work offers viewers a sense of dream and hope, and that it may bring comfort and quiet strength to those whose hearts are weary within the complexities of contemporary life.",
+          note_kr: `현직에서 물러나면서 그저 생활에 쫓기며 달려왔던 시간들이 멈추고 주위를 돌아보면서 나를 마주하는 시간이 주어졌다.
+
+아쉬움과 후회와 그리움이 뒤섞인 지나온 세월을 바라보며 이제 제2의 인생을 시작해야겠다는 생각으로 그림을 시작했다. 뒤돌아보면 아프고 힘들었던 시간들 속에도 그리움이 묻어있다.
+
+많은 나라들을 여행했고 다양한 삶의 모습을 보면서 차곡차곡 쌓여온 이미지들이 연결되어 커다란 정원이 만들어졌다. 다채롭고 화사한 꽃들로 꾸며진 정원에서 꿈과 환상, 설레임, 즐거움을 이야기하지만 중심에는 마음의 고향과도 같은 '한국의 美' 가 자리 잡고 있다.
+
+전통적인 우리의 문화와 글로벌 시대를 살고 있는 현재를 아우르고 회화뿐만 아니라 다양한 디지털 매체를 활용하여 표현방식의 범위를 확장했다. 2D와 3D 디지털 작업으로 공간을 넘나드는 움직임이 추가되면서 작품은 생동감이 더해졌다. 앞으로 VR 등 새로운 매체를 적극 활용해 볼 생각이다.
+
+작품을 대하는 사람들에게 꿈과 희망을 주고 현대사회의 복잡함 속에서 지친 마음을 달래주며 조금이나마 힘과 위로가 되었으면 하는 바람이다.`,
+          note_en: `After stepping away from my former profession, the relentless pace of life finally came to a halt, allowing me the time to look around and face myself. As I reflected on the years that had passed—filled with regret, longing, and lingering emotions—I came to believe that it was time to begin a second chapter of life, and so I turned to painting. Looking back, even within those painful and difficult times, there remains a sense of yearning.
+
+Having traveled to many countries and encountered diverse ways of living, the images that accumulated over time began to connect, forming a vast garden. Within this garden, adorned with vibrant and colorful flowers, I speak of dreams, fantasy, excitement, and joy. At its center, however, lies a sense of “Korean beauty,” like a spiritual homeland of the heart.
+
+My work embraces both traditional Korean culture and the contemporary global era, expanding beyond painting through the use of various digital media. With the addition of movement that traverses space through 2D and 3D digital work, the pieces gain a greater sense of vitality. Moving forward, I intend to actively explore new media such as VR.
+
+I hope that my work offers viewers a sense of dream and hope, and that it may bring comfort and quiet strength to those whose hearts are weary within the complexities of contemporary life.`,
           works: [
             {
               id: "FL-001",
@@ -1397,8 +1572,18 @@ and invites the viewer to form a renewed relationship with the subject.`,
           name_en: "Eunple, Jung Eunmi",
           summary_kr: "꿈, 기다림, 희망의 감정을 강아지와 꽃의 이미지로 풀어내는 회화 작업.",
           summary_en: "A painting practice that unfolds dreams, waiting, and hope through the imagery of puppies and flowers.",
-          note_kr: "나는 꿈꾼다. 길을 걸으며 바람의 속삭임을 듣고, 희망의 씨앗을 심으며 내 안의 숲을 만들어 간다. 꽃들이 피어나, 세상을 물들이고, 내 마음의 노래가 되어 너의 꿈을 부르리니. 향기가 내 길을 비추며, 꽃처럼 피어나는 꿈을 꾼다.\n\n어릴 적부터 품어온 꿈, 지금도 여전히 꿈을 꿉니다. 그 꿈은 나의 삶의 의미, 내가 누구인지에 대한 질문의 답을 찾아가는 여정입니다. 때때로 기다림의 과정은 힘들고 외롭지만, 그 안에서 발견하는 기쁨과 성장의 순간들은 무엇과도 바꿀 수 없는 소중한 경험입니다. 과일이 햇살과 바람, 비를 맞으며 천천히 익어가듯, 우리 각자의 꿈도 그렇게 조용히, 무르익어 갑니다. 함께 꿈꾸고, 서로의 기다림을 응원하는 마음을 담고 있습니다. 나만의 속도로, 나만의 꿈으로 천천히 그러나 반드시 나아가는 모든 이들에게, 이 작은 강아지들이 조용히 속삭여 주기를.\n\n“기다림은 끝이 아니라, 아름다운 시작이야.”",
-          note_en: "I dream. Walking along a path, I listen to the whispers of the wind, planting seeds of hope as I cultivate a forest within me. Flowers bloom, coloring the world, becoming the song of my heart that calls out to your dreams. Their fragrance lights my way, and I dream of blossoms unfolding like flowers.\n\nA dream I have carried since childhood—I still dream even now. That dream is the meaning of my life, a journey toward finding the answer to who I am. At times, the process of waiting is difficult and lonely, yet the moments of joy and growth discovered along the way are experiences beyond compare. Just as fruit slowly ripens under sunlight, wind, and rain, each of our dreams matures quietly over time. Within this work, I hold the spirit of dreaming together and encouraging one another through the wait.\n\nTo all who move forward at their own pace, with their own dreams—slowly, yet surely—I hope these small puppies gently whisper:\n\n“Waiting is not the end, but a beautiful beginning.”",
+          note_kr: `나는 꿈꾼다. 길을 걸으며 바람의 속삭임을 듣고, 희망의 씨앗을 심으며 내 안의 숲을 만들어 간다. 꽃들이 피어나, 세상을 물들이고, 내 마음의 노래가 되어 너의 꿈을 부르리니. 향기가 내 길을 비추며, 꽃처럼 피어나는 꿈을 꾼다.
+
+어릴 적부터 품어온 꿈, 지금도 여전히 꿈을 꿉니다. 그 꿈은 나의 삶의 의미, 내가 누구인지에 대한 질문의 답을 찾아가는 여정입니다. 때때로 기다림의 과정은 힘들고 외롭지만, 그 안에서 발견하는 기쁨과 성장의 순간들은 무엇과도 바꿀 수 없는 소중한 경험입니다. 과일이 햇살과 바람, 비를 맞으며 천천히 익어가듯, 우리 각자의 꿈도 그렇게 조용히, 무르익어 갑니다. 함께 꿈꾸고, 서로의 기다림을 응원하는 마음을 담고 있습니다. 나만의 속도로, 나만의 꿈으로 천천히 그러나 반드시 나아가는 모든 이들에게, 이 작은 강아지들이 조용히 속삭여 주기를.
+
+“기다림은 끝이 아니라, 아름다운 시작이야.”`,
+          note_en: `I dream. Walking along a path, I listen to the whispers of the wind, planting seeds of hope as I cultivate a forest within me. Flowers bloom, coloring the world, becoming the song of my heart that calls out to your dreams. Their fragrance lights my way, and I dream of blossoms unfolding like flowers.
+
+A dream I have carried since childhood—I still dream even now. That dream is the meaning of my life, a journey toward finding the answer to who I am. At times, the process of waiting is difficult and lonely, yet the moments of joy and growth discovered along the way are experiences beyond compare. Just as fruit slowly ripens under sunlight, wind, and rain, each of our dreams matures quietly over time. Within this work, I hold the spirit of dreaming together and encouraging one another through the wait.
+
+To all who move forward at their own pace, with their own dreams—slowly, yet surely—I hope these small puppies gently whisper:
+
+“Waiting is not the end, but a beautiful beginning.”`,
           works: [
             {
               id: "JE-001",
@@ -1438,13 +1623,13 @@ and invites the viewer to form a renewed relationship with the subject.`,
             }
           ]
         },
-      {
-  id: "artist-005",
-  name_kr: "백재봉",
-  name_en: "Jae Bong Back",
-  summary_kr: "기억의 변화와 재구성을 ‘기억의 몽상’ 시리즈로 탐구하는 회화 작업.",
-  summary_en: "A painting practice exploring the transformation and reconstruction of memory through the series “Reverie of Memory.”",
-  note_kr: `기억이란 무엇일까?우리는 매 순간을 경험하고 지나가지만, 기억 속 풍경은 시간이 흐를수록 흐려지고 변형된다. 어떤 기억은 선명하게 남아 있고, 어떤 기억은 꿈처럼 몽롱하게 떠오른다. 나는 이러한 기억의 변화와 재구성 과정을 "기억의 몽상"시리즈를 통해 탐구하고자 한다.
+        {
+          id: "artist-005",
+          name_kr: "백재봉",
+          name_en: "Jae Bong Back",
+          summary_kr: "기억의 변화와 재구성을 ‘기억의 몽상’ 시리즈로 탐구하는 회화 작업.",
+          summary_en: "A painting practice exploring the transformation and reconstruction of memory through the series “Reverie of Memory.”",
+          note_kr: `기억이란 무엇일까?우리는 매 순간을 경험하고 지나가지만, 기억 속 풍경은 시간이 흐를수록 흐려지고 변형된다. 어떤 기억은 선명하게 남아 있고, 어떤 기억은 꿈처럼 몽롱하게 떠오른다. 나는 이러한 기억의 변화와 재구성 과정을 "기억의 몽상"시리즈를 통해 탐구하고자 한다.
 
 "기억의 몽상" 속에서 촛불은 단순한 빛이 아니라, 시간과 감정의 축적물이며 기억을 비추는 존재다. 촛불은 밝게 타오르기도 하고, 서서히 꺼져가기도 하며, 때로는 현실과 비현실의 경계를 허물며 떠오른다. 그것은 우리가 기억을 떠올릴 때 겪는 불완전한 감각과도 닮아 있다.
 
@@ -1453,7 +1638,7 @@ and invites the viewer to form a renewed relationship with the subject.`,
 이러한 작업을 통해 나는 기억과 상상의 경계를 넘나들며, 과거와 현재, 현실과 환상이 교차하는 순간을 표현하고자 한다. 작품을 감상하는 이들이 각자의 기억 속으로 여행하며, 새로운 감각적 경험을 하길 바란다. 우리의 기억은 단순한 과거의 조각이 아니라, 현재를 살아가게 하는 힘이자 미래를 형성하는 중요한 요소다.
 
 나의 그림이 그 연결고리가 될 수 있기를 기대한다.`,
-  note_en: `What is memory?We experience each moment and move forward, yet the landscapes within our memory gradually blur and transform over time. Some memories remain vivid, while others emerge hazily, like fragments of a dream. Through my series “Reverie of Memory,”I seek to explore this process of transformation and reconstruction.
+          note_en: `What is memory?We experience each moment and move forward, yet the landscapes within our memory gradually blur and transform over time. Some memories remain vivid, while others emerge hazily, like fragments of a dream. Through my series “Reverie of Memory,”I seek to explore this process of transformation and reconstruction.
 
 Within “Reverie of Memory,”the candle is not merely a source of light, but a vessel of accumulated time and emotion—an entity that illuminates memory itself. It burns brightly, slowly fades, and at times dissolves the boundary between reality and unreality. In this way, it resembles the imperfect and fleeting sensations we encounter when recalling memories.
 
@@ -1462,45 +1647,45 @@ Memory is not a simple record of the past, but a multilayered structure that con
 Through this work, I aim to traverse the boundary between memory and imagination, capturing moments where past and present, reality and fantasy intersect. I hope that viewers will journey into their own memories through these works, encountering new sensory experiences. Memory is not merely a fragment of the past, but a force that sustains the present and shapes the future.
 
 I hope my paintings can become a bridge that connects them.`,
-  works: [
-    {
-      id: "JB-001",
-      title_kr: "기억의 몽상05",
-      title_en: "Reverie of Memory05",
-      medium_kr: "acrylic on canvas",
-      medium_en: "acrylic on canvas",
-      size_kr: "53.0 × 40.9 cm",
-      size_en: "53.0 × 40.9 cm",
-      year: "2024",
-      image: "images/standard/JB-001.jpg",
-      zoom: "images/zoom/JB-001.jpg"
-    },
-    {
-      id: "JB-002",
-      title_kr: "기억의 몽상16",
-      title_en: "Reverie of Memory16",
-      medium_kr: "acrylic on canvas",
-      medium_en: "acrylic on canvas",
-      size_kr: "130.3 × 97.0 cm",
-      size_en: "130.3 × 97.0 cm",
-      year: "2025",
-      image: "images/standard/JB-002.jpg",
-      zoom: "images/zoom/JB-002.jpg"
-    },
-    {
-      id: "JB-003",
-      title_kr: "기억의 몽상17",
-      title_en: "Reverie of Memory17",
-      medium_kr: "acrylic on canvas",
-      medium_en: "acrylic on canvas",
-      size_kr: "37.9 × 37.9 cm",
-      size_en: "37.9 × 37.9 cm",
-      year: "2026",
-      image: "images/standard/JB-003.jpg",
-      zoom: "images/zoom/JB-003.jpg"
-    }
-  ]
-}
+          works: [
+            {
+              id: "JB-001",
+              title_kr: "기억의 몽상05",
+              title_en: "Reverie of Memory05",
+              medium_kr: "acrylic on canvas",
+              medium_en: "acrylic on canvas",
+              size_kr: "53.0 × 40.9 cm",
+              size_en: "53.0 × 40.9 cm",
+              year: "2024",
+              image: "images/standard/JB-001.jpg",
+              zoom: "images/zoom/JB-001.jpg"
+            },
+            {
+              id: "JB-002",
+              title_kr: "기억의 몽상16",
+              title_en: "Reverie of Memory16",
+              medium_kr: "acrylic on canvas",
+              medium_en: "acrylic on canvas",
+              size_kr: "130.3 × 97.0 cm",
+              size_en: "130.3 × 97.0 cm",
+              year: "2025",
+              image: "images/standard/JB-002.jpg",
+              zoom: "images/zoom/JB-002.jpg"
+            },
+            {
+              id: "JB-003",
+              title_kr: "기억의 몽상17",
+              title_en: "Reverie of Memory17",
+              medium_kr: "acrylic on canvas",
+              medium_en: "acrylic on canvas",
+              size_kr: "37.9 × 37.9 cm",
+              size_en: "37.9 × 37.9 cm",
+              year: "2026",
+              image: "images/standard/JB-003.jpg",
+              zoom: "images/zoom/JB-003.jpg"
+            }
+          ]
+        }
       ]
     };
 
@@ -1532,9 +1717,13 @@ I hope my paintings can become a bridge that connects them.`,
     const backToListBtn = document.getElementById("backToListBtn");
 
     const lightbox = document.getElementById("lightbox");
+    const lightboxStage = document.getElementById("lightboxStage");
+    const lightboxImgWrap = document.getElementById("lightboxImgWrap");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxCaption = document.getElementById("lightboxCaption");
     const lightboxCloseBtn = document.getElementById("lightboxCloseBtn");
+    const lightboxPrevBtn = document.getElementById("lightboxPrevBtn");
+    const lightboxNextBtn = document.getElementById("lightboxNextBtn");
 
     const mqDesktop = window.matchMedia("(min-width: 980px)");
 
@@ -1542,6 +1731,16 @@ I hope my paintings can become a bridge that connects them.`,
     let noteExpanded = false;
     let worksExpanded = false;
     let searchQuery = "";
+
+    let currentLightboxArtistId = null;
+    let currentLightboxWorkIndex = -1;
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchCurrentX = 0;
+    let touchCurrentY = 0;
+    let isDraggingLightbox = false;
+    let hasHorizontalIntent = false;
 
     function resolveAssetPath(value){
       const path = String(value || "").trim();
@@ -1619,6 +1818,11 @@ I hope my paintings can become a bridge that connects them.`,
       }
 
       renderArtists();
+
+      if (lightbox.classList.contains("is-open")) {
+        renderLightboxCurrent();
+      }
+
       try { localStorage.setItem("iiaa_lang_final", html.lang); } catch (e) {}
     }
 
@@ -1683,7 +1887,7 @@ I hope my paintings can become a bridge that connects them.`,
           btn.setAttribute("aria-expanded", "false");
         }
       });
-      document.body.style.overflow = "";
+      document.body.style.overflow = lightbox.classList.contains("is-open") ? "hidden" : "";
     }
 
     function normalize(value){
@@ -1733,33 +1937,10 @@ I hope my paintings can become a bridge that connects them.`,
         : (artist.name_en || "");
     }
 
-    function renderMemberList(list){
-      const lang = currentLang();
-      memberList.classList.toggle("is-detail-open", !!activeArtistId);
-      if (memberLayout) memberLayout.classList.toggle("is-focus-mode", !!activeArtistId);
-
-      memberList.innerHTML = list.map(artist => `
-        <button type="button" class="member-card ${artist.id === activeArtistId ? "is-active" : ""}" data-artist-id="${artist.id}">
-          <strong class="member-name">${preferredName(artist, lang)}</strong>
-          <div class="member-summary">${getSummary(artist, lang)}</div>
-        </button>
-      `).join("");
-
-      memberList.querySelectorAll("[data-artist-id]").forEach(btn => {
-        btn.addEventListener("click", () => {
-          const nextId = btn.dataset.artistId;
-          activeArtistId = activeArtistId === nextId ? null : nextId;
-          noteExpanded = false;
-          worksExpanded = false;
-          renderArtists();
-        });
-      });
-    }
-
     function workTitle(work, lang){
       return lang === "en"
-        ? (work.title_en || work.title_kr || "")
-        : (work.title_kr || work.title_en || "");
+        ? (work.title_en || work.title_kr || work.id || "")
+        : (work.title_kr || work.title_en || work.id || "");
     }
 
     function workMedium(work, lang){
@@ -1772,6 +1953,38 @@ I hope my paintings can become a bridge that connects them.`,
       return lang === "en"
         ? (work.size_en || work.size_kr || "")
         : (work.size_kr || work.size_en || "");
+    }
+
+    function buildArtworkAlt(work, artist, lang){
+      const title = workTitle(work, lang);
+      const artistName = preferredName(artist, lang);
+      if (title && artistName) return `${title} by ${artistName}`;
+      if (artistName) return `Painting by ${artistName}`;
+      if (title) return title;
+      return "Artwork";
+    }
+
+    function renderMemberList(list){
+      const lang = currentLang();
+      memberList.classList.toggle("is-detail-open", !!activeArtistId);
+      if (memberLayout) memberLayout.classList.toggle("is-focus-mode", !!activeArtistId);
+
+      memberList.innerHTML = list.map(artist => `
+        <button type="button" class="member-card ${artist.id === activeArtistId ? "is-active" : ""}" data-artist-id="${artist.id}">
+          <strong class="member-name">${escapeHtml(preferredName(artist, lang))}</strong>
+          <div class="member-summary">${escapeHtml(getSummary(artist, lang))}</div>
+        </button>
+      `).join("");
+
+      memberList.querySelectorAll("[data-artist-id]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const nextId = btn.dataset.artistId;
+          activeArtistId = activeArtistId === nextId ? null : nextId;
+          noteExpanded = false;
+          worksExpanded = false;
+          renderArtists();
+        });
+      });
     }
 
     function renderArtistDetail(artist){
@@ -1789,6 +2002,7 @@ I hope my paintings can become a bridge that connects them.`,
         if (worksMoreBtn) {
           worksMoreBtn.classList.remove("is-visible");
           worksMoreBtn.style.display = "none";
+          worksMoreBtn.setAttribute("aria-label", lang === "en" ? "More works" : "작품 더보기");
         }
         toggleArtistNoteBtn.disabled = true;
         toggleArtistNoteBtn.innerHTML = `<span class="ko">작가노트 전문 보기</span><span class="en">Read Full Artist Note</span>`;
@@ -1813,19 +2027,21 @@ I hope my paintings can become a bridge that connects them.`,
 
       if (hasFullNote) {
         toggleArtistNoteBtn.disabled = false;
+        toggleArtistNoteBtn.setAttribute("aria-label", noteExpanded ? (lang === "en" ? "Back to summary" : "요약으로 돌아가기") : (lang === "en" ? "Read full artist note" : "작가노트 전문 보기"));
         toggleArtistNoteBtn.innerHTML = noteExpanded
           ? `<span class="ko">요약으로 돌아가기</span><span class="en">Back to Summary</span>`
           : `<span class="ko">작가노트 전문 보기</span><span class="en">Read Full Artist Note</span>`;
       } else {
         toggleArtistNoteBtn.disabled = true;
+        toggleArtistNoteBtn.setAttribute("aria-label", lang === "en" ? "Summary only" : "요약만 표시");
         toggleArtistNoteBtn.innerHTML = `<span class="ko">요약만 표시</span><span class="en">Summary Only</span>`;
       }
 
       if (!allWorks.length) {
         memberWorks.innerHTML = `
           <div class="member-card" style="grid-column:1 / -1; cursor:default;">
-            <strong class="member-name">${currentLang() === "en" ? "No Works Yet" : "등록된 작품 없음"}</strong>
-            <div class="member-summary">${currentLang() === "en" ? "Works will be added here over time." : "작품은 이 영역에 순차적으로 추가됩니다."}</div>
+            <strong class="member-name">${lang === "en" ? "No Works Yet" : "등록된 작품 없음"}</strong>
+            <div class="member-summary">${lang === "en" ? "Works will be added here over time." : "작품은 이 영역에 순차적으로 추가됩니다."}</div>
           </div>
         `;
         if (worksMoreBtn) {
@@ -1835,13 +2051,13 @@ I hope my paintings can become a bridge that connects them.`,
         return;
       }
 
-      memberWorks.innerHTML = visibleWorks.map(work => `
-        <article class="work-card" data-work-id="${work.id}">
+      memberWorks.innerHTML = visibleWorks.map((work, index) => `
+        <article class="work-card" data-work-id="${work.id}" aria-label="${escapeHtml(workTitle(work, lang))}">
           <div class="work-thumb">
-            <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(workTitle(work, lang))}">
+            <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(buildArtworkAlt(work, artist, lang))}" loading="lazy" />
           </div>
           <div class="work-meta">
-            <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
+            <h4 class="work-title">${escapeHtml(workTitle(work, lang))}</h4>
             <div class="work-line">${escapeHtml(workMedium(work, lang))}</div>
             <div class="work-line">${escapeHtml(workSize(work, lang))}</div>
             <div class="work-line">${escapeHtml(work.year)}</div>
@@ -1853,15 +2069,16 @@ I hope my paintings can become a bridge that connects them.`,
         const needMore = allWorks.length > 3;
         worksMoreBtn.classList.toggle("is-visible", needMore);
         worksMoreBtn.style.display = needMore ? "" : "none";
+        worksMoreBtn.setAttribute("aria-label", worksExpanded ? (lang === "en" ? "Show less works" : "작품 접기") : (lang === "en" ? "More works" : "작품 더보기"));
         worksMoreBtn.innerHTML = worksExpanded
           ? `<span class="ko">작품 접기</span><span class="en">Show Less</span>`
           : `<span class="ko">작품 더보기</span><span class="en">More Works</span>`;
       }
 
       memberWorks.querySelectorAll("[data-work-id]").forEach(card => {
-        const work = allWorks.find(w => w.id === card.dataset.workId);
-        if (!work) return;
-        card.addEventListener("click", () => openLightbox(work, artist));
+        const workIndex = allWorks.findIndex(w => w.id === card.dataset.workId);
+        if (workIndex < 0) return;
+        card.addEventListener("click", () => openLightboxByIndex(artist.id, workIndex));
       });
     }
 
@@ -1898,10 +2115,34 @@ I hope my paintings can become a bridge that connects them.`,
       }
     }
 
-    function openLightbox(work, artist){
+    function getArtistById(artistId){
+      return ARTISTS_DATA.artists.find(a => a.id === artistId) || null;
+    }
+
+    function getCurrentLightboxArtist(){
+      return getArtistById(currentLightboxArtistId);
+    }
+
+    function updateLightboxNavState(artist){
+      const works = artist?.works || [];
+      const hasPrev = currentLightboxWorkIndex > 0;
+      const hasNext = currentLightboxWorkIndex < works.length - 1;
+
+      lightboxPrevBtn.disabled = !hasPrev;
+      lightboxNextBtn.disabled = !hasNext;
+    }
+
+    function renderLightboxCurrent(){
+      const artist = getCurrentLightboxArtist();
       const lang = currentLang();
+      if (!artist) return;
+
+      const works = artist.works || [];
+      const work = works[currentLightboxWorkIndex];
+      if (!work) return;
+
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
-      lightboxImg.alt = workTitle(work, lang);
+      lightboxImg.alt = buildArtworkAlt(work, artist, lang);
       lightboxCaption.textContent = [
         workTitle(work, lang),
         workMedium(work, lang),
@@ -1909,16 +2150,84 @@ I hope my paintings can become a bridge that connects them.`,
         work.year,
         preferredName(artist, lang)
       ].filter(Boolean).join("\n");
+
+      updateLightboxNavState(artist);
+    }
+
+    function openLightboxByIndex(artistId, workIndex){
+      const artist = getArtistById(artistId);
+      if (!artist || !artist.works || !artist.works[workIndex]) return;
+
+      currentLightboxArtistId = artistId;
+      currentLightboxWorkIndex = workIndex;
+      renderLightboxCurrent();
+
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.style.overflow = "hidden";
+      resetLightboxDrag();
     }
 
     function closeLightbox(){
       lightbox.classList.remove("is-open");
       lightbox.setAttribute("aria-hidden", "true");
       lightboxImg.src = "";
+      lightboxImg.alt = "";
+      lightboxCaption.textContent = "";
+      currentLightboxArtistId = null;
+      currentLightboxWorkIndex = -1;
+      resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
+    }
+
+    function goToAdjacentLightbox(direction){
+      const artist = getCurrentLightboxArtist();
+      if (!artist) return;
+
+      const works = artist.works || [];
+      const nextIndex = currentLightboxWorkIndex + direction;
+      if (nextIndex < 0 || nextIndex >= works.length) {
+        animateLightboxRebound(direction);
+        return;
+      }
+
+      animateLightboxSlide(direction, () => {
+        currentLightboxWorkIndex = nextIndex;
+        renderLightboxCurrent();
+        lightboxImgWrap.style.transition = "none";
+        lightboxImgWrap.style.opacity = "0";
+        lightboxImgWrap.style.transform = `translate3d(${direction > 0 ? 28 : -28}px,0,0)`;
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            lightboxImgWrap.style.transition = "transform 220ms ease, opacity 180ms ease";
+            lightboxImgWrap.style.opacity = "1";
+            lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+          });
+        });
+      });
+    }
+
+    function animateLightboxSlide(direction, onMidpoint){
+      lightboxImgWrap.classList.remove("is-dragging");
+      lightboxImgWrap.style.transition = "transform 180ms ease, opacity 160ms ease";
+      lightboxImgWrap.style.opacity = "0";
+      lightboxImgWrap.style.transform = `translate3d(${direction > 0 ? -48 : 48}px,0,0)`;
+
+      setTimeout(() => {
+        onMidpoint();
+      }, 150);
+    }
+
+    function animateLightboxRebound(direction){
+      lightboxImgWrap.classList.remove("is-dragging");
+      lightboxImgWrap.style.transition = "transform 180ms ease";
+      lightboxImgWrap.style.transform = `translate3d(${direction > 0 ? -18 : 18}px,0,0)`;
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+        }, 80);
+      });
     }
 
     function escapeHtml(value){
@@ -1930,6 +2239,87 @@ I hope my paintings can become a bridge that connects them.`,
         .replaceAll("'", "&#39;");
     }
 
+    function resetLightboxDrag(){
+      touchStartX = 0;
+      touchStartY = 0;
+      touchCurrentX = 0;
+      touchCurrentY = 0;
+      isDraggingLightbox = false;
+      hasHorizontalIntent = false;
+      lightboxImgWrap.classList.remove("is-dragging");
+      lightboxImgWrap.style.transition = "";
+      lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+      lightboxImgWrap.style.opacity = "1";
+    }
+
+    function handleLightboxTouchStart(e){
+      if (!lightbox.classList.contains("is-open")) return;
+      if (!e.touches || e.touches.length !== 1) return;
+
+      const touch = e.touches[0];
+      touchStartX = touch.clientX;
+      touchStartY = touch.clientY;
+      touchCurrentX = touch.clientX;
+      touchCurrentY = touch.clientY;
+      isDraggingLightbox = true;
+      hasHorizontalIntent = false;
+
+      lightboxImgWrap.classList.add("is-dragging");
+      lightboxImgWrap.style.transition = "none";
+    }
+
+    function handleLightboxTouchMove(e){
+      if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
+      if (!e.touches || e.touches.length !== 1) return;
+
+      const touch = e.touches[0];
+      touchCurrentX = touch.clientX;
+      touchCurrentY = touch.clientY;
+
+      const deltaX = touchCurrentX - touchStartX;
+      const deltaY = touchCurrentY - touchStartY;
+
+      if (!hasHorizontalIntent) {
+        if (Math.abs(deltaX) > 12 || Math.abs(deltaY) > 12) {
+          hasHorizontalIntent = Math.abs(deltaX) > Math.abs(deltaY);
+        }
+      }
+
+      if (!hasHorizontalIntent) return;
+
+      e.preventDefault();
+
+      const limitedX = Math.max(Math.min(deltaX, 120), -120);
+      lightboxImgWrap.style.transform = `translate3d(${limitedX}px,0,0)`;
+      lightboxImgWrap.style.opacity = String(Math.max(0.72, 1 - Math.abs(limitedX) / 260));
+    }
+
+    function handleLightboxTouchEnd(){
+      if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
+
+      const deltaX = touchCurrentX - touchStartX;
+      const deltaY = touchCurrentY - touchStartY;
+      const absX = Math.abs(deltaX);
+      const absY = Math.abs(deltaY);
+
+      lightboxImgWrap.classList.remove("is-dragging");
+
+      if (hasHorizontalIntent && absX > 48 && absX > absY) {
+        if (deltaX < 0) {
+          goToAdjacentLightbox(1);
+        } else {
+          goToAdjacentLightbox(-1);
+        }
+      } else {
+        lightboxImgWrap.style.transition = "transform 180ms ease, opacity 160ms ease";
+        lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+        lightboxImgWrap.style.opacity = "1";
+      }
+
+      isDraggingLightbox = false;
+      hasHorizontalIntent = false;
+    }
+
     toggleArtistNoteBtn.addEventListener("click", () => {
       const artist = ARTISTS_DATA.artists.find(a => a.id === activeArtistId);
       if (!artist) return;
@@ -1938,12 +2328,14 @@ I hope my paintings can become a bridge that connects them.`,
       noteExpanded = !noteExpanded;
       renderArtists();
     });
+
     if (worksMoreBtn) {
       worksMoreBtn.addEventListener("click", () => {
         worksExpanded = !worksExpanded;
         renderArtists();
       });
     }
+
     if (backToListBtn) {
       backToListBtn.addEventListener("click", () => {
         activeArtistId = null;
@@ -1990,6 +2382,7 @@ I hope my paintings can become a bridge that connects them.`,
         });
       });
     });
+
     document.querySelectorAll(".view-head").forEach(head => {
       head.addEventListener("click", () => {
         const parentView = head.closest(".view");
@@ -2024,14 +2417,33 @@ I hope my paintings can become a bridge that connects them.`,
     if (backdrop) backdrop.addEventListener("click", closeDrawer);
 
     lightboxCloseBtn.addEventListener("click", closeLightbox);
+    lightboxPrevBtn.addEventListener("click", () => goToAdjacentLightbox(-1));
+    lightboxNextBtn.addEventListener("click", () => goToAdjacentLightbox(1));
+
     lightbox.addEventListener("click", (e) => {
-      if (e.target === lightbox) closeLightbox();
+      const clickedInsideStage = e.target.closest(".lightbox-stage");
+      const clickedClose = e.target.closest(".lightbox-close");
+      const clickedNav = e.target.closest(".lightbox-nav");
+      if (!clickedInsideStage && !clickedClose && !clickedNav) closeLightbox();
     });
+
+    lightboxStage.addEventListener("touchstart", handleLightboxTouchStart, { passive: true });
+    lightboxStage.addEventListener("touchmove", handleLightboxTouchMove, { passive: false });
+    lightboxStage.addEventListener("touchend", handleLightboxTouchEnd, { passive: true });
+    lightboxStage.addEventListener("touchcancel", handleLightboxTouchEnd, { passive: true });
 
     document.addEventListener("keydown", e => {
       if (e.key === "Escape") {
         closeDrawer();
         closeLightbox();
+      }
+
+      if (!lightbox.classList.contains("is-open")) return;
+
+      if (e.key === "ArrowLeft") {
+        goToAdjacentLightbox(-1);
+      } else if (e.key === "ArrowRight") {
+        goToAdjacentLightbox(1);
       }
     });
 
