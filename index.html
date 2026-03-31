@@ -776,7 +776,7 @@
       background:rgba(4,16,21,.96);
       z-index:2000;
       padding:max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-      touch-action:none;
+      touch-action:pinch-zoom;
     }
     .lightbox.is-open{display:flex}
     .lightbox-inner{
@@ -2254,7 +2254,10 @@ I hope my paintings can become a bridge that connects them.`,
 
     function handleLightboxTouchStart(e){
       if (!lightbox.classList.contains("is-open")) return;
-      if (!e.touches || e.touches.length !== 1) return;
+      if (!e.touches || e.touches.length !== 1) {
+        resetLightboxDrag();
+        return;
+      }
 
       const touch = e.touches[0];
       touchStartX = touch.clientX;
@@ -2270,7 +2273,13 @@ I hope my paintings can become a bridge that connects them.`,
 
     function handleLightboxTouchMove(e){
       if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
-      if (!e.touches || e.touches.length !== 1) return;
+      if (!e.touches || e.touches.length !== 1) {
+        lightboxImgWrap.classList.remove("is-dragging");
+        lightboxImgWrap.style.transition = "";
+        lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+        lightboxImgWrap.style.opacity = "1";
+        return;
+      }
 
       const touch = e.touches[0];
       touchCurrentX = touch.clientX;
@@ -2287,7 +2296,6 @@ I hope my paintings can become a bridge that connects them.`,
 
       if (!hasHorizontalIntent) return;
 
-      e.preventDefault();
 
       const limitedX = Math.max(Math.min(deltaX, 120), -120);
       lightboxImgWrap.style.transform = `translate3d(${limitedX}px,0,0)`;
@@ -2428,7 +2436,7 @@ I hope my paintings can become a bridge that connects them.`,
     });
 
     lightboxStage.addEventListener("touchstart", handleLightboxTouchStart, { passive: true });
-    lightboxStage.addEventListener("touchmove", handleLightboxTouchMove, { passive: false });
+    lightboxStage.addEventListener("touchmove", handleLightboxTouchMove, { passive: true });
     lightboxStage.addEventListener("touchend", handleLightboxTouchEnd, { passive: true });
     lightboxStage.addEventListener("touchcancel", handleLightboxTouchEnd, { passive: true });
 
