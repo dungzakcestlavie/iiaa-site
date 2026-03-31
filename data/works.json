@@ -147,21 +147,20 @@
       "zoom": "images/zoom/JE-002.jpg"
     },
     {
-      "id": "JE-003",
-      "artist_id": "artist-004",
-      "title_kr": "내 꿈은 달콤해",
-      "title_en": "My Dream Is Sweet",
-      "material_kr": "oil on canvas",
-      "material_en": "oil on canvas",
-      "size_kr": "72.7 × 60.6 cm",
-      "size_en": "72.7 × 60.6 cm",
-      "year": "2026",
-      "image": "images/standard/JE-003.jpg",
-      "zoom": "images/zoom/JE-003.jpg"
-    },
-    ,
+  "id": "JE-003",
+  "artist_id": "artist-004",
+  "title_kr": "내 꿈은 달콤해",
+  "title_en": "My Dream Is Sweet",
+  "material_kr": "oil on canvas",
+  "material_en": "oil on canvas",
+  "size_kr": "72.7 × 60.6 cm",
+  "size_en": "72.7 × 60.6 cm",
+  "year": "2026",
+  "image": "images/standard/JE-003.jpg",
+  "zoom": "images/zoom/JE-003.jpg"
+},
 {
-  "id": "JE-004",
+  "id": "JB-001",
   "artist_id": "artist-005",
   "title_kr": "기억의 몽상05",
   "title_en": "Reverie of Memory05",
@@ -170,11 +169,11 @@
   "size_kr": "53.0 × 40.9 cm",
   "size_en": "53.0 × 40.9 cm",
   "year": "2024",
-  "image": "images/standard/JE-004.jpg",
-  "zoom": "images/zoom/JE-004.jpg"
+  "image": "images/standard/JB-001.jpg",
+  "zoom": "images/zoom/JB-001.jpg"
 },
 {
-  "id": "JE-005",
+  "id": "JB-002",
   "artist_id": "artist-005",
   "title_kr": "기억의 몽상16",
   "title_en": "Reverie of Memory16",
@@ -183,11 +182,11 @@
   "size_kr": "130.3 × 97.0 cm",
   "size_en": "130.3 × 97.0 cm",
   "year": "2025",
-  "image": "images/standard/JE-005.jpg",
-  "zoom": "images/zoom/JE-005.jpg"
+  "image": "images/standard/JB-002.jpg",
+  "zoom": "images/zoom/JB-002.jpg"
 },
 {
-  "id": "JE-006",
+  "id": "JB-003",
   "artist_id": "artist-005",
   "title_kr": "기억의 몽상17",
   "title_en": "Reverie of Memory17",
@@ -196,8 +195,6 @@
   "size_kr": "37.9 × 37.9 cm",
   "size_en": "37.9 × 37.9 cm",
   "year": "2026",
-  "image": "images/standard/JE-006.jpg",
-  "zoom": "images/zoom/JE-006.jpg"
-}
-  ]
+  "image": "images/standard/JB-003.jpg",
+  "zoom": "images/zoom/JB-003.jpg"
 }
