@@ -158,6 +158,46 @@
       "year": "2026",
       "image": "images/standard/JE-003.jpg",
       "zoom": "images/zoom/JE-003.jpg"
-    }
+    },
+    ,
+{
+  "id": "JE-004",
+  "artist_id": "artist-005",
+  "title_kr": "기억의 몽상05",
+  "title_en": "Reverie of Memory05",
+  "material_kr": "acrylic on canvas",
+  "material_en": "acrylic on canvas",
+  "size_kr": "53.0 × 40.9 cm",
+  "size_en": "53.0 × 40.9 cm",
+  "year": "2024",
+  "image": "images/standard/JE-004.jpg",
+  "zoom": "images/zoom/JE-004.jpg"
+},
+{
+  "id": "JE-005",
+  "artist_id": "artist-005",
+  "title_kr": "기억의 몽상16",
+  "title_en": "Reverie of Memory16",
+  "material_kr": "acrylic on canvas",
+  "material_en": "acrylic on canvas",
+  "size_kr": "130.3 × 97.0 cm",
+  "size_en": "130.3 × 97.0 cm",
+  "year": "2025",
+  "image": "images/standard/JE-005.jpg",
+  "zoom": "images/zoom/JE-005.jpg"
+},
+{
+  "id": "JE-006",
+  "artist_id": "artist-005",
+  "title_kr": "기억의 몽상17",
+  "title_en": "Reverie of Memory17",
+  "material_kr": "acrylic on canvas",
+  "material_en": "acrylic on canvas",
+  "size_kr": "37.9 × 37.9 cm",
+  "size_en": "37.9 × 37.9 cm",
+  "year": "2026",
+  "image": "images/standard/JE-006.jpg",
+  "zoom": "images/zoom/JE-006.jpg"
+}
   ]
 }
