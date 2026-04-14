@@ -2090,23 +2090,59 @@ zoom: "images/zoom/GP-003.jpg"
       "zoom": "images/zoom/JKH-004.jpg"
     }
   ]
-}        
-      ]
-    };
+},
+ {
+  "id": "artist-013",
+  "name_kr": "박정",
+  "name_en": "PARK, JEONG",
 
-    const html = document.documentElement;
-    const langButtons = document.querySelectorAll("[data-lang-btn]");
-    const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
-    const viewButtons = document.querySelectorAll("[data-view-btn]");
-    const views = document.querySelectorAll(".view");
+  "summary_kr": "독항아리를 소재로 어머니에 대한 그리움과 변하지 않는 정서를 표현하는 회화 작업.",
+  "summary_en": "A painting practice that expresses a longing for the artist’s mother through the motif of the earthen jar.",
 
-    const drawer = document.getElementById("mobileDrawer");
-    const openBtn = document.getElementById("menuOpenBtn");
-    const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
-    const closeBtn = document.getElementById("menuCloseBtn");
-    const backdrop = document.getElementById("drawerBackdrop");
-    const logoHomeMobile = document.getElementById("logoHomeMobile");
-    const logoHomeDesktop = document.getElementById("logoHomeDesktop");
+  "note_kr": "투박하면서 토속적인 독항아리를\n소재로 엄마에 대한 그리움으로\n변하지 않는 깊은 맛과 사랑과 멋을\n생각하면서……\n초현실적으로 표현하였다.",
+  "note_en": "Using the rustic earthen jar as a motif,\nwith a longing for my mother,\nthinking of an unchanging depth of flavor, love, and grace……\nit is expressed in a surreal manner.",
+
+  "works": [
+    {
+      "id": "PJ-001",
+      "title_kr": "항아리",
+      "title_en": "Earthen Jar",
+      "medium_kr": "캔버스에 유채",
+      "medium_en": "oil on canvas",
+      "size_kr": "53.0 × 49.9 cm",
+      "size_en": "53.0 × 49.9 cm",
+      "year": "2023",
+      "image": "images/standard/PJ-001.jpg",
+      "zoom": "images/zoom/PJ-001.jpg"
+    },
+    {
+      "id": "PJ-002",
+      "title_kr": "무제",
+      "title_en": "Untitled",
+      "medium_kr": "캔버스에 유채",
+      "medium_en": "oil on canvas",
+      "size_kr": "72.7 × 53.0 cm",
+      "size_en": "72.7 × 53.0 cm",
+      "year": "2021",
+      "image": "images/standard/PJ-002.jpg",
+      "zoom": "images/zoom/PJ-002.jpg"
+    }
+  ]
+};
+
+const html = document.documentElement;
+const langButtons = document.querySelectorAll("[data-lang-btn]");
+const translatableNodes = document.querySelectorAll("[data-kr][data-en]");
+const viewButtons = document.querySelectorAll("[data-view-btn]");
+const views = document.querySelectorAll(".view");
+
+const drawer = document.getElementById("mobileDrawer");
+const openBtn = document.getElementById("menuOpenBtn");
+const openBtnDesktop = document.getElementById("menuOpenBtnDesktop");
+const closeBtn = document.getElementById("menuCloseBtn");
+const backdrop = document.getElementById("drawerBackdrop");
+const logoHomeMobile = document.getElementById("logoHomeMobile");
+const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     const memberLayout = document.getElementById("memberLayout");
     const memberList = document.getElementById("memberList");
