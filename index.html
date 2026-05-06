@@ -2,8 +2,8 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#16364b" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<meta name="theme-color" content="#16364b" />
   <meta name="color-scheme" content="dark" />
   <meta name="format-detection" content="telephone=no,address=no,email=no" />
   <meta name="description" content="Incheon International Art Association (IIAA) is a public art platform connecting exhibitions and member works through a structured archive system." />
@@ -1036,6 +1036,18 @@
       html{scroll-behavior:auto}
       *{transition:none !important;animation:none !important}
     }
+
+    html,
+    body {
+      touch-action: pan-x pan-y;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+    }
+
   </style>
 </head>
 <body>
@@ -3033,6 +3045,29 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     setLanguage(savedLang);
     setActiveView(savedView);
     renderArtists();
+
+
+    document.addEventListener('gesturestart', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gesturechange', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    document.addEventListener('gestureend', function(e) {
+      e.preventDefault();
+    }, { passive: false });
+
+    let lastTouchEnd = 0;
+
+    document.addEventListener('touchend', function(e) {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, { passive: false });
   </script>
 </body>
 </html>
