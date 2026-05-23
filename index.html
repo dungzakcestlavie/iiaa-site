@@ -2400,6 +2400,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     let activeViewerItems = [];
     let activeViewerIndex = 0;
+    let activeViewerArtistId = null;
+    let isViewerOpen = false;
     let activeViewerContext = "artist-detail";
     let activeViewerArtist = null;
 
@@ -2766,6 +2768,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           openViewer({
             items: currentArtistWorks,
             index: workIndex,
+            artistId: artist.id,
             context: "artist-detail",
             artist
           });
@@ -2817,13 +2820,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightboxNextBtn.disabled = !hasMultipleItems;
     }
 
-    function renderViewer(){
+    function renderViewerOnly(){
       if (!activeViewerItems.length) return;
 
       const lang = currentLang();
       const work = activeViewerItems[activeViewerIndex];
-      const artist = activeViewerArtist || ARTISTS_DATA.artists.find(a => (a.works || []).includes(work)) || null;
-      if (!work || !artist) return;
+      const artist = activeViewerArtist || getArtistById(activeViewerArtistId) || null;
+      if (!work) return;
 
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
       lightboxImg.alt = buildArtworkAlt(work, artist, lang);
@@ -2832,46 +2835,61 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         workMedium(work, lang),
         workSize(work, lang),
         work.year,
-        preferredName(artist, lang)
+        artist ? preferredName(artist, lang) : ""
       ].filter(Boolean).join("\n");
 
       updateLightboxNavState();
     }
 
-    function renderLightboxCurrent(){
-      renderViewer();
+    function renderViewer(){
+      renderViewerOnly();
     }
 
-    function openViewer({ items, index, context, artist } = {}){
-      const safeItems = Array.isArray(items) ? items : [];
+    function renderLightboxCurrent(){
+      renderViewerOnly();
+    }
+
+    function openViewer({ items, index, artistId, context, artist } = {}){
+      const safeItems = Array.isArray(items) ? [...items] : [];
       const safeIndex = Number.isInteger(index) ? index : 0;
       if (!safeItems.length || !safeItems[safeIndex]) return;
 
       activeViewerItems = safeItems;
       activeViewerIndex = safeIndex;
+      activeViewerArtistId = artistId || (artist && artist.id) || null;
+      isViewerOpen = true;
       activeViewerContext = context || "artist-detail";
-      activeViewerArtist = artist || null;
-
-      renderViewer();
+      activeViewerArtist = artist || getArtistById(activeViewerArtistId) || null;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("viewer-open");
       document.body.style.overflow = "hidden";
       resetLightboxDrag();
+
+      renderViewerOnly();
     }
 
     function openLightbox(items, index, artist){
       openViewer({
         items,
         index,
+        artistId: artist ? artist.id : null,
         context: "artist-detail",
         artist
       });
     }
 
-    function closeLightbox(){
+    function closeLightbox(e){
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      isViewerOpen = false;
       lightbox.classList.remove("is-open");
       lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("viewer-open");
       lightboxImg.src = "";
       lightboxImg.alt = "";
       lightboxCaption.textContent = "";
@@ -2886,24 +2904,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         e.stopImmediatePropagation();
       }
 
-      if (!activeViewerItems.length) return;
+      if (!isViewerOpen || !activeViewerItems.length) return;
 
-      const nextIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
-      animateLightboxSlide(-1, () => {
-        activeViewerIndex = nextIndex;
-        renderViewer();
-        lightboxImgWrap.style.transition = "none";
-        lightboxImgWrap.style.opacity = "0";
-        lightboxImgWrap.style.transform = "translate3d(-28px,0,0)";
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            lightboxImgWrap.style.transition = "transform 220ms ease, opacity 180ms ease";
-            lightboxImgWrap.style.opacity = "1";
-            lightboxImgWrap.style.transform = "translate3d(0,0,0)";
-          });
-        });
-      });
+      activeViewerIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
+      renderViewerOnly();
     }
 
     function viewerNext(e){
@@ -2913,24 +2917,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         e.stopImmediatePropagation();
       }
 
-      if (!activeViewerItems.length) return;
+      if (!isViewerOpen || !activeViewerItems.length) return;
 
-      const nextIndex = (activeViewerIndex + 1) % activeViewerItems.length;
-      animateLightboxSlide(1, () => {
-        activeViewerIndex = nextIndex;
-        renderViewer();
-        lightboxImgWrap.style.transition = "none";
-        lightboxImgWrap.style.opacity = "0";
-        lightboxImgWrap.style.transform = "translate3d(28px,0,0)";
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            lightboxImgWrap.style.transition = "transform 220ms ease, opacity 180ms ease";
-            lightboxImgWrap.style.opacity = "1";
-            lightboxImgWrap.style.transform = "translate3d(0,0,0)";
-          });
-        });
-      });
+      activeViewerIndex = (activeViewerIndex + 1) % activeViewerItems.length;
+      renderViewerOnly();
     }
 
     function goToAdjacentLightbox(direction){
@@ -3167,7 +3157,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       e.preventDefault();
       e.stopPropagation();
       e.stopImmediatePropagation();
-      closeLightbox();
+      closeLightbox(e);
     });
 
     lightboxPrevBtn.onclick = viewerPrev;
@@ -3189,7 +3179,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     lightbox.addEventListener("click", (e) => {
       if (e.target !== lightbox) return;
-      closeLightbox();
+      closeLightbox(e);
     });
 
     lightboxStage.addEventListener("touchstart", handleLightboxTouchStart, { passive: true });
@@ -3198,17 +3188,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     lightboxStage.addEventListener("touchcancel", handleLightboxTouchEnd, { passive: true });
 
     document.addEventListener("keydown", e => {
-      if (e.key === "Escape") {
-        closeDrawer();
-        closeLightbox();
+      if (!isViewerOpen) {
+        if (e.key === "Escape") closeDrawer();
+        return;
       }
-
-      if (!lightbox.classList.contains("is-open")) return;
 
       if (e.key === "ArrowLeft") {
         viewerPrev(e);
       } else if (e.key === "ArrowRight") {
         viewerNext(e);
+      } else if (e.key === "Escape") {
+        closeDrawer();
+        closeLightbox(e);
       }
     });
 
