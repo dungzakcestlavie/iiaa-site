@@ -2436,6 +2436,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function scrollToView(viewName, force = false){
+      if (isViewerOpen) return;
       const target = document.querySelector(`.view[data-view="${viewName}"]`);
       if (!target) return;
       if (!force && isViewCleanlyVisible(viewName)) return;
@@ -2777,6 +2778,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function renderArtists(){
+      if (isViewerOpen) return;
       memberAreaRendered = true;
       const list = filteredArtists();
 
@@ -2884,6 +2886,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (e) {
         e.preventDefault();
         e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       }
 
       isViewerOpen = false;
@@ -2895,6 +2898,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightboxCaption.textContent = "";
       resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
+    }
+
+    function closeViewer(e){
+      closeLightbox(e);
     }
 
     function viewerPrev(e){
@@ -2923,11 +2930,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       renderViewerOnly();
     }
 
-    function goToAdjacentLightbox(direction){
+    function goToAdjacentLightbox(direction, e){
       if (direction < 0) {
-        viewerPrev();
+        viewerPrev(e);
       } else {
-        viewerNext();
+        viewerNext(e);
       }
     }
 
