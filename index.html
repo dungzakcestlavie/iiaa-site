@@ -2387,8 +2387,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxCaption = document.getElementById("lightboxCaption");
     const lightboxCloseBtn = document.getElementById("lightboxCloseBtn");
-    const lightboxPrevBtn = document.getElementById("lightboxPrevBtn");
-    const lightboxNextBtn = document.getElementById("lightboxNextBtn");
+    let lightboxPrevBtn = document.getElementById("lightboxPrevBtn");
+    let lightboxNextBtn = document.getElementById("lightboxNextBtn");
 
     const mqDesktop = window.matchMedia("(min-width: 980px)");
 
@@ -2398,12 +2398,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let searchQuery = "";
     let memberAreaRendered = false;
 
+    let isViewerOpen = false;
     let activeViewerItems = [];
     let activeViewerIndex = 0;
     let activeViewerArtistId = null;
-    let isViewerOpen = false;
-    let activeViewerContext = "artist-detail";
-    let activeViewerArtist = null;
 
     let touchStartX = 0;
     let touchStartY = 0;
@@ -2663,6 +2661,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       memberList.querySelectorAll("[data-artist-id]").forEach(btn => {
         btn.addEventListener("click", () => {
+          if (isViewerOpen) return;
           const nextId = btn.dataset.artistId;
           activeArtistId = activeArtistId === nextId ? null : nextId;
           noteExpanded = false;
@@ -2673,6 +2672,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function renderArtistDetail(artist){
+      if (isViewerOpen) return;
       if (!memberDetailPanel) return;
       const lang = currentLang();
 
@@ -2766,13 +2766,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         card.addEventListener("click", (e) => {
           e.preventDefault();
           e.stopPropagation();
-          openViewer({
-            items: currentArtistWorks,
-            index: workIndex,
-            artistId: artist.id,
-            context: "artist-detail",
-            artist
-          });
+          openArtistViewer(artist, workIndex);
         });
       });
     }
@@ -2818,16 +2812,21 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function updateLightboxNavState(){
       const hasMultipleItems = activeViewerItems.length > 1;
-      lightboxPrevBtn.disabled = !hasMultipleItems;
-      lightboxNextBtn.disabled = !hasMultipleItems;
+      if (lightboxPrevBtn) lightboxPrevBtn.disabled = !hasMultipleItems;
+      if (lightboxNextBtn) lightboxNextBtn.disabled = !hasMultipleItems;
     }
 
     function renderViewerOnly(){
+      if (!isViewerOpen) return;
       if (!activeViewerItems.length) return;
+
+      if (activeViewerIndex < 0 || activeViewerIndex >= activeViewerItems.length) {
+        activeViewerIndex = 0;
+      }
 
       const lang = currentLang();
       const work = activeViewerItems[activeViewerIndex];
-      const artist = activeViewerArtist || getArtistById(activeViewerArtistId) || null;
+      const artist = getArtistById(activeViewerArtistId);
       if (!work) return;
 
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
@@ -2841,6 +2840,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       ].filter(Boolean).join("\n");
 
       updateLightboxNavState();
+      resetLightboxDrag();
     }
 
     function renderViewer(){
@@ -2851,35 +2851,53 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       renderViewerOnly();
     }
 
-    function openViewer({ items, index, artistId, context, artist } = {}){
-      const safeItems = Array.isArray(items) ? [...items] : [];
+    function openArtistViewer(artist, index){
+      if (!artist || !Array.isArray(artist.works)) return;
       const safeIndex = Number.isInteger(index) ? index : 0;
-      if (!safeItems.length || !safeItems[safeIndex]) return;
+      if (!artist.works.length || !artist.works[safeIndex]) return;
 
-      activeViewerItems = safeItems;
-      activeViewerIndex = safeIndex;
-      activeViewerArtistId = artistId || (artist && artist.id) || null;
       isViewerOpen = true;
-      activeViewerContext = context || "artist-detail";
-      activeViewerArtist = artist || getArtistById(activeViewerArtistId) || null;
+      activeViewerItems = artist.works.slice();
+      activeViewerIndex = safeIndex;
+      activeViewerArtistId = artist.id || artist.name_en || artist.name_kr || null;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("viewer-open");
       document.body.style.overflow = "hidden";
-      resetLightboxDrag();
+
+      renderViewerOnly();
+    }
+
+    function openViewer({ items, index, artistId, artist } = {}){
+      if (artist && Array.isArray(artist.works)) {
+        openArtistViewer(artist, Number.isInteger(index) ? index : 0);
+        return;
+      }
+
+      const safeItems = Array.isArray(items) ? items.slice() : [];
+      const safeIndex = Number.isInteger(index) ? index : 0;
+      if (!safeItems.length || !safeItems[safeIndex]) return;
+
+      isViewerOpen = true;
+      activeViewerItems = safeItems;
+      activeViewerIndex = safeIndex;
+      activeViewerArtistId = artistId || null;
+
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("viewer-open");
+      document.body.style.overflow = "hidden";
 
       renderViewerOnly();
     }
 
     function openLightbox(items, index, artist){
-      openViewer({
-        items,
-        index,
-        artistId: artist ? artist.id : null,
-        context: "artist-detail",
-        artist
-      });
+      if (artist) {
+        openArtistViewer(artist, Number.isInteger(index) ? index : 0);
+        return;
+      }
+      openViewer({ items, index, artistId: null });
     }
 
     function closeLightbox(e){
@@ -2890,6 +2908,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       isViewerOpen = false;
+      activeViewerItems = [];
+      activeViewerIndex = 0;
+      activeViewerArtistId = null;
+
       lightbox.classList.remove("is-open");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.classList.remove("viewer-open");
@@ -2908,7 +2930,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (e) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       }
 
       if (!isViewerOpen || !activeViewerItems.length) return;
@@ -2921,7 +2943,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (e) {
         e.preventDefault();
         e.stopPropagation();
-        e.stopImmediatePropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       }
 
       if (!isViewerOpen || !activeViewerItems.length) return;
@@ -2931,10 +2953,27 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function goToAdjacentLightbox(direction, e){
+      if (!isViewerOpen) return;
       if (direction < 0) {
         viewerPrev(e);
       } else {
         viewerNext(e);
+      }
+    }
+
+    function bindViewerButtons(){
+      if (lightboxPrevBtn) {
+        const newPrev = lightboxPrevBtn.cloneNode(true);
+        lightboxPrevBtn.replaceWith(newPrev);
+        lightboxPrevBtn = newPrev;
+        lightboxPrevBtn.addEventListener("click", viewerPrev);
+      }
+
+      if (lightboxNextBtn) {
+        const newNext = lightboxNextBtn.cloneNode(true);
+        lightboxNextBtn.replaceWith(newNext);
+        lightboxNextBtn = newNext;
+        lightboxNextBtn.addEventListener("click", viewerNext);
       }
     }
 
@@ -3059,6 +3098,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     toggleArtistNoteBtn.addEventListener("click", () => {
+      if (isViewerOpen) return;
       const artist = ARTISTS_DATA.artists.find(a => a.id === activeArtistId);
       if (!artist) return;
       const fullNote = getFullNote(artist, currentLang());
@@ -3069,6 +3109,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     if (worksMoreBtn) {
       worksMoreBtn.addEventListener("click", () => {
+        if (isViewerOpen) return;
         worksExpanded = !worksExpanded;
         renderArtists();
       });
@@ -3076,6 +3117,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     if (backToListBtn) {
       backToListBtn.addEventListener("click", () => {
+        if (isViewerOpen) return;
         activeArtistId = null;
         noteExpanded = false;
         worksExpanded = false;
@@ -3086,6 +3128,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     if (artistSearchInput) {
       let searchRenderFrame = 0;
       artistSearchInput.addEventListener("input", (e) => {
+        if (isViewerOpen) return;
         searchQuery = e.target.value;
         noteExpanded = false;
         worksExpanded = false;
@@ -3167,8 +3210,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       closeLightbox(e);
     });
 
-    lightboxPrevBtn.onclick = viewerPrev;
-    lightboxNextBtn.onclick = viewerNext;
+    bindViewerButtons();
 
     if (lightboxInner) {
       lightboxInner.addEventListener("click", (e) => {
@@ -3205,7 +3247,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       } else if (e.key === "ArrowRight") {
         viewerNext(e);
       } else if (e.key === "Escape") {
-        closeDrawer();
         closeLightbox(e);
       }
     });
