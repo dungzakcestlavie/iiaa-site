@@ -2397,8 +2397,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let searchQuery = "";
     let memberAreaRendered = false;
 
-    let currentLightboxArtistId = null;
-    let currentLightboxWorkIndex = -1;
+    let viewerItems = [];
+    let viewerIndex = 0;
+    let viewerArtist = null;
 
     let touchStartX = 0;
     let touchStartY = 0;
@@ -2731,7 +2732,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       memberWorks.innerHTML = visibleWorks.map((work, index) => `
-        <article class="work-card" data-work-id="${work.id}" aria-label="${escapeHtml(workTitle(work, lang))}">
+        <article class="work-card" data-work-id="${work.id}" data-work-index="${index}" aria-label="${escapeHtml(workTitle(work, lang))}">
           <div class="work-thumb">
             <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(buildArtworkAlt(work, artist, lang))}" width="640" height="640" loading="lazy" decoding="async" fetchpriority="auto" />
           </div>
@@ -2754,10 +2755,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           : `<span class="ko">작품 더보기</span><span class="en">More Works</span>`;
       }
 
-      memberWorks.querySelectorAll("[data-work-id]").forEach(card => {
-        const workIndex = allWorks.findIndex(w => w.id === card.dataset.workId);
-        if (workIndex < 0) return;
-        card.addEventListener("click", () => openLightboxByIndex(artist.id, workIndex));
+      memberWorks.querySelectorAll("[data-work-index]").forEach(card => {
+        const workIndex = Number(card.dataset.workIndex);
+        if (!Number.isInteger(workIndex) || !allWorks[workIndex]) return;
+        card.addEventListener("click", () => openLightbox(allWorks, workIndex, artist));
       });
     }
 
@@ -2799,27 +2800,17 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       return ARTISTS_DATA.artists.find(a => a.id === artistId) || null;
     }
 
-    function getCurrentLightboxArtist(){
-      return getArtistById(currentLightboxArtistId);
-    }
-
-    function updateLightboxNavState(artist){
-      const works = artist?.works || [];
-      const hasPrev = currentLightboxWorkIndex > 0;
-      const hasNext = currentLightboxWorkIndex < works.length - 1;
-
-      lightboxPrevBtn.disabled = !hasPrev;
-      lightboxNextBtn.disabled = !hasNext;
+    function updateLightboxNavState(){
+      const hasMultipleItems = viewerItems.length > 1;
+      lightboxPrevBtn.disabled = !hasMultipleItems;
+      lightboxNextBtn.disabled = !hasMultipleItems;
     }
 
     function renderLightboxCurrent(){
-      const artist = getCurrentLightboxArtist();
       const lang = currentLang();
-      if (!artist) return;
-
-      const works = artist.works || [];
-      const work = works[currentLightboxWorkIndex];
-      if (!work) return;
+      const work = viewerItems[viewerIndex];
+      const artist = viewerArtist || ARTISTS_DATA.artists.find(a => (a.works || []).includes(work)) || null;
+      if (!work || !artist) return;
 
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
       lightboxImg.alt = buildArtworkAlt(work, artist, lang);
@@ -2831,15 +2822,17 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         preferredName(artist, lang)
       ].filter(Boolean).join("\n");
 
-      updateLightboxNavState(artist);
+      updateLightboxNavState();
     }
 
-    function openLightboxByIndex(artistId, workIndex){
-      const artist = getArtistById(artistId);
-      if (!artist || !artist.works || !artist.works[workIndex]) return;
+    function openLightbox(items, index, artist){
+      const safeItems = Array.isArray(items) ? items : [];
+      const safeIndex = Number.isInteger(index) ? index : 0;
+      if (!safeItems.length || !safeItems[safeIndex]) return;
 
-      currentLightboxArtistId = artistId;
-      currentLightboxWorkIndex = workIndex;
+      viewerItems = safeItems;
+      viewerIndex = safeIndex;
+      viewerArtist = artist || null;
       renderLightboxCurrent();
 
       lightbox.classList.add("is-open");
@@ -2854,25 +2847,20 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightboxImg.src = "";
       lightboxImg.alt = "";
       lightboxCaption.textContent = "";
-      currentLightboxArtistId = null;
-      currentLightboxWorkIndex = -1;
+      viewerItems = [];
+      viewerIndex = 0;
+      viewerArtist = null;
       resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
     }
 
     function goToAdjacentLightbox(direction){
-      const artist = getCurrentLightboxArtist();
-      if (!artist) return;
+      if (!viewerItems.length) return;
 
-      const works = artist.works || [];
-      const nextIndex = currentLightboxWorkIndex + direction;
-      if (nextIndex < 0 || nextIndex >= works.length) {
-        animateLightboxRebound(direction);
-        return;
-      }
+      const nextIndex = (viewerIndex + direction + viewerItems.length) % viewerItems.length;
 
       animateLightboxSlide(direction, () => {
-        currentLightboxWorkIndex = nextIndex;
+        viewerIndex = nextIndex;
         renderLightboxCurrent();
         lightboxImgWrap.style.transition = "none";
         lightboxImgWrap.style.opacity = "0";
