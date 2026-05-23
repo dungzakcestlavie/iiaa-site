@@ -1112,37 +1112,6 @@
       }
     }
 
-
-    /* Desktop Viewer isolation only — prevents background gallery clicks while Viewer is open */
-    @media (min-width:769px){
-      body.viewer-open .layout,
-      body.viewer-open .main,
-      body.viewer-open .sidebar,
-      body.viewer-open .desktop-nav,
-      body.viewer-open .view,
-      body.viewer-open .view-head,
-      body.viewer-open .view-body,
-      body.viewer-open .member-layout,
-      body.viewer-open .member-sidebar,
-      body.viewer-open .member-list,
-      body.viewer-open .member-detail,
-      body.viewer-open .works-grid,
-      body.viewer-open .work-card,
-      body.viewer-open .member-card,
-      body.viewer-open .artist-note,
-      body.viewer-open .back-to-list,
-      body.viewer-open .works-more-btn{
-        pointer-events:none !important;
-      }
-
-      body.viewer-open .lightbox,
-      body.viewer-open .lightbox *,
-      body.viewer-open #lightbox,
-      body.viewer-open #lightbox *{
-        pointer-events:auto !important;
-      }
-    }
-
     @media (prefers-reduced-motion: reduce){
       html{scroll-behavior:auto}
       *{transition:none !important;animation:none !important}
@@ -1173,6 +1142,32 @@
       -webkit-user-drag: none;
       transform-origin: center center;
       will-change: transform;
+    }
+
+
+    /* IIAA DESKTOP VIEWER BACKGROUND EVENT SHIELD — JSGALLERY LIGHTBOX PATTERN */
+    @media (min-width:769px){
+      body.viewer-open .layout,
+      body.viewer-open .footer,
+      body.viewer-open .drawer,
+      body.viewer-open .member-list,
+      body.viewer-open .member-card,
+      body.viewer-open .member-detail,
+      body.viewer-open .work-card,
+      body.viewer-open .works-grid,
+      body.viewer-open .view-head,
+      body.viewer-open .desktop-nav {
+        pointer-events:none !important;
+      }
+
+      body.viewer-open .lightbox,
+      body.viewer-open .lightbox * {
+        pointer-events:auto !important;
+      }
+
+      body.viewer-open .lightbox {
+        z-index:3000;
+      }
     }
 
   </style>
@@ -2487,7 +2482,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function activateAndScrollToView(viewName, options = {}){
-      if (isViewerOpen) return;
       if (!viewName) return;
       const { forceScroll = false, closeMenu = false } = options;
       const current = document.querySelector(".view.is-active")?.dataset.view || "";
@@ -2530,17 +2524,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       const activeViewName = document.querySelector(".view.is-active")?.dataset.view || "";
-      if (isViewerOpen) {
-        renderViewer();
-      } else if (memberAreaRendered || activeViewName === "member-works") {
+      if (memberAreaRendered || activeViewName === "member-works") {
         renderArtists();
+      }
+
+      if (lightbox.classList.contains("is-open")) {
+        renderViewer();
       }
 
       try { localStorage.setItem("iiaa_lang_final", html.lang); } catch (e) {}
     }
 
     function setActiveView(viewName){
-      if (isViewerOpen) return;
       const currentlyActive = document.querySelector(".view.is-active")?.dataset.view || "";
       const nextView = currentlyActive === viewName ? "" : viewName;
 
@@ -2560,7 +2555,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function resetToHome(){
-      if (isViewerOpen) return;
       closeDrawer();
       views.forEach(view => {
         view.classList.remove("is-active");
@@ -2580,7 +2574,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function openDrawer(){
-      if (isViewerOpen) return;
       if (!drawer) return;
       drawer.classList.add("is-open");
       drawer.setAttribute("aria-hidden", "false");
@@ -2969,7 +2962,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (!isViewerOpen || !activeViewerItems.length) return;
 
       activeViewerIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
-      renderViewer();
+      renderViewerOnly();
     }
 
     function viewerNext(e){
@@ -2982,7 +2975,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (!isViewerOpen || !activeViewerItems.length) return;
 
       activeViewerIndex = (activeViewerIndex + 1) % activeViewerItems.length;
-      renderViewer();
+      renderViewerOnly();
     }
 
     function goToAdjacentLightbox(direction, e){
@@ -3183,7 +3176,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     viewButtons.forEach(btn => {
       btn.addEventListener("click", () => {
-        if (isViewerOpen) return;
         const viewName = btn.dataset.viewBtn;
         if (!viewName) return;
 
@@ -3205,7 +3197,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     document.querySelectorAll(".view-head").forEach(head => {
       head.addEventListener("click", () => {
-        if (isViewerOpen) return;
         const parentView = head.closest(".view");
         const viewName = parentView?.dataset.view;
         if (!viewName) return;
@@ -3224,18 +3215,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     [logoHomeMobile, logoHomeDesktop].forEach(logo => {
       if (!logo) return;
-      logo.addEventListener("click", (e) => {
-        if (isViewerOpen) {
-          e.preventDefault();
-          e.stopPropagation();
-          return;
-        }
-        resetToHome();
-      });
+      logo.addEventListener("click", resetToHome);
       logo.addEventListener("keydown", e => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          if (!isViewerOpen) resetToHome();
+          resetToHome();
         }
       });
     });
@@ -3244,6 +3228,20 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     if (openBtnDesktop) openBtnDesktop.addEventListener("click", openDrawer);
     if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
     if (backdrop) backdrop.addEventListener("click", closeDrawer);
+
+
+    function stopViewerBackgroundEvent(e){
+      if (!isViewerOpen) return;
+      if (lightbox && lightbox.contains(e.target)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    }
+
+
+    document.addEventListener("click", stopViewerBackgroundEvent, true);
+    document.addEventListener("pointerdown", stopViewerBackgroundEvent, true);
+    document.addEventListener("mousedown", stopViewerBackgroundEvent, true);
 
     lightboxCloseBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -3254,40 +3252,29 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     bindViewerButtons();
 
-    document.addEventListener("click", (e) => {
-      if (!isViewerOpen) return;
-      if (!window.matchMedia("(min-width: 769px)").matches) return;
-      if (lightbox && lightbox.contains(e.target)) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-    }, true);
-
-
-    ["pointerdown", "mousedown", "mouseup"].forEach(eventName => {
-      document.addEventListener(eventName, (e) => {
-        if (!isViewerOpen) return;
-        if (!window.matchMedia("(min-width: 769px)").matches) return;
-        if (lightbox && lightbox.contains(e.target)) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-      }, true);
-    });
-
     if (lightboxInner) {
       lightboxInner.addEventListener("click", (e) => {
         e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       });
     }
 
     lightboxStage.addEventListener("click", (e) => {
       e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
     });
 
     lightboxCaption.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+    });
+
+
+    lightbox.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+    });
+
+    lightbox.addEventListener("mousedown", (e) => {
       e.stopPropagation();
     });
 
