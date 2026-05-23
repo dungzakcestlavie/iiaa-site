@@ -1367,21 +1367,7 @@
       }
     }
 
-  
-    /* IIAA MOBILE VIEWER BACKGROUND ONLY FIX — DESKTOP UNTOUCHED */
-    @media (max-width: 768px) {
-      .viewer-overlay,
-      .lightbox-overlay,
-      .modal-overlay,
-      .lightbox,
-      #lightbox {
-        background: #02090c !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
-      }
-    }
-
-</style>
+  </style>
 </head>
 <body>
   <div class="site">
@@ -3468,9 +3454,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       e.stopPropagation();
     });
 
+    /* IIAA VIEWER BACKGROUND CLICK CLOSE DISABLE ONLY — X BUTTON CLOSE ONLY */
     lightbox.addEventListener("click", (e) => {
-      if (e.target !== lightbox) return;
-      closeLightbox(e);
+      if (!isViewerOpen) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+      return;
     });
 
     lightboxStage.addEventListener("touchstart", handleLightboxTouchStart, { passive: true });
