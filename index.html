@@ -3251,7 +3251,15 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchStart(e){
       if (!lightbox.classList.contains("is-open")) return;
+      if (window.innerWidth <= 768 && e.touches && e.touches.length >= 2) {
+        isDraggingLightbox = false;
+        hasHorizontalIntent = false;
+        resetLightboxDrag();
+        return;
+      }
       if (!e.touches || e.touches.length !== 1) {
+        isDraggingLightbox = false;
+        hasHorizontalIntent = false;
         resetLightboxDrag();
         return;
       }
@@ -3270,7 +3278,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchMove(e){
       if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
+      if (window.innerWidth <= 768 && e.touches && e.touches.length >= 2) {
+        isDraggingLightbox = false;
+        hasHorizontalIntent = false;
+        lightboxImgWrap.classList.remove("is-dragging");
+        lightboxImgWrap.style.transition = "";
+        lightboxImgWrap.style.transform = "translate3d(0,0,0)";
+        lightboxImgWrap.style.opacity = "1";
+        return;
+      }
       if (!e.touches || e.touches.length !== 1) {
+        isDraggingLightbox = false;
+        hasHorizontalIntent = false;
         lightboxImgWrap.classList.remove("is-dragging");
         lightboxImgWrap.style.transition = "";
         lightboxImgWrap.style.transform = "translate3d(0,0,0)";
@@ -3300,6 +3319,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function handleLightboxTouchEnd(){
+      if (window.innerWidth <= 768 && !isDraggingLightbox) {
+        hasHorizontalIntent = false;
+        return;
+      }
       if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
 
       const deltaX = touchCurrentX - touchStartX;
@@ -3538,6 +3561,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       let panStartY = 0;
       let pinchStartDistance = 0;
       let pinchStartScale = 1;
+      let isPinching = false;
+      let zoomScale = 1;
+      let pinchJustEndedUntil = 0;
       let lastTapTime = 0;
       let lastTapX = 0;
       let lastTapY = 0;
@@ -3565,6 +3591,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function applyTransform(useTransition){
+        zoomScale = scale;
         wrap.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
         wrap.style.opacity = "1";
         wrap.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
@@ -3582,6 +3609,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         panStartY = 0;
         pinchStartDistance = 0;
         pinchStartScale = 1;
+        isPinching = false;
+        zoomScale = 1;
         mode = "none";
         wrap.classList.remove("is-dragging");
         wrap.style.transition = "";
@@ -3623,6 +3652,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         wrap.classList.add("is-dragging");
 
         if (e.touches.length >= 2) {
+          isPinching = true;
           mode = "pinch";
           pinchStartDistance = distance(e.touches[0], e.touches[1]);
           pinchStartScale = scale;
@@ -3636,7 +3666,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         lastY = t.clientY;
         panStartX = translateX;
         panStartY = translateY;
-        mode = scale > 1 ? "pan" : "swipe";
+        mode = (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) ? "pan" : "swipe";
       }
 
       function handleMove(e){
@@ -3647,6 +3677,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         e.stopImmediatePropagation();
 
         if (e.touches.length >= 2) {
+          isPinching = true;
           const mid = midpoint(e.touches[0], e.touches[1]);
           const currentDistance = distance(e.touches[0], e.touches[1]);
           if (!pinchStartDistance) {
@@ -3665,11 +3696,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dx = lastX - startX;
         const dy = lastY - startY;
 
-        if (scale > 1) {
+        if (isPinching || scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) {
           mode = "pan";
-          translateX = panStartX + dx;
-          translateY = panStartY + dy;
-          applyTransform(false);
+          if (scale > 1 || zoomScale > 1) {
+            translateX = panStartX + dx;
+            translateY = panStartY + dy;
+            applyTransform(false);
+          }
           return;
         }
 
@@ -3691,11 +3724,16 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         e.stopImmediatePropagation();
         wrap.classList.remove("is-dragging");
 
-        if (mode === "pinch") {
+        if (mode === "pinch" || isPinching || (e.touches && e.touches.length > 0)) {
+          pinchJustEndedUntil = Date.now() + 260;
+          if (!e.touches || e.touches.length < 2) {
+            isPinching = false;
+          }
           if (scale <= 1.02) {
             resetMobileLightboxZoom();
           } else {
             scale = clamp(scale, MIN_SCALE, MAX_SCALE);
+            zoomScale = scale;
             applyTransform(true);
           }
           mode = "none";
@@ -3705,13 +3743,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dx = lastX - startX;
         const dy = lastY - startY;
 
-        if (scale > 1) {
+        if (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) {
           applyTransform(true);
           mode = "none";
           return;
         }
 
-        if (mode === "swipe" && Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+        if (!isPinching && zoomScale <= 1 && mode === "swipe" && Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
           resetMobileLightboxZoom();
           if (dx < 0) {
             if (typeof goToAdjacentLightbox === "function") goToAdjacentLightbox(1);
@@ -3750,6 +3788,14 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         lastTapTime = now;
         lastTapX = t.clientX;
         lastTapY = t.clientY;
+      }
+
+      if (typeof goToAdjacentLightbox === "function") {
+        const originalGoToAdjacentLightbox = goToAdjacentLightbox;
+        goToAdjacentLightbox = function(){
+          if (isPinching || zoomScale > 1 || Date.now() < pinchJustEndedUntil) return;
+          return originalGoToAdjacentLightbox.apply(this, arguments);
+        };
       }
 
       stage.addEventListener("touchstart", handleStart, { passive:false, capture:true });
