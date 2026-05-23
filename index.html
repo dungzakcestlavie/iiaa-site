@@ -2698,8 +2698,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       const hasFullNote = fullNote.trim().length > 0;
       const noteText = hasFullNote ? (noteExpanded ? fullNote : summary) : summary;
 
-      const allWorks = artist.works || [];
-      const visibleWorks = worksExpanded ? allWorks : allWorks.slice(0, 3);
+      const currentArtistWorks = artist.works || [];
+      const visibleWorks = worksExpanded ? currentArtistWorks : currentArtistWorks.slice(0, 3);
 
       artistMainName.textContent = preferredName(artist, lang);
       artistSubName.textContent = secondaryName(artist, lang);
@@ -2717,7 +2717,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         toggleArtistNoteBtn.innerHTML = `<span class="ko">요약만 표시</span><span class="en">Summary Only</span>`;
       }
 
-      if (!allWorks.length) {
+      if (!currentArtistWorks.length) {
         memberWorks.innerHTML = `
           <div class="member-card" style="grid-column:1 / -1; cursor:default;">
             <strong class="member-name">${lang === "en" ? "No Works Yet" : "등록된 작품 없음"}</strong>
@@ -2746,7 +2746,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       `).join("");
 
       if (worksMoreBtn) {
-        const needMore = allWorks.length > 3;
+        const needMore = currentArtistWorks.length > 3;
         worksMoreBtn.classList.toggle("is-visible", needMore);
         worksMoreBtn.style.display = needMore ? "" : "none";
         worksMoreBtn.setAttribute("aria-label", worksExpanded ? (lang === "en" ? "Show less works" : "작품 접기") : (lang === "en" ? "More works" : "작품 더보기"));
@@ -2757,8 +2757,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       memberWorks.querySelectorAll("[data-work-index]").forEach(card => {
         const workIndex = Number(card.dataset.workIndex);
-        if (!Number.isInteger(workIndex) || !allWorks[workIndex]) return;
-        card.addEventListener("click", () => openLightbox(allWorks, workIndex, artist));
+        if (!Number.isInteger(workIndex) || !currentArtistWorks[workIndex]) return;
+        card.addEventListener("click", () => openLightbox(currentArtistWorks, workIndex, artist));
       });
     }
 
