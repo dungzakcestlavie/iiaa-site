@@ -2382,6 +2382,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     const lightbox = document.getElementById("lightbox");
     const lightboxStage = document.getElementById("lightboxStage");
+    const lightboxInner = lightbox ? lightbox.querySelector(".lightbox-inner") : null;
     const lightboxImgWrap = document.getElementById("lightboxImgWrap");
     const lightboxImg = document.getElementById("lightboxImg");
     const lightboxCaption = document.getElementById("lightboxCaption");
@@ -3098,15 +3099,44 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
     if (backdrop) backdrop.addEventListener("click", closeDrawer);
 
-    lightboxCloseBtn.addEventListener("click", closeLightbox);
-    lightboxPrevBtn.addEventListener("click", () => goToAdjacentLightbox(-1));
-    lightboxNextBtn.addEventListener("click", () => goToAdjacentLightbox(1));
+    lightboxCloseBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      closeLightbox();
+    });
+
+    lightboxPrevBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      goToAdjacentLightbox(-1);
+    });
+
+    lightboxNextBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      goToAdjacentLightbox(1);
+    });
+
+    if (lightboxInner) {
+      lightboxInner.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    lightboxStage.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
+
+    lightboxCaption.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
 
     lightbox.addEventListener("click", (e) => {
-      const clickedInsideStage = e.target.closest(".lightbox-stage");
-      const clickedClose = e.target.closest(".lightbox-close");
-      const clickedNav = e.target.closest(".lightbox-nav");
-      if (!clickedInsideStage && !clickedClose && !clickedNav) closeLightbox();
+      if (e.target !== lightbox) return;
+      closeLightbox();
     });
 
     lightboxStage.addEventListener("touchstart", handleLightboxTouchStart, { passive: true });
