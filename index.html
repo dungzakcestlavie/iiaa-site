@@ -1367,6 +1367,53 @@
       }
     }
 
+
+    /* IIAA MOBILE VIEWER TWO-POINT FIX ONLY — BACKGROUND + PINCH STABILITY */
+    @media (max-width: 768px) {
+      .viewer-overlay,
+      .lightbox-overlay,
+      .modal-overlay,
+      .lightbox,
+      #lightbox {
+        background: #02090c !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      .lightbox::before,
+      #lightbox::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background: #02090c !important;
+        opacity: 1 !important;
+        pointer-events: none !important;
+      }
+
+      body.viewer-open,
+      html.viewer-open {
+        background: #02090c !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+      }
+
+      .viewer-image-wrap,
+      .viewer-image,
+      .lightbox-image-wrap,
+      .lightbox-image,
+      .lightbox-img-wrap,
+      .lightbox-img,
+      #lightboxImgWrap,
+      #lightboxImg {
+        touch-action: none !important;
+        transform-origin: center center !important;
+        will-change: transform !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -2626,6 +2673,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let activeViewerIndex = 0;
     let activeViewerArtistId = null;
 
+    let mobileViewerGestureLock = false;
+
+    function isMobileViewerGestureLocked(){
+      return window.innerWidth <= 768 && mobileViewerGestureLock;
+    }
+
     let touchStartX = 0;
     let touchStartY = 0;
     let touchCurrentX = 0;
@@ -3160,6 +3213,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       if (!isViewerOpen || !activeViewerItems.length) return;
+      if (isMobileViewerGestureLocked()) return;
 
       activeViewerIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
       renderViewerOnly();
@@ -3173,6 +3227,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       if (!isViewerOpen || !activeViewerItems.length) return;
+      if (isMobileViewerGestureLocked()) return;
 
       activeViewerIndex = (activeViewerIndex + 1) % activeViewerItems.length;
       renderViewerOnly();
@@ -3592,7 +3647,14 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       function applyTransform(useTransition){
         zoomScale = scale;
-        wrap.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
+        mobileViewerGestureLock = isPinching || scale > 1.001 || zoomScale > 1.001 || Date.now() < pinchJustEndedUntil;
+        if (isPinching) {
+          img.style.transition = "none";
+          wrap.style.transition = "none";
+        } else {
+          img.style.transition = "";
+          wrap.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
+        }
         wrap.style.opacity = "1";
         wrap.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
       }
@@ -3611,8 +3673,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         pinchStartScale = 1;
         isPinching = false;
         zoomScale = 1;
+        mobileViewerGestureLock = false;
         mode = "none";
         wrap.classList.remove("is-dragging");
+        img.style.transition = "";
         wrap.style.transition = "";
         wrap.style.transform = "translate3d(0,0,0) scale(1)";
         wrap.style.opacity = "1";
@@ -3653,7 +3717,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         if (e.touches.length >= 2) {
           isPinching = true;
+          mobileViewerGestureLock = true;
           mode = "pinch";
+          img.style.transition = "none";
+          wrap.style.transition = "none";
           pinchStartDistance = distance(e.touches[0], e.touches[1]);
           pinchStartScale = scale;
           return;
@@ -3678,6 +3745,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         if (e.touches.length >= 2) {
           isPinching = true;
+          mobileViewerGestureLock = true;
+          img.style.transition = "none";
+          wrap.style.transition = "none";
           const mid = midpoint(e.touches[0], e.touches[1]);
           const currentDistance = distance(e.touches[0], e.touches[1]);
           if (!pinchStartDistance) {
@@ -3734,7 +3804,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           } else {
             scale = clamp(scale, MIN_SCALE, MAX_SCALE);
             zoomScale = scale;
-            applyTransform(true);
+            mobileViewerGestureLock = true;
+            applyTransform(false);
+            requestAnimationFrame(() => {
+              if (!isPinching) img.style.transition = "";
+            });
           }
           mode = "none";
           return;
@@ -3793,7 +3867,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (typeof goToAdjacentLightbox === "function") {
         const originalGoToAdjacentLightbox = goToAdjacentLightbox;
         goToAdjacentLightbox = function(){
-          if (isPinching || zoomScale > 1 || Date.now() < pinchJustEndedUntil) return;
+          if (isPinching || scale > 1.001 || zoomScale > 1.001 || Date.now() < pinchJustEndedUntil || mobileViewerGestureLock) return;
           return originalGoToAdjacentLightbox.apply(this, arguments);
         };
       }
