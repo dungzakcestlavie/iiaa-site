@@ -2688,9 +2688,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let mobileStartScale = 1;
     let mobileTranslateX = 0;
     let mobileTranslateY = 0;
+    let mobilePinchBlockUntil = 0;
 
     function isMobileViewerGestureLocked(){
-      return window.innerWidth <= 768 && (mobileViewerGestureLock || mobileIsPinching || mobileZoomScale > 1.02);
+      return window.innerWidth <= 768 && (mobileViewerGestureLock || mobileIsPinching || mobileZoomScale > 1.02 || Date.now() < mobilePinchBlockUntil);
     }
 
     function getTouchDistance(touches){
@@ -3326,10 +3327,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchStart(e){
       if (!lightbox.classList.contains("is-open")) return;
-      if (window.innerWidth <= 768 && e.touches && e.touches.length >= 2) {
+      if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
-        resetLightboxDrag();
+        mobileViewerGestureLock = true;
+        mobilePinchBlockUntil = Date.now() + 120;
         return;
       }
       if (!e.touches || e.touches.length !== 1) {
@@ -3352,16 +3354,15 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function handleLightboxTouchMove(e){
-      if (!isDraggingLightbox || !lightbox.classList.contains("is-open")) return;
-      if (window.innerWidth <= 768 && e.touches && e.touches.length >= 2) {
+      if (!lightbox.classList.contains("is-open")) return;
+      if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
-        lightboxImgWrap.classList.remove("is-dragging");
-        lightboxImgWrap.style.transition = "";
-        lightboxImgWrap.style.transform = "translate3d(0,0,0)";
-        lightboxImgWrap.style.opacity = "1";
+        mobileViewerGestureLock = true;
+        mobilePinchBlockUntil = Date.now() + 120;
         return;
       }
+      if (!isDraggingLightbox) return;
       if (!e.touches || e.touches.length !== 1) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
@@ -3394,6 +3395,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function handleLightboxTouchEnd(){
+      if (window.innerWidth <= 768 && isMobileViewerGestureLocked()) {
+        isDraggingLightbox = false;
+        hasHorizontalIntent = false;
+        mobilePinchBlockUntil = Date.now() + 120;
+        return;
+      }
       if (window.innerWidth <= 768 && !isDraggingLightbox) {
         hasHorizontalIntent = false;
         return;
@@ -3607,7 +3614,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
 
-    /* IIAA Mobile Lightbox Artwork Zoom + Swipe Fix */
+    /* IIAA MOBILE PINCH ZOOM MICRO TUNING ONLY — existing viewer preserved */
     (function(){
       if (!window.matchMedia("(max-width: 768px)").matches) return;
       const lb = document.getElementById("lightbox");
@@ -3746,6 +3753,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           isPinching = true;
           mobileIsPinching = true;
           mobileViewerGestureLock = true;
+          mobilePinchBlockUntil = Date.now() + 120;
           mode = "pinch";
           img.style.transition = "none";
           wrap.style.transition = "none";
@@ -3779,6 +3787,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           isPinching = true;
           mobileIsPinching = true;
           mobileViewerGestureLock = true;
+          mobilePinchBlockUntil = Date.now() + 120;
           img.style.transition = "none";
           wrap.style.transition = "none";
           const currentDistance = getTouchDistance(e.touches);
@@ -3831,7 +3840,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         wrap.classList.remove("is-dragging");
 
         if (mode === "pinch" || isPinching || (e.touches && e.touches.length > 0)) {
-          pinchJustEndedUntil = Date.now() + 260;
+          pinchJustEndedUntil = Date.now() + 120;
+          mobilePinchBlockUntil = pinchJustEndedUntil;
           if (!e.touches || e.touches.length < 2) {
             isPinching = false;
             mobileIsPinching = false;
