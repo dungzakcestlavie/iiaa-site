@@ -12,6 +12,8 @@
   <title>IIAA | Incheon International Art Association</title>
 
   <link rel="canonical" href="https://iiaa.or.kr/" />
+  <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
+  <link rel="dns-prefetch" href="//raw.githubusercontent.com" />
 
   <meta property="og:title" content="IIAA | Incheon International Art Association" />
   <meta property="og:description" content="A public art platform connecting exhibitions and member works through a structured system." />
@@ -879,6 +881,84 @@
       cursor:default;
     }
 
+
+    /* Desktop performance reservation only — mobile untouched */
+    @media (min-width:769px){
+      .layout{
+        min-height:calc(100vh - 72px);
+        contain:layout style;
+      }
+      .sidebar{
+        contain:layout paint style;
+      }
+      .main{
+        min-height:760px;
+        contain:layout style;
+      }
+      .desktop-top{
+        min-height:36px;
+      }
+      .hero{
+        min-height:98px;
+        contain:layout style paint;
+      }
+      .view{
+        contain:layout style paint;
+      }
+      .view:not(.is-active){
+        content-visibility:auto;
+        contain-intrinsic-size:92px;
+      }
+      .view-head{
+        min-height:84px;
+      }
+      .view-body{
+        contain:layout style;
+      }
+      .view.is-active .view-body{
+        min-height:120px;
+      }
+      .about-grid,
+      .exhib-grid,
+      .vision-grid,
+      .join-grid{
+        min-height:120px;
+      }
+      .contact-grid{
+        min-height:172px;
+      }
+      .member-layout{
+        min-height:460px;
+      }
+      .member-list{
+        min-height:128px;
+      }
+      .member-detail{
+        min-height:360px;
+      }
+      .work-thumb{
+        width:100%;
+        aspect-ratio:1 / 1;
+        contain:layout paint;
+      }
+      .work-thumb img{
+        width:100%;
+        height:100%;
+        aspect-ratio:1 / 1;
+        object-fit:cover;
+      }
+      .artist-note,
+      .member-card,
+      .mini-block,
+      .contact-card,
+      .work-card{
+        contain:layout paint style;
+      }
+      .lightbox-img{
+        contain:layout paint;
+      }
+    }
+
     @media (min-width:769px){
       .works-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
     }
@@ -1389,7 +1469,7 @@
       <div class="lightbox-inner">
         <div class="lightbox-stage" id="lightboxStage">
           <div class="lightbox-img-wrap" id="lightboxImgWrap">
-            <img class="lightbox-img" id="lightboxImg" alt="" draggable="false" />
+            <img class="lightbox-img" id="lightboxImg" alt="" width="1600" height="1600" decoding="async" fetchpriority="auto" draggable="false" />
           </div>
         </div>
         <div class="lightbox-caption" id="lightboxCaption"></div>
@@ -2315,6 +2395,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let noteExpanded = false;
     let worksExpanded = false;
     let searchQuery = "";
+    let memberAreaRendered = false;
 
     let currentLightboxArtistId = null;
     let currentLightboxWorkIndex = -1;
@@ -2363,6 +2444,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       });
     }
 
+
+    function ensureMemberAreaRendered(){
+      if (!memberAreaRendered) {
+        renderArtists();
+      }
+    }
+
     function activateAndScrollToView(viewName, options = {}){
       if (!viewName) return;
       const { forceScroll = false, closeMenu = false } = options;
@@ -2372,6 +2460,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       if (current !== viewName) {
         setActiveView(viewName);
+      }
+
+      if (viewName === "member-works") {
+        ensureMemberAreaRendered();
       }
 
       requestAnimationFrame(() => {
@@ -2401,7 +2493,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         artistSearchInput.placeholder = lang === "en" ? "Name" : "이름 / Name";
       }
 
-      renderArtists();
+      const activeViewName = document.querySelector(".view.is-active")?.dataset.view || "";
+      if (memberAreaRendered || activeViewName === "member-works") {
+        renderArtists();
+      }
 
       if (lightbox.classList.contains("is-open")) {
         renderLightboxCurrent();
@@ -2638,7 +2733,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       memberWorks.innerHTML = visibleWorks.map((work, index) => `
         <article class="work-card" data-work-id="${work.id}" aria-label="${escapeHtml(workTitle(work, lang))}">
           <div class="work-thumb">
-            <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(buildArtworkAlt(work, artist, lang))}" loading="lazy" />
+            <img src="${resolveAssetPath(work.image)}" alt="${escapeHtml(buildArtworkAlt(work, artist, lang))}" width="640" height="640" loading="lazy" decoding="async" fetchpriority="auto" />
           </div>
           <div class="work-meta">
             <h4 class="work-title">${escapeHtml(workTitle(work, lang))}</h4>
@@ -2667,6 +2762,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function renderArtists(){
+      memberAreaRendered = true;
       const list = filteredArtists();
 
       if (activeArtistId && !list.some(artist => artist.id === activeArtistId)) {
@@ -2938,11 +3034,16 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     if (artistSearchInput) {
+      let searchRenderFrame = 0;
       artistSearchInput.addEventListener("input", (e) => {
         searchQuery = e.target.value;
         noteExpanded = false;
         worksExpanded = false;
-        renderArtists();
+        if (searchRenderFrame) cancelAnimationFrame(searchRenderFrame);
+        searchRenderFrame = requestAnimationFrame(() => {
+          searchRenderFrame = 0;
+          renderArtists();
+        });
       });
     }
 
@@ -2983,6 +3084,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         const isActive = parentView.classList.contains("is-active");
         setActiveView(viewName);
+        if (viewName === "member-works") ensureMemberAreaRendered();
 
         if (!isActive) {
           requestAnimationFrame(() => {
@@ -3060,11 +3162,14 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     setLanguage(savedLang);
     setActiveView(savedView);
-    renderArtists();
+    if (savedView === "member-works") {
+      ensureMemberAreaRendered();
+    }
 
 
     /* IIAA Mobile Lightbox Artwork Zoom + Swipe Fix */
     (function(){
+      if (!window.matchMedia("(max-width: 768px)").matches) return;
       const lb = document.getElementById("lightbox");
       const stage = document.getElementById("lightboxStage");
       const wrap = document.getElementById("lightboxImgWrap");
