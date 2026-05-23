@@ -1145,28 +1145,68 @@
     }
 
 
-    /* IIAA DESKTOP VIEWER BACKGROUND EVENT SHIELD — JSGALLERY LIGHTBOX PATTERN */
+    /* IIAA DESKTOP VIEWER ARCHIVE PRO REFERENCE FIX ONLY — MOBILE UNTOUCHED */
     @media (min-width:769px){
+      html.viewer-open,
+      body.viewer-open{
+        overflow:hidden !important;
+        overscroll-behavior:none !important;
+      }
+
+      body.viewer-open .site > :not(.lightbox),
       body.viewer-open .layout,
       body.viewer-open .footer,
       body.viewer-open .drawer,
+      body.viewer-open .mobile-topbar,
+      body.viewer-open .mobile-hero,
+      body.viewer-open .mobile-primary,
       body.viewer-open .member-list,
       body.viewer-open .member-card,
       body.viewer-open .member-detail,
       body.viewer-open .work-card,
       body.viewer-open .works-grid,
+      body.viewer-open .view,
       body.viewer-open .view-head,
-      body.viewer-open .desktop-nav {
+      body.viewer-open .desktop-nav{
         pointer-events:none !important;
       }
 
       body.viewer-open .lightbox,
-      body.viewer-open .lightbox * {
+      body.viewer-open .lightbox *{
         pointer-events:auto !important;
       }
 
-      body.viewer-open .lightbox {
-        z-index:3000;
+      body.viewer-open .lightbox{
+        z-index:12000 !important;
+        background:#041015 !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+        isolation:isolate !important;
+      }
+
+      body.viewer-open .lightbox::before{
+        content:"";
+        position:absolute;
+        inset:0;
+        z-index:0;
+        background:#041015;
+        opacity:1;
+        pointer-events:none;
+      }
+
+      body.viewer-open .lightbox-inner,
+      body.viewer-open .lightbox-close,
+      body.viewer-open .lightbox-nav{
+        position:relative;
+        z-index:2;
+      }
+
+      body.viewer-open .lightbox-stage{
+        background:#041015;
+      }
+
+      body.viewer-open .lightbox-img{
+        background:#041015;
       }
     }
 
@@ -2889,6 +2929,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
+      document.documentElement.classList.add("viewer-open");
       document.body.classList.add("viewer-open");
       document.body.style.overflow = "hidden";
 
@@ -2912,6 +2953,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
+      document.documentElement.classList.add("viewer-open");
       document.body.classList.add("viewer-open");
       document.body.style.overflow = "hidden";
 
@@ -2940,6 +2982,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       lightbox.classList.remove("is-open");
       lightbox.setAttribute("aria-hidden", "true");
+      document.documentElement.classList.remove("viewer-open");
       document.body.classList.remove("viewer-open");
       lightboxImg.src = "";
       lightboxImg.alt = "";
@@ -3279,6 +3322,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     });
 
     lightbox.addEventListener("click", (e) => {
+      if (!isViewerOpen) return;
       if (e.target !== lightbox) return;
       closeLightbox(e);
     });
