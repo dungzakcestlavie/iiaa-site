@@ -1399,12 +1399,20 @@
       }
 
       .viewer-image-wrap,
-      .viewer-image,
       .lightbox-image-wrap,
-      .lightbox-image,
       .lightbox-img-wrap,
+      #lightboxImgWrap {
+        touch-action: none !important;
+        overflow: hidden !important;
+        transform-origin: center center !important;
+        will-change: transform !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+      }
+
+      .viewer-image,
+      .lightbox-image,
       .lightbox-img,
-      #lightboxImgWrap,
       #lightboxImg {
         touch-action: none !important;
         transform-origin: center center !important;
@@ -2674,9 +2682,21 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let activeViewerArtistId = null;
 
     let mobileViewerGestureLock = false;
+    let mobileIsPinching = false;
+    let mobileZoomScale = 1;
+    let mobileStartDistance = 0;
+    let mobileStartScale = 1;
+    let mobileTranslateX = 0;
+    let mobileTranslateY = 0;
 
     function isMobileViewerGestureLocked(){
-      return window.innerWidth <= 768 && mobileViewerGestureLock;
+      return window.innerWidth <= 768 && (mobileViewerGestureLock || mobileIsPinching || mobileZoomScale > 1.02);
+    }
+
+    function getTouchDistance(touches){
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.hypot(dx, dy);
     }
 
     let touchStartX = 0;
@@ -3647,8 +3667,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       function applyTransform(useTransition){
         zoomScale = scale;
-        mobileViewerGestureLock = isPinching || scale > 1.001 || zoomScale > 1.001 || Date.now() < pinchJustEndedUntil;
-        if (isPinching) {
+        mobileZoomScale = scale;
+        mobileTranslateX = translateX;
+        mobileTranslateY = translateY;
+        mobileViewerGestureLock = isPinching || mobileIsPinching || scale > 1.02 || zoomScale > 1.02 || Date.now() < pinchJustEndedUntil;
+        if (isPinching || mobileIsPinching) {
           img.style.transition = "none";
           wrap.style.transition = "none";
         } else {
@@ -3672,7 +3695,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         pinchStartDistance = 0;
         pinchStartScale = 1;
         isPinching = false;
+        mobileIsPinching = false;
         zoomScale = 1;
+        mobileZoomScale = 1;
+        mobileStartDistance = 0;
+        mobileStartScale = 1;
+        mobileTranslateX = 0;
+        mobileTranslateY = 0;
         mobileViewerGestureLock = false;
         mode = "none";
         wrap.classList.remove("is-dragging");
@@ -3683,27 +3712,25 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function setScaleFromPoint(nextScale, clientX, clientY){
-        const rect = stage.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        const previousScale = scale || 1;
         const targetScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
 
-        if (targetScale <= 1.001) {
+        if (targetScale <= 1.02) {
           scale = 1;
+          zoomScale = 1;
+          mobileZoomScale = 1;
           translateX = 0;
           translateY = 0;
+          mobileTranslateX = 0;
+          mobileTranslateY = 0;
           applyTransform(true);
           return;
         }
 
-        const pointX = clientX - centerX;
-        const pointY = clientY - centerY;
-        const ratio = targetScale / previousScale;
-
-        translateX = pointX - (pointX - translateX) * ratio;
-        translateY = pointY - (pointY - translateY) * ratio;
         scale = targetScale;
+        zoomScale = targetScale;
+        mobileZoomScale = targetScale;
+        translateX = mobileTranslateX;
+        translateY = mobileTranslateY;
         applyTransform(false);
       }
 
@@ -3717,12 +3744,17 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         if (e.touches.length >= 2) {
           isPinching = true;
+          mobileIsPinching = true;
           mobileViewerGestureLock = true;
           mode = "pinch";
           img.style.transition = "none";
           wrap.style.transition = "none";
-          pinchStartDistance = distance(e.touches[0], e.touches[1]);
+          pinchStartDistance = getTouchDistance(e.touches);
           pinchStartScale = scale;
+          mobileStartDistance = pinchStartDistance;
+          mobileStartScale = scale;
+          mobileTranslateX = translateX;
+          mobileTranslateY = translateY;
           return;
         }
 
@@ -3745,17 +3777,21 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         if (e.touches.length >= 2) {
           isPinching = true;
+          mobileIsPinching = true;
           mobileViewerGestureLock = true;
           img.style.transition = "none";
           wrap.style.transition = "none";
-          const mid = midpoint(e.touches[0], e.touches[1]);
-          const currentDistance = distance(e.touches[0], e.touches[1]);
+          const currentDistance = getTouchDistance(e.touches);
           if (!pinchStartDistance) {
             pinchStartDistance = currentDistance;
             pinchStartScale = scale;
+            mobileStartDistance = currentDistance;
+            mobileStartScale = scale;
           }
-          const nextScale = pinchStartScale * (currentDistance / pinchStartDistance);
-          setScaleFromPoint(nextScale, mid.x, mid.y);
+          const baseDistance = mobileStartDistance || pinchStartDistance || currentDistance || 1;
+          const baseScale = mobileStartScale || pinchStartScale || scale || 1;
+          const nextScale = baseScale * (currentDistance / baseDistance);
+          setScaleFromPoint(nextScale, 0, 0);
           mode = "pinch";
           return;
         }
@@ -3798,12 +3834,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           pinchJustEndedUntil = Date.now() + 260;
           if (!e.touches || e.touches.length < 2) {
             isPinching = false;
+            mobileIsPinching = false;
           }
+          mobileStartDistance = 0;
+          mobileStartScale = scale;
           if (scale <= 1.02) {
             resetMobileLightboxZoom();
           } else {
             scale = clamp(scale, MIN_SCALE, MAX_SCALE);
             zoomScale = scale;
+            mobileZoomScale = scale;
+            mobileTranslateX = translateX;
+            mobileTranslateY = translateY;
             mobileViewerGestureLock = true;
             applyTransform(false);
             requestAnimationFrame(() => {
