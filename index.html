@@ -1481,42 +1481,19 @@
     }
 
 
-    /* IIAA MOBILE VIEWER X SAFE POSITION + PINCH STABILITY ONLY — MOBILE ONLY */
+    /* IIAA MOBILE VIEWER X SAFE POSITION ONLY — MOBILE ONLY */
     @media (max-width: 768px) {
       .viewer-close,
       .lightbox-close,
       .modal-close,
-      .close,
       #lightboxCloseBtn {
         position: fixed !important;
-        top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+        top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
         right: calc(env(safe-area-inset-right, 0px) + 14px) !important;
         z-index: 99999 !important;
         transform: none !important;
         pointer-events: auto !important;
         touch-action: manipulation !important;
-      }
-    }
-
-
-    /* IIAA MOBILE PINCH LAYOUT LOCK ONLY — GPU TRANSFORM ONLY */
-    @media (max-width: 768px) {
-      .viewer-image,
-      .lightbox-image,
-      .lightbox-img,
-      #lightboxImg {
-        will-change: transform !important;
-        transform-origin: center center !important;
-        backface-visibility: hidden !important;
-        -webkit-backface-visibility: hidden !important;
-      }
-
-      .viewer-image-wrap,
-      .lightbox-image-wrap,
-      .lightbox-img-wrap,
-      #lightboxImgWrap {
-        overflow: hidden !important;
-        touch-action: none !important;
       }
     }
 
