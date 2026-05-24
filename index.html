@@ -1480,6 +1480,24 @@
       }
     }
 
+
+    /* IIAA MOBILE VIEWER X SAFE POSITION + PINCH STABILITY ONLY — MOBILE ONLY */
+    @media (max-width: 768px) {
+      .viewer-close,
+      .lightbox-close,
+      .modal-close,
+      .close,
+      #lightboxCloseBtn {
+        position: fixed !important;
+        top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+        right: calc(env(safe-area-inset-right, 0px) + 14px) !important;
+        z-index: 99999 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+        touch-action: manipulation !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3835,7 +3853,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         lastY = t.clientY;
         panStartX = translateX;
         panStartY = translateY;
-        mode = (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) ? "pan" : "swipe";
+        mode = (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil || mobileIsPinching) ? "pan" : "swipe";
       }
 
       function handleMove(e){
@@ -3874,7 +3892,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dx = lastX - startX;
         const dy = lastY - startY;
 
-        if (isPinching || scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) {
+        if (isPinching || mobileIsPinching || scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil) {
           mode = "pan";
           if (scale > 1 || zoomScale > 1) {
             translateX = panStartX + dx;
