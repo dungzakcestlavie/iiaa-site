@@ -1498,6 +1498,28 @@
       }
     }
 
+
+    /* IIAA MOBILE PINCH LAYOUT LOCK ONLY — GPU TRANSFORM ONLY */
+    @media (max-width: 768px) {
+      .viewer-image,
+      .lightbox-image,
+      .lightbox-img,
+      #lightboxImg {
+        will-change: transform !important;
+        transform-origin: center center !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+      }
+
+      .viewer-image-wrap,
+      .lightbox-image-wrap,
+      .lightbox-img-wrap,
+      #lightboxImgWrap {
+        overflow: hidden !important;
+        touch-action: none !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3190,6 +3212,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function renderViewerOnly(){
+      if (window.innerWidth <= 768 && (mobileIsPinching || Date.now() < mobilePinchBlockUntil)) return;
       if (!isViewerOpen) return;
       if (!activeViewerItems.length) return;
 
@@ -3719,6 +3742,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       let panStartY = 0;
       let pinchStartDistance = 0;
       let pinchStartScale = 1;
+      let pinchBaseX = 0;
+      let pinchBaseY = 0;
+      let pinchBaseScale = 1;
       let isPinching = false;
       let zoomScale = 1;
       let pinchJustEndedUntil = 0;
@@ -3778,6 +3804,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         panStartY = 0;
         pinchStartDistance = 0;
         pinchStartScale = 1;
+        pinchBaseX = 0;
+        pinchBaseY = 0;
+        pinchBaseScale = 1;
         isPinching = false;
         mobileIsPinching = false;
         zoomScale = 1;
@@ -3815,8 +3844,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         scale = targetScale;
         zoomScale = targetScale;
         mobileZoomScale = targetScale;
-        translateX = mobileTranslateX;
-        translateY = mobileTranslateY;
+        if (isPinching || mobileIsPinching || mode === "pinch") {
+          translateX = pinchBaseX;
+          translateY = pinchBaseY;
+        } else {
+          translateX = mobileTranslateX;
+          translateY = mobileTranslateY;
+        }
         applyTransform(false);
       }
 
@@ -3837,12 +3871,17 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           mode = "pinch";
           img.style.transition = "none";
           wrap.style.transition = "none";
+          img.style.width = "";
+          img.style.height = "";
+          pinchBaseX = translateX || 0;
+          pinchBaseY = translateY || 0;
+          pinchBaseScale = scale || 1;
           pinchStartDistance = getTouchDistance(e.touches);
-          pinchStartScale = scale;
+          pinchStartScale = pinchBaseScale;
           mobileStartDistance = pinchStartDistance;
-          mobileStartScale = scale;
-          mobileTranslateX = translateX;
-          mobileTranslateY = translateY;
+          mobileStartScale = pinchBaseScale;
+          mobileTranslateX = pinchBaseX;
+          mobileTranslateY = pinchBaseY;
           return;
         }
 
@@ -3879,9 +3918,21 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
             mobileStartScale = scale;
           }
           const baseDistance = mobileStartDistance || pinchStartDistance || currentDistance || 1;
-          const baseScale = mobileStartScale || pinchStartScale || scale || 1;
-          const nextScale = baseScale * (currentDistance / baseDistance);
-          setScaleFromPoint(nextScale, 0, 0);
+          const baseScale = pinchBaseScale || mobileStartScale || pinchStartScale || scale || 1;
+          const currentScale = clamp(baseScale * (currentDistance / baseDistance), MIN_SCALE, MAX_SCALE);
+          scale = currentScale;
+          zoomScale = currentScale;
+          mobileZoomScale = currentScale;
+          translateX = pinchBaseX;
+          translateY = pinchBaseY;
+          mobileTranslateX = pinchBaseX;
+          mobileTranslateY = pinchBaseY;
+          img.style.width = "";
+          img.style.height = "";
+          img.style.transition = "none";
+          wrap.style.transition = "none";
+          wrap.style.opacity = "1";
+          wrap.style.transform = `translate3d(${pinchBaseX}px, ${pinchBaseY}px, 0) scale(${currentScale})`;
           mode = "pinch";
           return;
         }
