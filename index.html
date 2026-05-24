@@ -1497,6 +1497,65 @@
       }
     }
 
+
+    /* IIAA MOBILE VIEWER FINAL MICRO FIX — X OUTSIDE ART + PINCH JUMP LOCK ONLY */
+    @media (max-width: 768px) {
+      .lightbox-close,
+      .viewer-close,
+      .modal-close,
+      .close {
+        position: fixed !important;
+        top: calc(env(safe-area-inset-top) + 18px) !important;
+        right: calc(env(safe-area-inset-right) + 18px) !important;
+        z-index: 99999 !important;
+      }
+
+      .lightbox-inner,
+      .viewer-content,
+      .lightbox-content,
+      .modal-content {
+        padding-top: calc(env(safe-area-inset-top) + 78px) !important;
+      }
+
+      .lightbox-img,
+      .viewer-image,
+      .lightbox-image,
+      .modal-image {
+        max-height: calc(100dvh - 260px) !important;
+      }
+
+      .lightbox-stage,
+      .lightbox-img-wrap,
+      .viewer-image-wrap,
+      .lightbox-image-wrap,
+      .modal-image-wrap {
+        touch-action: none !important;
+        overscroll-behavior: contain !important;
+        overflow: hidden !important;
+      }
+
+      .lightbox-img-wrap,
+      .viewer-image-wrap,
+      .lightbox-image-wrap,
+      .modal-image-wrap {
+        will-change: transform;
+        transform-origin: center center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+
+      .lightbox-img,
+      .viewer-image,
+      .lightbox-image,
+      .modal-image {
+        will-change: auto;
+        transform: none !important;
+        transform-origin: center center;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3690,7 +3749,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
 
-    /* IIAA MOBILE PINCH ZOOM MICRO TUNING ONLY — existing viewer preserved */
+    /* IIAA MOBILE PINCH ZOOM MICRO TUNING ONLY — existing viewer preserved / wrapper-only transform */
     (function(){
       if (!window.matchMedia("(max-width: 768px)").matches) return;
       const lb = document.getElementById("lightbox");
@@ -3735,6 +3794,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         return lb.classList.contains("is-open");
       }
 
+      function getMobileTransformTarget(){
+        /* Final safety: IIAA uses .lightbox-img-wrap as the single transform target.
+           Do not apply transform to .lightbox-img at the same time. */
+        return wrap;
+      }
+
       function clamp(value, min, max){
         return Math.max(min, Math.min(max, value));
       }
@@ -3753,20 +3818,22 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function applyTransform(useTransition){
+        const targetImage = getMobileTransformTarget();
         zoomScale = scale;
         mobileZoomScale = scale;
         mobileTranslateX = translateX;
         mobileTranslateY = translateY;
         mobileViewerGestureLock = isPinching || mobileIsPinching || scale > 1.02 || zoomScale > 1.02 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil;
+        img.style.transform = "none";
+        img.style.transition = "";
         if (isPinching || mobileIsPinching) {
-          img.style.transition = "none";
-          wrap.style.transition = "none";
+          targetImage.style.transition = "none";
         } else {
-          img.style.transition = "";
-          wrap.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
+          targetImage.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
         }
-        wrap.style.opacity = "1";
-        wrap.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+        targetImage.style.opacity = "1";
+        targetImage.style.transformOrigin = "center center";
+        targetImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
       }
 
       function resetMobileLightboxZoom(){
@@ -3794,11 +3861,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobileTranslateY = 0;
         mobileViewerGestureLock = Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil;
         mode = "none";
+        const targetImage = getMobileTransformTarget();
         wrap.classList.remove("is-dragging");
         img.style.transition = "";
-        wrap.style.transition = "";
-        wrap.style.transform = "translate3d(0,0,0) scale(1)";
-        wrap.style.opacity = "1";
+        img.style.transform = "none";
+        targetImage.style.transition = "";
+        targetImage.style.transform = "translate3d(0,0,0) scale(1)";
+        targetImage.style.opacity = "1";
       }
 
       function setScaleFromPoint(nextScale, clientX, clientY){
@@ -3843,11 +3912,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           isPinching = true;
           mobileIsPinching = true;
           mobileViewerGestureLock = true;
-          pinchLockUntil = Date.now() + 120;
+          pinchLockUntil = Date.now() + 180;
           mobilePinchBlockUntil = pinchLockUntil;
           mode = "pinch";
-          img.style.transition = "none";
-          wrap.style.transition = "none";
+          img.style.transition = "";
+          img.style.transform = "none";
+          getMobileTransformTarget().style.transition = "none";
           img.style.width = "";
           img.style.height = "";
           pinchBaseX = translateX || 0;
@@ -3883,10 +3953,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           isPinching = true;
           mobileIsPinching = true;
           mobileViewerGestureLock = true;
-          pinchLockUntil = Date.now() + 120;
+          pinchLockUntil = Date.now() + 180;
           mobilePinchBlockUntil = pinchLockUntil;
-          img.style.transition = "none";
-          wrap.style.transition = "none";
+          img.style.transition = "";
+          img.style.transform = "none";
+          const targetImage = getMobileTransformTarget();
+          targetImage.style.transition = "none";
           const currentDistance = getTouchDistance(e.touches);
           if (!pinchStartDistance) {
             pinchStartDistance = currentDistance;
@@ -3906,10 +3978,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           mobileTranslateY = pinchBaseY;
           img.style.width = "";
           img.style.height = "";
-          img.style.transition = "none";
-          wrap.style.transition = "none";
-          wrap.style.opacity = "1";
-          wrap.style.transform = `translate3d(${pinchBaseX}px, ${pinchBaseY}px, 0) scale(${currentScale})`;
+          img.style.transition = "";
+          img.style.transform = "none";
+          targetImage.style.transition = "none";
+          targetImage.style.opacity = "1";
+          targetImage.style.transformOrigin = "center center";
+          targetImage.style.transform = `translate3d(${pinchBaseX}px, ${pinchBaseY}px, 0) scale(${currentScale})`;
           mode = "pinch";
           return;
         }
@@ -3949,7 +4023,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         wrap.classList.remove("is-dragging");
 
         if (mode === "pinch" || isPinching || (e.touches && e.touches.length > 0)) {
-          pinchJustEndedUntil = Date.now() + 120;
+          pinchJustEndedUntil = Date.now() + 180;
           pinchLockUntil = pinchJustEndedUntil;
           mobilePinchBlockUntil = pinchLockUntil;
           if (!e.touches || e.touches.length < 2) {
@@ -4054,6 +4128,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (typeof renderLightboxCurrent === "function") {
         const originalRenderLightboxCurrent = renderLightboxCurrent;
         renderLightboxCurrent = function(){
+          if (mobileIsPinching || Date.now() < mobilePinchBlockUntil) return;
           resetMobileLightboxZoom();
           return originalRenderLightboxCurrent.apply(this, arguments);
         };
