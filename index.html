@@ -50,10 +50,10 @@
       --text:#F4F1EA;
       --muted:rgba(244,241,234,0.65);
       --muted-soft:rgba(244,241,234,0.44);
-      --gold:#B8963E;
-      --gold-soft:rgba(184,150,62,0.74);
+      --gold:#D4B46A;
+      --gold-soft:rgba(212,180,106,0.78);
       --gold-border:rgba(184,150,62,0.34);
-      --bronze:#8A6A2F;
+      --bronze:#A8833F;
       --ease:180ms cubic-bezier(0.25, 0.8, 0.25, 1);
       --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,"Times New Roman","Noto Serif KR",serif;
       --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",Arial,sans-serif;
@@ -549,7 +549,7 @@
       border-radius:999px;
       border:1px solid rgba(184,150,62,.10);
       background:rgba(255,255,255,0.01);
-      color:rgba(184,150,62,.78);
+      color:rgba(212,180,106,.82);
       font-size:12px;
       font-weight:600;
       cursor:pointer;
@@ -1766,7 +1766,47 @@
       }
     }
 
-  </style>
+  
+    /* IIAA GOLD TEXT MICRO TUNING ONLY — color / text-shadow only */
+    :root{
+      --gold:#D4B46A;
+      --gold-soft:rgba(212,180,106,0.78);
+      --bronze:#A8833F;
+    }
+
+    .gold-text,
+    .hero h1,
+    .view-title,
+    .mobile-hero-name,
+    .drawer-title,
+    .search-label,
+    .artist-note-title,
+    .works-more-btn,
+    .desktop-nav button.is-active,
+    .mobile-primary button.is-active,
+    .lang-btn.is-active,
+    .lightbox-nav,
+    .lightbox-nav:hover,
+    .lightbox-nav:focus-visible {
+      color:var(--gold) !important;
+      text-shadow:0 0 1px rgba(255,215,140,0.18);
+    }
+
+    .brand-mobile-logo,
+    .iiaa-logo {
+      color:var(--bronze) !important;
+      text-shadow:0 0 1px rgba(255,215,140,0.14);
+    }
+
+    .view-index,
+    .member-card:hover::after,
+    .member-card.is-active::after,
+    .mobile-primary button.is-active .arrow {
+      color:var(--gold-soft) !important;
+      text-shadow:0 0 1px rgba(255,215,140,0.12);
+    }
+
+</style>
 </head>
 <body>
   <div class="site">
