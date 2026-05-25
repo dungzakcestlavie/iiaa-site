@@ -1745,11 +1745,15 @@
     /* IIAA MOBILE VIEWER PINCH VIEWPORT LOCK FIX ONLY — MOBILE ONLY */
     @media (max-width: 768px) {
       html.mobile-viewer-open,
-      body.mobile-viewer-open {
+      body.mobile-viewer-open,
+      html.iiaa-mobile-viewer-lock,
+      body.iiaa-mobile-viewer-lock {
         position: fixed !important;
         overflow: hidden !important;
         width: 100% !important;
         height: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
       }
@@ -1758,12 +1762,28 @@
       .lightbox-overlay,
       .viewer,
       .lightbox,
-      #lightbox {
+      #lightbox,
+      #lightboxStage,
+      .lightbox-stage,
+      .lightbox-inner {
         position: fixed !important;
         inset: 0 !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
         touch-action: none !important;
+      }
+
+      .lightbox-inner {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(0, 1fr) auto !important;
+      }
+
+      #lightboxStage,
+      .lightbox-stage {
+        position: relative !important;
+        width: 100% !important;
+        height: 100% !important;
       }
 
       .viewer-image-wrap,
@@ -3533,6 +3553,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (window.innerWidth <= 768) {
         document.documentElement.classList.add("mobile-viewer-open");
         document.body.classList.add("mobile-viewer-open");
+        document.documentElement.classList.add("iiaa-mobile-viewer-lock");
+        document.body.classList.add("iiaa-mobile-viewer-lock");
       }
       document.body.style.overflow = "hidden";
 
@@ -3561,6 +3583,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       if (window.innerWidth <= 768) {
         document.documentElement.classList.add("mobile-viewer-open");
         document.body.classList.add("mobile-viewer-open");
+        document.documentElement.classList.add("iiaa-mobile-viewer-lock");
+        document.body.classList.add("iiaa-mobile-viewer-lock");
       }
       document.body.style.overflow = "hidden";
 
@@ -3593,6 +3617,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       document.body.classList.remove("viewer-open");
       document.documentElement.classList.remove("mobile-viewer-open");
       document.body.classList.remove("mobile-viewer-open");
+      document.documentElement.classList.remove("iiaa-mobile-viewer-lock");
+      document.body.classList.remove("iiaa-mobile-viewer-lock");
       lightboxImg.src = "";
       lightboxImg.alt = "";
       lightboxCaption.textContent = "";
@@ -3995,10 +4021,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
 
-    /* IIAA MOBILE PINCH ZOOM SINGLE ENGINE FIX — DUPLICATE RENDERING CLEANUP ONLY
+    /* IIAA MOBILE VIEWER TOUCH ENGINE CLEANUP ONLY — FIX SCREEN DRAG DURING PINCH
        Mobile only. Desktop / notebook viewer behavior is untouched.
-       One engine only: pinch + pan + swipe are handled here in capture phase.
-       One transform target only: .lightbox-img-wrap. The img itself is never transformed. */
+       Single mobile engine: overlay scroll lock + pinch + pan + swipe.
+       Single transform target: #lightboxImgWrap only. #lightboxImg is never transformed. */
     (() => {
       const isMobile = () => window.innerWidth <= 768;
       const lightboxEl = lightbox;
@@ -4009,11 +4035,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       const media = window.matchMedia("(max-width: 768px)");
 
       if (!lightboxEl || !stage || !wrap || !img) return;
-
-      lightboxEl.addEventListener("touchmove", function(e){
-        if (!isMobile() || !isOpen()) return;
-        e.preventDefault();
-      }, { passive:false });
 
       const MIN_SCALE = 1;
       const MAX_SCALE = 4;
@@ -4028,7 +4049,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       let mobileTranslateYLocal = 0;
       let mobileStartTranslateXLocal = 0;
       let mobileStartTranslateYLocal = 0;
-
       let touchStartXLocal = 0;
       let touchStartYLocal = 0;
       let touchLastXLocal = 0;
@@ -4037,10 +4057,25 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       let pinchBlockUntil = 0;
 
       function isOpen(){
-        return lightboxEl.classList.contains("is-open");
+        return !!(lightboxEl && lightboxEl.classList.contains("is-open"));
       }
 
-      function zoomTarget(){
+      function lockMobileViewport(){
+        if (!isMobile()) return;
+        document.documentElement.classList.add("iiaa-mobile-viewer-lock");
+        document.body.classList.add("iiaa-mobile-viewer-lock");
+        document.documentElement.classList.add("mobile-viewer-open");
+        document.body.classList.add("mobile-viewer-open");
+      }
+
+      function unlockMobileViewport(){
+        document.documentElement.classList.remove("iiaa-mobile-viewer-lock");
+        document.body.classList.remove("iiaa-mobile-viewer-lock");
+        document.documentElement.classList.remove("mobile-viewer-open");
+        document.body.classList.remove("mobile-viewer-open");
+      }
+
+      function mobileZoomTarget(){
         return wrap;
       }
 
@@ -4067,12 +4102,15 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobileViewerGestureLock = !!lock || mobileIsPinching || mobileScale > 1.02 || Date.now() < pinchBlockUntil;
       }
 
-      function applyMobileTransform(transition = false){
-        const target = zoomTarget();
+      function applyMobileZoomTransform(transition = false){
+        const target = mobileZoomTarget();
         if (!target) return;
 
+        /* Transform target is wrapper only. Image transform is explicitly cleared. */
         img.style.transform = "none";
         img.style.transition = "";
+        img.style.willChange = "auto";
+
         target.style.transformOrigin = "center center";
         target.style.willChange = "transform";
         target.style.opacity = "1";
@@ -4097,10 +4135,16 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobileIsPinching = false;
         mobileViewerGestureLock = Date.now() < pinchBlockUntil;
         wrap.classList.remove("is-dragging");
-        applyMobileTransform(transition);
+        applyMobileZoomTransform(transition);
+      }
+
+      function preventViewerScroll(e){
+        if (!isMobile() || !isOpen()) return;
+        e.preventDefault();
       }
 
       function beginMobilePinch(touches){
+        lockMobileViewport();
         mode = "pinch";
         mobileIsPinching = true;
         mobileViewerGestureLock = true;
@@ -4110,18 +4154,19 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobilePinchStartDistance = getTouchDistance(touches);
         localStartScale = mobileScale;
 
-        /* Critical: freeze current translate at pinch start. */
+        /* Critical: freeze translate exactly at pinch start. */
         mobileStartTranslateXLocal = mobileTranslateXLocal;
         mobileStartTranslateYLocal = mobileTranslateYLocal;
 
         wrap.classList.add("is-dragging");
-        applyMobileTransform(false);
+        applyMobileZoomTransform(false);
       }
 
       function updateMobilePinch(touches){
         if (!mobilePinchStartDistance) beginMobilePinch(touches);
 
-        const nextScale = localStartScale * (getTouchDistance(touches) / mobilePinchStartDistance);
+        const dist = getTouchDistance(touches);
+        const nextScale = localStartScale * (dist / mobilePinchStartDistance);
         mobileScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
 
         /* Critical: no translate accumulation during pinch. Scale only. */
@@ -4132,7 +4177,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobilePinchBlockUntil = pinchBlockUntil;
         mobileIsPinching = true;
         mobileViewerGestureLock = true;
-        applyMobileTransform(false);
+        applyMobileZoomTransform(false);
       }
 
       function finishMobilePinch(){
@@ -4147,7 +4192,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         mobileScale = clamp(mobileScale, MIN_SCALE, MAX_SCALE);
         mode = "pan";
-        applyMobileTransform(false);
+        applyMobileZoomTransform(false);
         requestAnimationFrame(() => {
           mobileIsPinching = false;
           mobileViewerGestureLock = mobileScale > 1.02 || Date.now() < pinchBlockUntil;
@@ -4157,18 +4202,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       function navigate(direction){
         if (mobileIsPinching || mode === "pinch" || mobileScale > 1.02 || Date.now() < pinchBlockUntil) return;
         resetMobileZoom(false);
-        if (typeof goToAdjacentLightbox === "function") {
-          goToAdjacentLightbox(direction);
-        }
+        if (typeof goToAdjacentLightbox === "function") goToAdjacentLightbox(direction);
       }
 
-      function onTouchStart(e){
+      function onMobileViewerTouchStart(e){
         if (!isMobile() || !isOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
         e.preventDefault();
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+        lockMobileViewport();
 
         if (e.touches.length === 2) {
           beginMobilePinch(e.touches);
@@ -4187,13 +4232,15 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         syncGlobalGestureState(mode === "pan");
       }
 
-      function onTouchMove(e){
+      function onMobileViewerTouchMove(e){
         if (!isMobile() || !isOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
         e.preventDefault();
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
+        lockMobileViewport();
 
         if (e.touches.length === 2) {
           updateMobilePinch(e.touches);
@@ -4212,7 +4259,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           mode = "pan";
           mobileTranslateXLocal = mobileStartTranslateXLocal + dx;
           mobileTranslateYLocal = mobileStartTranslateYLocal + dy;
-          applyMobileTransform(false);
+          applyMobileZoomTransform(false);
           return;
         }
 
@@ -4226,15 +4273,17 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           mobileTranslateXLocal = limitedX;
           mobileTranslateYLocal = 0;
           mobileScale = 1;
-          const target = zoomTarget();
+          const target = mobileZoomTarget();
           target.style.transition = "none";
           target.style.opacity = String(Math.max(0.72, 1 - Math.abs(limitedX) / 260));
+          target.style.transformOrigin = "center center";
           target.style.transform = `translate3d(${limitedX}px, 0, 0) scale(1)`;
+          img.style.transform = "none";
           syncGlobalGestureState(false);
         }
       }
 
-      function onTouchEnd(e){
+      function onMobileViewerTouchEnd(e){
         if (!isMobile() || !isOpen()) return;
 
         e.preventDefault();
@@ -4257,7 +4306,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dy = touchLastYLocal - touchStartYLocal;
 
         if (mobileScale > 1.02 || mode === "pan") {
-          applyMobileTransform(true);
+          applyMobileZoomTransform(true);
           mode = "pan";
           return;
         }
@@ -4274,7 +4323,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       renderViewerOnly = function(){
         if (isMobile() && (mobileIsPinching || mode === "pinch" || mobileScale > 1.02 || Date.now() < pinchBlockUntil)) return;
         const result = originalRenderViewerOnly.apply(this, arguments);
-        if (isMobile()) resetMobileZoom(false);
+        if (isMobile()) {
+          lockMobileViewport();
+          resetMobileZoom(false);
+        }
         return result;
       };
 
@@ -4293,17 +4345,22 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       const originalCloseLightbox = closeLightbox;
       closeLightbox = function(){
         resetMobileZoom(false);
+        unlockMobileViewport();
         return originalCloseLightbox.apply(this, arguments);
       };
 
-      stage.addEventListener("touchstart", onTouchStart, { passive:false, capture:true });
-      stage.addEventListener("touchmove", onTouchMove, { passive:false, capture:true });
-      stage.addEventListener("touchend", onTouchEnd, { passive:false, capture:true });
-      stage.addEventListener("touchcancel", onTouchEnd, { passive:false, capture:true });
+      /* Existing desktop stage listeners remain, but return immediately on mobile.
+         This capture-phase mobile engine owns all mobile touch gestures. */
+      stage.addEventListener("touchstart", onMobileViewerTouchStart, { passive:false, capture:true });
+      stage.addEventListener("touchmove", onMobileViewerTouchMove, { passive:false, capture:true });
+      stage.addEventListener("touchend", onMobileViewerTouchEnd, { passive:false, capture:true });
+      stage.addEventListener("touchcancel", onMobileViewerTouchEnd, { passive:false, capture:true });
+
+      lightboxEl.addEventListener("touchmove", preventViewerScroll, { passive:false, capture:false });
+      lightboxEl.addEventListener("touchstart", () => { if (isMobile() && isOpen()) lockMobileViewport(); }, { passive:true, capture:false });
 
       if (close) close.addEventListener("click", () => resetMobileZoom(false), { capture:true });
 
-      /* Mobile Safari native gestures are blocked only while the mobile lightbox is open. */
       ["gesturestart", "gesturechange", "gestureend"].forEach((type) => {
         document.addEventListener(type, function(e){
           if (isMobile() && isOpen()) {
@@ -4314,7 +4371,6 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }, { passive:false, capture:true });
       });
 
-      /* Mobile double-tap zoom is intentionally disabled so it cannot compete with pinch. */
       stage.addEventListener("dblclick", function(e){
         if (isMobile() && isOpen()) {
           e.preventDefault();
@@ -4323,9 +4379,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
       }, { passive:false, capture:true });
 
-      media.addEventListener?.("change", () => {
-        resetMobileZoom(false);
-      });
+      media.addEventListener?.("change", () => resetMobileZoom(false));
     })();
   </script>
 </body>
