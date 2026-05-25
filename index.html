@@ -1556,6 +1556,147 @@
       }
     }
 
+
+    /* IIAA MOBILE VIEWER ARCHIVE-PRO GESTURE LAYOUT FINAL — MOBILE ONLY */
+    @media (max-width: 768px) {
+      html.viewer-open,
+      body.viewer-open {
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        touch-action: none !important;
+        background: #02090c !important;
+      }
+
+      .lightbox,
+      #lightbox {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        padding: 0 !important;
+        background: #02090c !important;
+        overflow: hidden !important;
+        touch-action: none !important;
+        overscroll-behavior: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      .lightbox.is-open,
+      #lightbox.is-open {
+        display: flex !important;
+      }
+
+      .lightbox-inner {
+        width: 100vw !important;
+        height: 100dvh !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(0, 1fr) auto !important;
+        gap: 8px !important;
+        padding: calc(env(safe-area-inset-top, 0px) + 70px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+      }
+
+      .lightbox-stage {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        touch-action: none !important;
+        pointer-events: auto !important;
+        contain: layout paint size !important;
+      }
+
+      .lightbox-img-wrap,
+      #lightboxImgWrap {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+        transform: translate3d(0,0,0) scale(1);
+        transform-origin: center center !important;
+        will-change: transform, opacity !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        touch-action: none !important;
+        pointer-events: auto !important;
+      }
+
+      .lightbox-img,
+      #lightboxImg {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        border-radius: 8px !important;
+        transform: none !important;
+        transition: none !important;
+        will-change: auto !important;
+        touch-action: none !important;
+        user-select: none !important;
+        -webkit-user-drag: none !important;
+        pointer-events: none !important;
+      }
+
+      .lightbox-caption {
+        width: 100% !important;
+        max-height: 96px !important;
+        overflow: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 0 8px 0 !important;
+        margin: 0 !important;
+        font-size: .84rem !important;
+        line-height: 1.55 !important;
+        text-align: center !important;
+        pointer-events: auto !important;
+      }
+
+      .lightbox-close,
+      #lightboxCloseBtn {
+        position: fixed !important;
+        top: calc(env(safe-area-inset-top, 0px) + 14px) !important;
+        right: calc(env(safe-area-inset-right, 0px) + 14px) !important;
+        z-index: 100005 !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        display: grid !important;
+        place-items: center !important;
+        border-radius: 999px !important;
+        background: rgba(2,9,12,.76) !important;
+        border: 1px solid rgba(244,241,234,.22) !important;
+        color: #fff !important;
+        transform: none !important;
+        opacity: .96 !important;
+        touch-action: manipulation !important;
+        pointer-events: auto !important;
+      }
+
+      .lightbox-nav,
+      .lightbox-nav.prev,
+      .lightbox-nav.next {
+        display: none !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3462,6 +3603,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchStart(e){
       if (!lightbox.classList.contains("is-open")) return;
+      if (window.innerWidth <= 768) return;
       if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
@@ -3490,6 +3632,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchMove(e){
       if (!lightbox.classList.contains("is-open")) return;
+      if (window.innerWidth <= 768) return;
       if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
@@ -3530,6 +3673,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function handleLightboxTouchEnd(){
+      if (window.innerWidth <= 768) return;
       if (window.innerWidth <= 768 && isMobileViewerGestureLocked()) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
@@ -3749,27 +3893,30 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
 
-    /* IIAA MOBILE PINCH ZOOM MICRO TUNING ONLY — existing viewer preserved / wrapper-only transform */
+    /* IIAA MOBILE ARCHIVE-PRO STYLE VIEWER ENGINE ONLY
+       - Mobile only: fullscreen swipe + pinch zoom + pan.
+       - Desktop / notebook layout and behavior stay untouched.
+       - Single transform target: #lightboxImgWrap. Image itself is never transformed.
+       - During pinch/pan: no render, no src replacement, no caption update, no index change. */
     (function(){
-      if (!window.matchMedia("(max-width: 768px)").matches) return;
+      const media = window.matchMedia("(max-width: 768px)");
       const lb = document.getElementById("lightbox");
       const stage = document.getElementById("lightboxStage");
       const wrap = document.getElementById("lightboxImgWrap");
       const img = document.getElementById("lightboxImg");
       const close = document.getElementById("lightboxCloseBtn");
-      const prev = document.getElementById("lightboxPrevBtn");
-      const next = document.getElementById("lightboxNextBtn");
-
       if (!lb || !stage || !wrap || !img) return;
 
       const MIN_SCALE = 1;
       const MAX_SCALE = 4;
-      const DOUBLE_TAP_DELAY = 300;
-      const SWIPE_THRESHOLD = 48;
+      const SWIPE_THRESHOLD = 52;
+      const INTENT_THRESHOLD = 10;
+      const DOUBLE_TAP_DELAY = 290;
+      const PINCH_LOCK_MS = 190;
 
       let scale = 1;
-      let translateX = 0;
-      let translateY = 0;
+      let x = 0;
+      let y = 0;
       let startX = 0;
       let startY = 0;
       let lastX = 0;
@@ -3778,68 +3925,63 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       let panStartY = 0;
       let pinchStartDistance = 0;
       let pinchStartScale = 1;
-      let pinchBaseX = 0;
-      let pinchBaseY = 0;
-      let pinchBaseScale = 1;
-      let isPinching = false;
-      let zoomScale = 1;
-      let pinchJustEndedUntil = 0;
-      let pinchLockUntil = 0;
+      let pinchStartX = 0;
+      let pinchStartY = 0;
+      let mode = "none"; // none | swipe | pan | pinch
+      let isPinchingLocal = false;
+      let pinchBlockUntil = 0;
       let lastTapTime = 0;
       let lastTapX = 0;
       let lastTapY = 0;
-      let mode = "none";
 
-      function isLightboxOpen(){
+      function isMobile(){
+        return media.matches;
+      }
+
+      function isOpen(){
         return lb.classList.contains("is-open");
       }
 
-      function getMobileTransformTarget(){
-        /* Final safety: IIAA uses .lightbox-img-wrap as the single transform target.
-           Do not apply transform to .lightbox-img at the same time. */
-        return wrap;
+      function clamp(v, min, max){
+        return Math.max(min, Math.min(max, v));
       }
 
-      function clamp(value, min, max){
-        return Math.max(min, Math.min(max, value));
+      function distance(touches){
+        const dx = touches[0].clientX - touches[1].clientX;
+        const dy = touches[0].clientY - touches[1].clientY;
+        return Math.hypot(dx, dy) || 1;
       }
 
-      function distance(t1, t2){
-        const dx = t1.clientX - t2.clientX;
-        const dy = t1.clientY - t2.clientY;
-        return Math.hypot(dx, dy);
-      }
-
-      function midpoint(t1, t2){
+      function midpoint(touches){
         return {
-          x: (t1.clientX + t2.clientX) / 2,
-          y: (t1.clientY + t2.clientY) / 2
+          x: (touches[0].clientX + touches[1].clientX) / 2,
+          y: (touches[0].clientY + touches[1].clientY) / 2
         };
       }
 
-      function applyTransform(useTransition){
-        const targetImage = getMobileTransformTarget();
-        zoomScale = scale;
+      function setGlobalLock(locked){
+        mobileIsPinching = !!locked && mode === "pinch";
         mobileZoomScale = scale;
-        mobileTranslateX = translateX;
-        mobileTranslateY = translateY;
-        mobileViewerGestureLock = isPinching || mobileIsPinching || scale > 1.02 || zoomScale > 1.02 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil;
-        img.style.transform = "none";
-        img.style.transition = "";
-        if (isPinching || mobileIsPinching) {
-          targetImage.style.transition = "none";
-        } else {
-          targetImage.style.transition = useTransition ? "transform 180ms ease, opacity 160ms ease" : "none";
-        }
-        targetImage.style.opacity = "1";
-        targetImage.style.transformOrigin = "center center";
-        targetImage.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+        mobileTranslateX = x;
+        mobileTranslateY = y;
+        mobileViewerGestureLock = !!locked || scale > 1.02 || Date.now() < pinchBlockUntil;
+        mobilePinchBlockUntil = Math.max(mobilePinchBlockUntil || 0, pinchBlockUntil || 0);
       }
 
-      function resetMobileLightboxZoom(){
+      function applyTransform(transition){
+        img.style.transform = "none";
+        img.style.transition = "none";
+        wrap.style.transformOrigin = "center center";
+        wrap.style.opacity = "1";
+        wrap.style.transition = transition ? "transform 170ms ease, opacity 140ms ease" : "none";
+        wrap.style.transform = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+        setGlobalLock(mode === "pinch" || mode === "pan");
+      }
+
+      function resetZoom(transition){
         scale = 1;
-        translateX = 0;
-        translateY = 0;
+        x = 0;
+        y = 0;
         startX = 0;
         startY = 0;
         lastX = 0;
@@ -3848,143 +3990,110 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         panStartY = 0;
         pinchStartDistance = 0;
         pinchStartScale = 1;
-        pinchBaseX = 0;
-        pinchBaseY = 0;
-        pinchBaseScale = 1;
-        isPinching = false;
+        pinchStartX = 0;
+        pinchStartY = 0;
+        mode = "none";
+        isPinchingLocal = false;
         mobileIsPinching = false;
-        zoomScale = 1;
         mobileZoomScale = 1;
-        mobileStartDistance = 0;
-        mobileStartScale = 1;
         mobileTranslateX = 0;
         mobileTranslateY = 0;
-        mobileViewerGestureLock = Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil;
-        mode = "none";
-        const targetImage = getMobileTransformTarget();
+        mobileViewerGestureLock = Date.now() < pinchBlockUntil;
         wrap.classList.remove("is-dragging");
-        img.style.transition = "";
+        wrap.style.opacity = "1";
         img.style.transform = "none";
-        targetImage.style.transition = "";
-        targetImage.style.transform = "translate3d(0,0,0) scale(1)";
-        targetImage.style.opacity = "1";
+        img.style.transition = "none";
+        applyTransform(!!transition);
       }
 
-      function setScaleFromPoint(nextScale, clientX, clientY){
-        const targetScale = clamp(nextScale, MIN_SCALE, MAX_SCALE);
-
-        if (targetScale <= 1.02) {
-          scale = 1;
-          zoomScale = 1;
-          mobileZoomScale = 1;
-          translateX = 0;
-          translateY = 0;
-          mobileTranslateX = 0;
-          mobileTranslateY = 0;
-          pinchLockUntil = Math.max(pinchLockUntil, Date.now() + 120);
-          mobilePinchBlockUntil = Math.max(mobilePinchBlockUntil, pinchLockUntil);
-          applyTransform(true);
-          return;
-        }
-
-        scale = targetScale;
-        zoomScale = targetScale;
-        mobileZoomScale = targetScale;
-        if (isPinching || mobileIsPinching || mode === "pinch") {
-          translateX = pinchBaseX;
-          translateY = pinchBaseY;
-        } else {
-          translateX = mobileTranslateX;
-          translateY = mobileTranslateY;
-        }
+      function beginPinch(touches){
+        mode = "pinch";
+        isPinchingLocal = true;
+        pinchBlockUntil = Date.now() + PINCH_LOCK_MS;
+        mobilePinchBlockUntil = pinchBlockUntil;
+        mobileIsPinching = true;
+        mobileViewerGestureLock = true;
+        wrap.classList.add("is-dragging");
+        pinchStartDistance = distance(touches);
+        pinchStartScale = scale;
+        const m = midpoint(touches);
+        pinchStartX = m.x;
+        pinchStartY = m.y;
+        panStartX = x;
+        panStartY = y;
         applyTransform(false);
       }
 
-      function handleStart(e){
-        if (!isLightboxOpen()) return;
-        if (!e.touches || e.touches.length === 0) return;
+      function updatePinch(touches){
+        if (!pinchStartDistance) beginPinch(touches);
+        const m = midpoint(touches);
+        const nextScale = clamp(pinchStartScale * (distance(touches) / pinchStartDistance), MIN_SCALE, MAX_SCALE);
+        // Finger-center stability: move with the pinch midpoint, but do not recenter or render.
+        x = panStartX + (m.x - pinchStartX);
+        y = panStartY + (m.y - pinchStartY);
+        scale = nextScale;
+        pinchBlockUntil = Date.now() + PINCH_LOCK_MS;
+        mobilePinchBlockUntil = pinchBlockUntil;
+        applyTransform(false);
+      }
 
+      function finishPinch(){
+        pinchBlockUntil = Date.now() + PINCH_LOCK_MS;
+        mobilePinchBlockUntil = pinchBlockUntil;
+        isPinchingLocal = false;
+        if (scale <= 1.02) {
+          resetZoom(true);
+          return;
+        }
+        scale = clamp(scale, MIN_SCALE, MAX_SCALE);
+        mobileZoomScale = scale;
+        mobileTranslateX = x;
+        mobileTranslateY = y;
+        mobileViewerGestureLock = true;
+        applyTransform(false);
+        requestAnimationFrame(() => {
+          mobileIsPinching = false;
+          mobileViewerGestureLock = scale > 1.02 || Date.now() < pinchBlockUntil;
+        });
+      }
+
+      function navigate(direction){
+        if (scale > 1.02 || isPinchingLocal || Date.now() < pinchBlockUntil) return;
+        resetZoom(false);
+        if (typeof goToAdjacentLightbox === "function") {
+          goToAdjacentLightbox(direction);
+        }
+      }
+
+      function onTouchStart(e){
+        if (!isMobile() || !isOpen()) return;
+        if (!e.touches || e.touches.length === 0) return;
         e.preventDefault();
         e.stopImmediatePropagation();
-        wrap.classList.add("is-dragging");
 
         if (e.touches.length >= 2) {
-          isPinching = true;
-          mobileIsPinching = true;
-          mobileViewerGestureLock = true;
-          pinchLockUntil = Date.now() + 180;
-          mobilePinchBlockUntil = pinchLockUntil;
-          mode = "pinch";
-          img.style.transition = "";
-          img.style.transform = "none";
-          getMobileTransformTarget().style.transition = "none";
-          img.style.width = "";
-          img.style.height = "";
-          pinchBaseX = translateX || 0;
-          pinchBaseY = translateY || 0;
-          pinchBaseScale = scale || 1;
-          pinchStartDistance = getTouchDistance(e.touches);
-          pinchStartScale = pinchBaseScale;
-          mobileStartDistance = pinchStartDistance;
-          mobileStartScale = pinchBaseScale;
-          mobileTranslateX = pinchBaseX;
-          mobileTranslateY = pinchBaseY;
+          beginPinch(e.touches);
           return;
         }
 
         const t = e.touches[0];
-        startX = t.clientX;
-        startY = t.clientY;
-        lastX = t.clientX;
-        lastY = t.clientY;
-        panStartX = translateX;
-        panStartY = translateY;
-        mode = (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil || mobileIsPinching) ? "pan" : "swipe";
+        startX = lastX = t.clientX;
+        startY = lastY = t.clientY;
+        panStartX = x;
+        panStartY = y;
+        wrap.classList.add("is-dragging");
+        mode = (scale > 1.02 || Date.now() < pinchBlockUntil) ? "pan" : "none";
+        setGlobalLock(mode === "pan");
       }
 
-      function handleMove(e){
-        if (!isLightboxOpen()) return;
+      function onTouchMove(e){
+        if (!isMobile() || !isOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
-
         e.preventDefault();
         e.stopImmediatePropagation();
 
         if (e.touches.length >= 2) {
-          isPinching = true;
-          mobileIsPinching = true;
-          mobileViewerGestureLock = true;
-          pinchLockUntil = Date.now() + 180;
-          mobilePinchBlockUntil = pinchLockUntil;
-          img.style.transition = "";
-          img.style.transform = "none";
-          const targetImage = getMobileTransformTarget();
-          targetImage.style.transition = "none";
-          const currentDistance = getTouchDistance(e.touches);
-          if (!pinchStartDistance) {
-            pinchStartDistance = currentDistance;
-            pinchStartScale = scale;
-            mobileStartDistance = currentDistance;
-            mobileStartScale = scale;
-          }
-          const baseDistance = mobileStartDistance || pinchStartDistance || currentDistance || 1;
-          const baseScale = pinchBaseScale || mobileStartScale || pinchStartScale || scale || 1;
-          const currentScale = clamp(baseScale * (currentDistance / baseDistance), MIN_SCALE, MAX_SCALE);
-          scale = currentScale;
-          zoomScale = currentScale;
-          mobileZoomScale = currentScale;
-          translateX = pinchBaseX;
-          translateY = pinchBaseY;
-          mobileTranslateX = pinchBaseX;
-          mobileTranslateY = pinchBaseY;
-          img.style.width = "";
-          img.style.height = "";
-          img.style.transition = "";
-          img.style.transform = "none";
-          targetImage.style.transition = "none";
-          targetImage.style.opacity = "1";
-          targetImage.style.transformOrigin = "center center";
-          targetImage.style.transform = `translate3d(${pinchBaseX}px, ${pinchBaseY}px, 0) scale(${currentScale})`;
-          mode = "pinch";
+          updatePinch(e.touches);
           return;
         }
 
@@ -3994,178 +4103,127 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dx = lastX - startX;
         const dy = lastY - startY;
 
-        if (isPinching || mobileIsPinching || scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil) {
+        if (scale > 1.02 || mode === "pan" || Date.now() < pinchBlockUntil) {
           mode = "pan";
-          if (scale > 1 || zoomScale > 1) {
-            translateX = panStartX + dx;
-            translateY = panStartY + dy;
-            applyTransform(false);
-          }
+          x = panStartX + dx;
+          y = panStartY + dy;
+          applyTransform(false);
           return;
         }
 
-        mode = "swipe";
-        if (Math.abs(dx) > Math.abs(dy)) {
-          const limitedX = clamp(dx, -120, 120);
-          translateX = limitedX;
-          translateY = 0;
+        if (mode === "none") {
+          if (Math.abs(dx) < INTENT_THRESHOLD && Math.abs(dy) < INTENT_THRESHOLD) return;
+          mode = Math.abs(dx) > Math.abs(dy) ? "swipe" : "none";
+        }
+
+        if (mode === "swipe") {
+          const limitedX = clamp(dx, -128, 128);
+          x = limitedX;
+          y = 0;
+          scale = 1;
           wrap.style.transition = "none";
           wrap.style.opacity = String(Math.max(0.72, 1 - Math.abs(limitedX) / 260));
           wrap.style.transform = `translate3d(${limitedX}px, 0, 0) scale(1)`;
+          setGlobalLock(false);
         }
       }
 
-      function handleEnd(e){
-        if (!isLightboxOpen()) return;
-
+      function onTouchEnd(e){
+        if (!isMobile() || !isOpen()) return;
         e.preventDefault();
         e.stopImmediatePropagation();
         wrap.classList.remove("is-dragging");
 
-        if (mode === "pinch" || isPinching || (e.touches && e.touches.length > 0)) {
-          pinchJustEndedUntil = Date.now() + 180;
-          pinchLockUntil = pinchJustEndedUntil;
-          mobilePinchBlockUntil = pinchLockUntil;
-          if (!e.touches || e.touches.length < 2) {
-            requestAnimationFrame(() => {
-              isPinching = false;
-              mobileIsPinching = false;
-              mobileViewerGestureLock = scale > 1.02 || Date.now() < pinchLockUntil;
-            });
-          }
-          mobileStartDistance = 0;
-          mobileStartScale = scale;
-          if (scale <= 1.02) {
-            resetMobileLightboxZoom();
-          } else {
-            scale = clamp(scale, MIN_SCALE, MAX_SCALE);
-            zoomScale = scale;
-            mobileZoomScale = scale;
-            mobileTranslateX = translateX;
-            mobileTranslateY = translateY;
-            mobileViewerGestureLock = true;
-            applyTransform(false);
-            requestAnimationFrame(() => {
-              if (!isPinching) img.style.transition = "";
-            });
-          }
-          mode = "none";
+        if (mode === "pinch" || isPinchingLocal || (e.touches && e.touches.length > 0)) {
+          finishPinch();
+          mode = scale > 1.02 ? "pan" : "none";
           return;
         }
 
         const dx = lastX - startX;
         const dy = lastY - startY;
 
-        if (scale > 1 || zoomScale > 1 || Date.now() < pinchJustEndedUntil) {
+        if (scale > 1.02 || mode === "pan") {
           applyTransform(true);
-          mode = "none";
+          mode = "pan";
           return;
         }
 
-        if (!isPinching && !mobileIsPinching && zoomScale <= 1 && scale <= 1.02 && Date.now() > pinchJustEndedUntil && Date.now() > pinchLockUntil && Date.now() > mobilePinchBlockUntil && mode === "swipe" && Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
-          resetMobileLightboxZoom();
-          if (dx < 0) {
-            if (typeof goToAdjacentLightbox === "function") goToAdjacentLightbox(1);
-            else if (next) next.click();
-          } else {
-            if (typeof goToAdjacentLightbox === "function") goToAdjacentLightbox(-1);
-            else if (prev) prev.click();
-          }
+        if (mode === "swipe" && Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy) && Date.now() >= pinchBlockUntil) {
+          navigate(dx < 0 ? 1 : -1);
         } else {
-          resetMobileLightboxZoom();
+          resetZoom(true);
         }
-
         mode = "none";
       }
 
-      function handleDoubleTap(e){
-        if (!isLightboxOpen()) return;
+      function onDoubleTap(e){
+        if (!isMobile() || !isOpen()) return;
         if (!e.changedTouches || e.changedTouches.length !== 1) return;
-
         const t = e.changedTouches[0];
         const now = Date.now();
         const near = Math.abs(t.clientX - lastTapX) < 48 && Math.abs(t.clientY - lastTapY) < 48;
-
         if (now - lastTapTime <= DOUBLE_TAP_DELAY && near) {
           e.preventDefault();
           e.stopImmediatePropagation();
-          if (scale <= 1.02) {
-            setScaleFromPoint(2.5, t.clientX, t.clientY);
+          if (scale > 1.02) {
+            resetZoom(true);
           } else {
-            resetMobileLightboxZoom();
+            scale = 2.4;
+            x = 0;
+            y = 0;
+            mode = "pan";
+            applyTransform(true);
           }
           lastTapTime = 0;
           return;
         }
-
         lastTapTime = now;
         lastTapX = t.clientX;
         lastTapY = t.clientY;
       }
 
-      if (typeof goToAdjacentLightbox === "function") {
-        const originalGoToAdjacentLightbox = goToAdjacentLightbox;
-        goToAdjacentLightbox = function(){
-          if (isPinching || mobileIsPinching || scale > 1.001 || zoomScale > 1.001 || Date.now() < pinchJustEndedUntil || Date.now() < pinchLockUntil || Date.now() < mobilePinchBlockUntil || mobileViewerGestureLock) return;
-          return originalGoToAdjacentLightbox.apply(this, arguments);
-        };
-      }
+      const originalRenderViewerOnly = renderViewerOnly;
+      renderViewerOnly = function(){
+        if (isMobile() && (isPinchingLocal || Date.now() < pinchBlockUntil || scale > 1.02)) return;
+        const result = originalRenderViewerOnly.apply(this, arguments);
+        if (isMobile()) resetZoom(false);
+        return result;
+      };
 
-      stage.addEventListener("touchstart", handleStart, { passive:false, capture:true });
-      stage.addEventListener("touchmove", handleMove, { passive:false, capture:true });
-      stage.addEventListener("touchend", handleDoubleTap, { passive:false, capture:true });
-      stage.addEventListener("touchend", handleEnd, { passive:false, capture:true });
-      stage.addEventListener("touchcancel", handleEnd, { passive:false, capture:true });
+      const originalViewerPrev = viewerPrev;
+      viewerPrev = function(){
+        if (isMobile() && (scale > 1.02 || isPinchingLocal || Date.now() < pinchBlockUntil)) return;
+        return originalViewerPrev.apply(this, arguments);
+      };
 
-      if (typeof openLightboxByIndex === "function") {
-        const originalOpenLightboxByIndex = openLightboxByIndex;
-        openLightboxByIndex = function(){
-          resetMobileLightboxZoom();
-          return originalOpenLightboxByIndex.apply(this, arguments);
-        };
-      }
+      const originalViewerNext = viewerNext;
+      viewerNext = function(){
+        if (isMobile() && (scale > 1.02 || isPinchingLocal || Date.now() < pinchBlockUntil)) return;
+        return originalViewerNext.apply(this, arguments);
+      };
 
-      if (typeof renderLightboxCurrent === "function") {
-        const originalRenderLightboxCurrent = renderLightboxCurrent;
-        renderLightboxCurrent = function(){
-          if (mobileIsPinching || Date.now() < mobilePinchBlockUntil) return;
-          resetMobileLightboxZoom();
-          return originalRenderLightboxCurrent.apply(this, arguments);
-        };
-      }
+      const originalCloseLightbox = closeLightbox;
+      closeLightbox = function(){
+        resetZoom(false);
+        return originalCloseLightbox.apply(this, arguments);
+      };
 
-      if (typeof closeLightbox === "function") {
-        const originalCloseLightbox = closeLightbox;
-        closeLightbox = function(){
-          resetMobileLightboxZoom();
-          return originalCloseLightbox.apply(this, arguments);
-        };
-      }
+      stage.addEventListener("touchstart", onTouchStart, { passive:false, capture:true });
+      stage.addEventListener("touchmove", onTouchMove, { passive:false, capture:true });
+      stage.addEventListener("touchend", onDoubleTap, { passive:false, capture:true });
+      stage.addEventListener("touchend", onTouchEnd, { passive:false, capture:true });
+      stage.addEventListener("touchcancel", onTouchEnd, { passive:false, capture:true });
 
-      if (close) close.addEventListener("click", resetMobileLightboxZoom, { capture:true });
-      lb.addEventListener("click", function(e){
-        if (!e.target.closest(".lightbox-stage")) resetMobileLightboxZoom();
-      }, { capture:true });
+      if (close) close.addEventListener("click", () => resetZoom(false), { capture:true });
 
-      document.addEventListener("gesturestart", function(e){
-        e.preventDefault();
-      }, { passive:false });
-      document.addEventListener("gesturechange", function(e){
-        e.preventDefault();
-      }, { passive:false });
-      document.addEventListener("gestureend", function(e){
-        e.preventDefault();
-      }, { passive:false });
+      document.addEventListener("gesturestart", function(e){ if (isMobile() && isOpen()) e.preventDefault(); }, { passive:false });
+      document.addEventListener("gesturechange", function(e){ if (isMobile() && isOpen()) e.preventDefault(); }, { passive:false });
+      document.addEventListener("gestureend", function(e){ if (isMobile() && isOpen()) e.preventDefault(); }, { passive:false });
 
-      let documentLastTouchEnd = 0;
-      document.addEventListener("touchend", function(e){
-        if (isLightboxOpen() && e.target.closest("#lightbox")) return;
-        const now = Date.now();
-        if (now - documentLastTouchEnd <= 300) {
-          e.preventDefault();
-        }
-        documentLastTouchEnd = now;
-      }, { passive:false });
+      media.addEventListener?.("change", () => {
+        resetZoom(false);
+      });
     })();
   </script>
 </body>
