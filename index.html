@@ -3064,6 +3064,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let activeViewerItems = [];
     let activeViewerIndex = 0;
     let activeViewerArtistId = null;
+    let lastViewedWorkIndex = null;
+    let lastViewedWorkId = null;
+    let lastViewedArtistId = null;
 
     let mobileViewerGestureLock = false;
     let mobileIsPinching = false;
@@ -3513,6 +3516,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       const artist = getArtistById(activeViewerArtistId);
       if (!work) return;
 
+      lastViewedWorkIndex = activeViewerIndex;
+      lastViewedWorkId = work.id || null;
+      lastViewedArtistId = activeViewerArtistId || null;
+
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
       lightboxImg.alt = buildArtworkAlt(work, artist, lang);
       lightboxCaption.textContent = [
@@ -3544,6 +3551,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       activeViewerItems = artist.works.slice();
       activeViewerIndex = safeIndex;
       activeViewerArtistId = artist.id || artist.name_en || artist.name_kr || null;
+      lastViewedWorkIndex = safeIndex;
+      lastViewedWorkId = artist.works[safeIndex].id || null;
+      lastViewedArtistId = activeViewerArtistId;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
@@ -3576,6 +3586,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       activeViewerItems = safeItems;
       activeViewerIndex = safeIndex;
       activeViewerArtistId = artistId || null;
+      lastViewedWorkIndex = safeIndex;
+      lastViewedWorkId = safeItems[safeIndex].id || null;
+      lastViewedArtistId = activeViewerArtistId;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
@@ -3602,12 +3615,49 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       openViewer({ items, index, artistId: null });
     }
 
+    function findLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId){
+      const selectors = [];
+      if (returnWorkId) {
+        const safeWorkId = window.CSS && CSS.escape ? CSS.escape(String(returnWorkId)) : String(returnWorkId).replace(/"/g, '\\\"');
+        selectors.push(`[data-work-id="${safeWorkId}"]`);
+      }
+      if (returnIndex !== null && returnIndex !== undefined) {
+        selectors.push(`[data-work-index="${returnIndex}"]`);
+        selectors.push(`[data-index="${returnIndex}"]`);
+      }
+
+      for (const selector of selectors) {
+        const nodes = Array.from(document.querySelectorAll(selector));
+        const card = nodes.find(node => !returnArtistId || !activeArtistId || activeArtistId === returnArtistId || node.closest("#memberWorks"));
+        if (card) return card;
+      }
+
+      return null;
+    }
+
+    function returnToLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId){
+      requestAnimationFrame(() => {
+        const card = findLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId);
+        if (card) {
+          card.scrollIntoView({
+            block: "center",
+            inline: "nearest",
+            behavior: "auto"
+          });
+        }
+      });
+    }
+
     function closeLightbox(e){
       if (e) {
         e.preventDefault();
         e.stopPropagation();
         if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       }
+
+      const returnIndex = lastViewedWorkIndex;
+      const returnWorkId = lastViewedWorkId;
+      const returnArtistId = lastViewedArtistId;
 
       isViewerOpen = false;
       activeViewerItems = [];
@@ -3627,6 +3677,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightboxCaption.textContent = "";
       resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
+      returnToLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId);
     }
 
     function closeViewer(e){
