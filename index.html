@@ -1697,6 +1697,20 @@
       }
     }
 
+
+
+    /* IIAA MOBILE PINCH DRIFT FIX ONLY — no visual change */
+    @media (max-width: 768px) {
+      .viewer-image-wrap,
+      .lightbox-image-wrap,
+      .lightbox-img-wrap,
+      .viewer-image,
+      .lightbox-image,
+      .lightbox-img {
+        touch-action: none !important;
+        overscroll-behavior: contain !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -4026,14 +4040,20 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       function updatePinch(touches){
         if (!pinchStartDistance) beginPinch(touches);
-        const m = midpoint(touches);
         const nextScale = clamp(pinchStartScale * (distance(touches) / pinchStartDistance), MIN_SCALE, MAX_SCALE);
-        // Finger-center stability: move with the pinch midpoint, but do not recenter or render.
-        x = panStartX + (m.x - pinchStartX);
-        y = panStartY + (m.y - pinchStartY);
+
+        /* DRIFT FIX ONLY:
+           During a two-finger pinch, freeze the translate position captured at pinch start.
+           This prevents swipe/pan deltas from accumulating into the pinch transform and
+           stops the image from drifting toward the top/right on mobile Safari. */
+        x = panStartX;
+        y = panStartY;
         scale = nextScale;
+
         pinchBlockUntil = Date.now() + PINCH_LOCK_MS;
         mobilePinchBlockUntil = pinchBlockUntil;
+        mobileIsPinching = true;
+        mobileViewerGestureLock = true;
         applyTransform(false);
       }
 
