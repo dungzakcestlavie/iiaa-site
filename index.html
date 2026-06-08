@@ -3295,15 +3295,19 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       document.documentElement.classList.add("is-ipad");
     }
 
+    function useTouchViewer(){
+      return window.matchMedia("(pointer: coarse)").matches;
+    }
+
     function isTouchPortraitViewer(){
       return (
-        window.matchMedia("(pointer: coarse)").matches &&
+        useTouchViewer() &&
         window.innerHeight > window.innerWidth
       );
     }
 
     function useMobileViewerGesture(){
-      return window.innerWidth <= 768 || isTouchPortraitViewer();
+      return useTouchViewer();
     }
 
     let activeArtistId = null;
@@ -4340,7 +4344,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       const mobileZoomFrame = lightboxStage;
       const mobileZoomTarget = lightboxImgWrap;
       const currentImage = lightboxImg;
-      const media = window.matchMedia("(max-width: 768px)");
+      const media = window.matchMedia("(pointer: coarse)");
 
       if (!overlay || !stage || !mobileZoomTarget || !currentImage) return;
 
@@ -4473,19 +4477,28 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       function preventViewerScroll(e){
         if (!isMobile() || !isMobileViewerOpen()) return;
-        e.preventDefault();
+        if (
+          (e.touches && e.touches.length >= 2) ||
+          mobileIsPinching ||
+          mobileIsPanning ||
+          mobileScale > 1.02
+        ) {
+          e.preventDefault();
+        }
       }
 
       function onMobileViewerTouchStart(e) {
         if (!isMobile() || !isMobileViewerOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
         lockMobileViewer();
+        currentImage.style.touchAction = "none";
+        mobileZoomTarget.style.touchAction = "none";
 
         if (e.touches.length === 2) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           mobileIsPinching = true;
           mobileSwipeActive = false;
           mobilePinchStartDistance = getTouchDistance(e.touches);
@@ -4500,6 +4513,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
 
         if (e.touches.length === 1 && mobileScale > 1.02) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           const touch = e.touches[0];
           mobileIsPanning = true;
           mobileSwipeActive = false;
@@ -4527,12 +4543,12 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         if (!isMobile() || !isMobileViewerOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
         lockMobileViewer();
 
         if (mobileIsPinching && e.touches.length === 2) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           const dist = getTouchDistance(e.touches);
           const nextScale = mobileStartScale * (dist / mobilePinchStartDistance);
           mobileScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
@@ -4548,6 +4564,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
 
         if (mobileIsPanning && mobileScale > 1.02 && e.touches.length === 1) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           const touch = e.touches[0];
           const dx = touch.clientX - mobilePanStartX;
           const dy = touch.clientY - mobilePanStartY;
@@ -4575,6 +4594,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
         if (!mobileSwipeActive) return;
 
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
+
         const limitedX = Math.max(-128, Math.min(128, dx));
         mobileTranslateX = limitedX;
         mobileTranslateY = 0;
@@ -4587,11 +4610,10 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       function onMobileViewerTouchEnd(e) {
         if (!isMobile() || !isMobileViewerOpen()) return;
 
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
-
         if (mobileIsPinching) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           if (e.touches && e.touches.length >= 2) return;
 
           mobileIsPinching = false;
@@ -4613,6 +4635,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
 
         if (mobileIsPanning) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           if (e.touches && e.touches.length > 0) return;
           mobileIsPanning = false;
           mobileZoomTarget.classList.remove("is-dragging");
@@ -4633,6 +4658,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const dy = mobileTouchLastY - mobileTouchStartY;
 
         if (mobileSwipeActive && Math.abs(dx) > SWIPE_THRESHOLD && Math.abs(dx) > Math.abs(dy)) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           resetMobileTouchState(false);
           if (typeof goToAdjacentLightbox === "function") goToAdjacentLightbox(dx < 0 ? 1 : -1);
         } else {
@@ -4646,6 +4674,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const result = originalRenderViewerOnly.apply(this, arguments);
         if (isMobile() && isMobileViewerOpen()) {
           lockMobileViewer();
+          currentImage.style.touchAction = "none";
+          mobileZoomTarget.style.touchAction = "none";
           resetMobileTouchState(false);
         }
         return result;
