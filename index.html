@@ -2036,6 +2036,17 @@
         opacity: .80 !important;
       }
     }
+
+    /* IIAA IPAD TOUCH VIEWER INPUT ONLY — NO SIZE / DESIGN CHANGE */
+    .viewer-stage,
+    .lightbox-stage,
+    .viewer-image,
+    .lightbox-image,
+    .lightbox-img,
+    #lightboxStage,
+    #lightboxImg {
+      touch-action: none !important;
+    }
 </style>
 </head>
 <body>
@@ -3291,12 +3302,23 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       Math.max(window.screen.width, window.screen.height) <= 1366
     );
 
-    if (IS_IPAD) {
+    const IS_IPAD_VIEWER = (
+      navigator.maxTouchPoints > 1 &&
+      /Macintosh|iPad/.test(navigator.userAgent)
+    );
+
+    const IS_TOUCH_VIEWER = (
+      window.matchMedia("(pointer: coarse)").matches ||
+      navigator.maxTouchPoints > 1 ||
+      IS_IPAD_VIEWER
+    );
+
+    if (IS_IPAD || IS_IPAD_VIEWER) {
       document.documentElement.classList.add("is-ipad");
     }
 
     function useTouchViewer(){
-      return window.matchMedia("(pointer: coarse)").matches;
+      return IS_TOUCH_VIEWER;
     }
 
     function isTouchPortraitViewer(){
@@ -4492,6 +4514,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         if (!e.touches || e.touches.length === 0) return;
 
         lockMobileViewer();
+        stage.style.touchAction = "none";
+        mobileZoomFrame.style.touchAction = "none";
         currentImage.style.touchAction = "none";
         mobileZoomTarget.style.touchAction = "none";
 
@@ -4674,6 +4698,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         const result = originalRenderViewerOnly.apply(this, arguments);
         if (isMobile() && isMobileViewerOpen()) {
           lockMobileViewer();
+          stage.style.touchAction = "none";
+          mobileZoomFrame.style.touchAction = "none";
           currentImage.style.touchAction = "none";
           mobileZoomTarget.style.touchAction = "none";
           resetMobileTouchState(false);
