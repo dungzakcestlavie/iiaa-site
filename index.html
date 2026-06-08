@@ -4474,8 +4474,11 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         clampMobileImageToFrame();
 
-        mobileZoomTarget.style.transform =
-          `translate3d(${mobileTranslateX}px, ${mobileTranslateY}px, 0) scale(${mobileScale})`;
+        mobileZoomTarget.style.setProperty(
+          "transform",
+          `translate3d(${mobileTranslateX}px, ${mobileTranslateY}px, 0) scale(${mobileScale})`,
+          "important"
+        );
         mobileZoomTarget.style.transformOrigin = "center center";
         mobileZoomTarget.style.willChange = "transform";
         mobileZoomTarget.style.opacity = "1";
