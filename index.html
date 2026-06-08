@@ -1806,6 +1806,196 @@
       text-shadow:0 0 1px rgba(255,215,140,0.12);
     }
 
+
+
+    /* IIAA VIEWER CLEAN MODE + MOBILE GESTURE LOGIC ONLY */
+    .viewer-close,
+    .lightbox-close {
+      opacity: 0.48 !important;
+      transform: scale(0.88) !important;
+      background: rgba(0,0,0,0.26) !important;
+      border-color: rgba(255,255,255,0.16) !important;
+      box-shadow: none !important;
+    }
+
+    .viewer-close:hover,
+    .lightbox-close:hover,
+    .viewer-close:focus-visible,
+    .lightbox-close:focus-visible {
+      opacity: 0.7 !important;
+    }
+
+    .viewer-arrow,
+    .lightbox-arrow,
+    .viewer-prev,
+    .viewer-next,
+    .lightbox-prev,
+    .lightbox-next,
+    .lightbox-nav,
+    .lightbox-nav.prev,
+    .lightbox-nav.next {
+      opacity: 0.38 !important;
+      transform: translateY(-50%) scale(0.86) !important;
+      background: rgba(0,0,0,0.24) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+      box-shadow: none !important;
+    }
+
+    .viewer-arrow:hover,
+    .lightbox-arrow:hover,
+    .viewer-prev:hover,
+    .viewer-next:hover,
+    .lightbox-prev:hover,
+    .lightbox-next:hover,
+    .lightbox-nav:hover,
+    .lightbox-nav:focus-visible {
+      opacity: 0.58 !important;
+      transform: translateY(-50%) scale(0.86) !important;
+    }
+
+    html.is-ipad .viewer-caption,
+    html.is-ipad .lightbox-caption,
+    html.is-ipad .viewer-info,
+    html.is-ipad .lightbox-info,
+    html.is-ipad .viewer-meta,
+    html.is-ipad .lightbox-meta {
+      display: none !important;
+    }
+
+    @media (pointer: coarse) and (orientation: portrait) and (min-width: 768px) {
+      html.is-ipad .viewer-arrow,
+      html.is-ipad .lightbox-arrow,
+      html.is-ipad .viewer-prev,
+      html.is-ipad .viewer-next,
+      html.is-ipad .lightbox-prev,
+      html.is-ipad .lightbox-next,
+      html.is-ipad .lightbox-nav,
+      html.is-ipad .lightbox-nav.prev,
+      html.is-ipad .lightbox-nav.next {
+        display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+      }
+
+      html.is-ipad.viewer-open,
+      html.is-ipad body.viewer-open {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
+        touch-action: none !important;
+        background: #02090c !important;
+      }
+
+      html.is-ipad .lightbox,
+      html.is-ipad #lightbox {
+        position: fixed !important;
+        inset: 0 !important;
+        width: 100vw !important;
+        height: 100dvh !important;
+        padding: 0 !important;
+        background: #02090c !important;
+        overflow: hidden !important;
+        touch-action: none !important;
+        overscroll-behavior: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      html.is-ipad .lightbox.is-open,
+      html.is-ipad #lightbox.is-open {
+        display: flex !important;
+      }
+
+      html.is-ipad .lightbox-inner {
+        width: 100vw !important;
+        height: 100dvh !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        grid-template-rows: minmax(0, 1fr) auto !important;
+        gap: 8px !important;
+        padding: calc(env(safe-area-inset-top, 0px) + 70px) 12px calc(env(safe-area-inset-bottom, 0px) + 14px) !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        pointer-events: none !important;
+      }
+
+      html.is-ipad .lightbox-stage {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        touch-action: none !important;
+        pointer-events: auto !important;
+        contain: layout paint size !important;
+      }
+
+      html.is-ipad .lightbox-img-wrap,
+      html.is-ipad #lightboxImgWrap {
+        width: 100% !important;
+        height: 100% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        overflow: hidden !important;
+        transform: translate3d(0,0,0) scale(1);
+        transform-origin: center center !important;
+        will-change: transform, opacity !important;
+        backface-visibility: hidden !important;
+        -webkit-backface-visibility: hidden !important;
+        touch-action: none !important;
+        pointer-events: auto !important;
+      }
+
+      html.is-ipad .lightbox-img,
+      html.is-ipad #lightboxImg {
+        width: auto !important;
+        height: auto !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        object-fit: contain !important;
+        border-radius: 8px !important;
+        transform: none !important;
+        transition: none !important;
+        will-change: auto !important;
+        touch-action: none !important;
+        user-select: none !important;
+        -webkit-user-drag: none !important;
+        pointer-events: none !important;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .viewer-arrow,
+      .lightbox-arrow,
+      .viewer-prev,
+      .viewer-next,
+      .lightbox-prev,
+      .lightbox-next,
+      .lightbox-nav,
+      .lightbox-nav.prev,
+      .lightbox-nav.next {
+        display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+      }
+
+      .viewer-close,
+      .lightbox-close {
+        opacity: 0.36 !important;
+        transform: scale(0.82) !important;
+        background: rgba(0,0,0,0.22) !important;
+        border-color: rgba(255,255,255,0.14) !important;
+      }
+    }
+
 </style>
 </head>
 <body>
@@ -3054,6 +3244,28 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     const mqDesktop = window.matchMedia("(min-width: 980px)");
 
+    /* IIAA VIEWER DEVICE DETECTION ONLY */
+    const IS_IPAD = (
+      navigator.maxTouchPoints > 1 &&
+      Math.min(window.screen.width, window.screen.height) >= 768 &&
+      Math.max(window.screen.width, window.screen.height) <= 1366
+    );
+
+    if (IS_IPAD) {
+      document.documentElement.classList.add("is-ipad");
+    }
+
+    function isTouchPortraitViewer(){
+      return (
+        window.matchMedia("(pointer: coarse)").matches &&
+        window.innerHeight > window.innerWidth
+      );
+    }
+
+    function useMobileViewerGesture(){
+      return window.innerWidth <= 768 || isTouchPortraitViewer();
+    }
+
     let activeArtistId = null;
     let noteExpanded = false;
     let worksExpanded = false;
@@ -3080,7 +3292,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     let mobilePinchBlockUntil = 0;
 
     function isMobileViewerGestureLocked(){
-      return window.innerWidth <= 768 && (mobileViewerGestureLock || mobileIsPinching || mobileZoomScale > 1.02 || Date.now() < mobilePinchBlockUntil);
+      return useMobileViewerGesture() && (mobileViewerGestureLock || mobileIsPinching || mobileZoomScale > 1.02 || Date.now() < mobilePinchBlockUntil);
     }
 
     function getTouchDistance(touches){
@@ -3559,7 +3771,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightbox.setAttribute("aria-hidden", "false");
       document.documentElement.classList.add("viewer-open");
       document.body.classList.add("viewer-open");
-      if (window.innerWidth <= 768) {
+      if (useMobileViewerGesture()) {
         document.documentElement.classList.add("mobile-viewer-open");
         document.body.classList.add("mobile-viewer-open");
         document.documentElement.classList.add("iiaa-viewer-lock");
@@ -3594,7 +3806,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       lightbox.setAttribute("aria-hidden", "false");
       document.documentElement.classList.add("viewer-open");
       document.body.classList.add("viewer-open");
-      if (window.innerWidth <= 768) {
+      if (useMobileViewerGesture()) {
         document.documentElement.classList.add("mobile-viewer-open");
         document.body.classList.add("mobile-viewer-open");
         document.documentElement.classList.add("iiaa-viewer-lock");
@@ -3670,6 +3882,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       document.body.classList.remove("viewer-open");
       document.documentElement.classList.remove("mobile-viewer-open");
       document.body.classList.remove("mobile-viewer-open");
+      document.documentElement.classList.remove("iiaa-viewer-lock");
+      document.body.classList.remove("iiaa-viewer-lock");
       document.documentElement.classList.remove("iiaa-mobile-viewer-lock");
       document.body.classList.remove("iiaa-mobile-viewer-lock");
       lightboxImg.src = "";
@@ -3785,8 +3999,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchStart(e){
       if (!lightbox.classList.contains("is-open")) return;
-      if (window.innerWidth <= 768) return;
-      if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
+      if (useMobileViewerGesture()) return;
+      if (useMobileViewerGesture() && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
         mobileViewerGestureLock = true;
@@ -3814,8 +4028,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
     function handleLightboxTouchMove(e){
       if (!lightbox.classList.contains("is-open")) return;
-      if (window.innerWidth <= 768) return;
-      if (window.innerWidth <= 768 && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
+      if (useMobileViewerGesture()) return;
+      if (useMobileViewerGesture() && (isMobileViewerGestureLocked() || (e.touches && e.touches.length >= 2))) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
         mobileViewerGestureLock = true;
@@ -3855,14 +4069,14 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function handleLightboxTouchEnd(){
-      if (window.innerWidth <= 768) return;
-      if (window.innerWidth <= 768 && isMobileViewerGestureLocked()) {
+      if (useMobileViewerGesture()) return;
+      if (useMobileViewerGesture() && isMobileViewerGestureLocked()) {
         isDraggingLightbox = false;
         hasHorizontalIntent = false;
         mobilePinchBlockUntil = Date.now() + 120;
         return;
       }
-      if (window.innerWidth <= 768 && !isDraggingLightbox) {
+      if (useMobileViewerGesture() && !isDraggingLightbox) {
         hasHorizontalIntent = false;
         return;
       }
@@ -4080,7 +4294,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
        Single transform target: #lightboxImgWrap. The image element itself is never transformed.
        Pinch changes scale only; swipe is allowed only when scale is 1. */
     (() => {
-      const isMobile = () => window.innerWidth <= 768;
+      const isMobile = () => useMobileViewerGesture();
       const overlay = lightbox;
       const stage = lightboxStage;
       const mobileZoomFrame = lightboxStage;
