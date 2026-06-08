@@ -2038,12 +2038,18 @@
     }
 
     /* IIAA IPAD TOUCH VIEWER INPUT ONLY — NO SIZE / DESIGN CHANGE */
+    .viewer,
     .viewer-stage,
-    .lightbox-stage,
+    .viewer-image-wrap,
     .viewer-image,
+    .lightbox,
+    .lightbox-stage,
+    .lightbox-img-wrap,
     .lightbox-image,
     .lightbox-img,
+    #lightbox,
     #lightboxStage,
+    #lightboxImgWrap,
     #lightboxImg {
       touch-action: none !important;
     }
@@ -3781,7 +3787,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
     }
 
     function renderViewerOnly(){
-      if (window.innerWidth <= 768 && (mobileIsPinching || Date.now() < mobilePinchBlockUntil)) return;
+      if (useTouchViewer() && (mobileIsPinching || mobileZoomScale > 1.02 || Date.now() < mobilePinchBlockUntil)) return;
       if (!isViewerOpen) return;
       if (!activeViewerItems.length) return;
 
@@ -4360,7 +4366,8 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
        Single transform target: #lightboxImgWrap. The image element itself is never transformed.
        Pinch changes scale only; swipe is allowed only when scale is 1. */
     (() => {
-      const isMobile = () => useMobileViewerGesture();
+      const isMobile = () => useTouchViewer();
+      const useTouchInputViewer = () => useTouchViewer();
       const overlay = lightbox;
       const stage = lightboxStage;
       const mobileZoomFrame = lightboxStage;
@@ -4398,7 +4405,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function lockMobileViewer(){
-        if (!isMobile()) return;
+        if (!useTouchInputViewer()) return;
         document.documentElement.classList.add("iiaa-viewer-lock");
         document.body.classList.add("iiaa-viewer-lock");
         document.documentElement.classList.add("mobile-viewer-open");
@@ -4498,7 +4505,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function preventViewerScroll(e){
-        if (!isMobile() || !isMobileViewerOpen()) return;
+        if (!useTouchInputViewer() || !isMobileViewerOpen()) return;
         if (
           (e.touches && e.touches.length >= 2) ||
           mobileIsPinching ||
@@ -4510,7 +4517,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function onMobileViewerTouchStart(e) {
-        if (!isMobile() || !isMobileViewerOpen()) return;
+        if (!useTouchInputViewer() || !isMobileViewerOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
         lockMobileViewer();
@@ -4564,7 +4571,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function onMobileViewerTouchMove(e) {
-        if (!isMobile() || !isMobileViewerOpen()) return;
+        if (!useTouchInputViewer() || !isMobileViewerOpen()) return;
         if (!e.touches || e.touches.length === 0) return;
 
         lockMobileViewer();
@@ -4632,7 +4639,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       function onMobileViewerTouchEnd(e) {
-        if (!isMobile() || !isMobileViewerOpen()) return;
+        if (!useTouchInputViewer() || !isMobileViewerOpen()) return;
 
         if (mobileIsPinching) {
           e.preventDefault();
@@ -4694,9 +4701,9 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       const originalRenderViewerOnly = renderViewerOnly;
       renderViewerOnly = function(){
-        if (isMobile() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
+        if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         const result = originalRenderViewerOnly.apply(this, arguments);
-        if (isMobile() && isMobileViewerOpen()) {
+        if (useTouchInputViewer() && isMobileViewerOpen()) {
           lockMobileViewer();
           stage.style.touchAction = "none";
           mobileZoomFrame.style.touchAction = "none";
@@ -4709,13 +4716,13 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       const originalViewerPrev = viewerPrev;
       viewerPrev = function(){
-        if (isMobile() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
+        if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         return originalViewerPrev.apply(this, arguments);
       };
 
       const originalViewerNext = viewerNext;
       viewerNext = function(){
-        if (isMobile() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
+        if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         return originalViewerNext.apply(this, arguments);
       };
 
@@ -4736,7 +4743,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
       ["gesturestart", "gesturechange", "gestureend"].forEach(type => {
         document.addEventListener(type, function(e){
-          if (!isMobile() || !isMobileViewerOpen()) return;
+          if (!useTouchInputViewer() || !isMobileViewerOpen()) return;
           e.preventDefault();
           e.stopPropagation();
           if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
