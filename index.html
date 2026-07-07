@@ -4689,6 +4689,31 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         return Math.hypot(dx, dy);
       }
 
+      /* IIAA PINCH ZOOM CENTER-ANCHOR FIX:
+         The wrap (#lightboxImgWrap) always fills the full stage, but the
+         artwork itself (#lightboxImg, object-fit: contain) is almost always
+         smaller than the stage on one axis — a portrait image inside a
+         landscape stage, or the reverse. clampMobileImageToFrame() must know
+         the artwork's own fitted box (its "initial Fit" size at scale 1), not
+         the stage box, or the pan boundary is computed against the wrong
+         dimensions and the artwork can drift/slide on the letterboxed axis.
+         Measured fresh on open and on every image load, so it always matches
+         the current artwork's true aspect ratio. */
+      let fittedImageBox = { width: 0, height: 0 };
+
+      function measureFittedImageBox() {
+        if (!currentImage) return { width: 0, height: 0 };
+        const rect = currentImage.getBoundingClientRect();
+        return { width: rect.width, height: rect.height };
+      }
+
+      function refreshFittedImageBox() {
+        const box = measureFittedImageBox();
+        if (box.width > 0 && box.height > 0) {
+          fittedImageBox = box;
+        }
+      }
+
       function syncMobileGlobals(){
         mobileZoomScale = mobileScale;
         mobileTranslateX = mobileTranslateX;
@@ -4718,11 +4743,26 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 
         const frameRect = mobileZoomFrame.getBoundingClientRect();
 
-        /* The zoom target is the image wrap, so the visible clamp can be
-           computed from the fixed frame and current scale without reading a
-           transformed rect that may already include previous transforms. */
-        const maxX = Math.max(0, (frameRect.width * mobileScale - frameRect.width) / 2);
-        const maxY = Math.max(0, (frameRect.height * mobileScale - frameRect.height) / 2);
+        /* CENTER-ANCHOR / BOUNDARY FIX:
+           The pan boundary must be derived from the artwork's own fitted
+           (object-fit: contain) box, not the full stage box. Using the stage
+           box here — as before — lets the artwork drift on whichever axis is
+           letterboxed, since it treats empty stage space as if it were part
+           of the artwork. Fall back to the frame box only if the artwork has
+           not been measured yet (e.g. image still loading). */
+        const baseWidth = fittedImageBox.width > 0 ? fittedImageBox.width : frameRect.width;
+        const baseHeight = fittedImageBox.height > 0 ? fittedImageBox.height : frameRect.height;
+
+        const scaledWidth = baseWidth * mobileScale;
+        const scaledHeight = baseHeight * mobileScale;
+
+        /* Standard "don't let the content leave the viewport" clamp: only
+           allow panning by the amount the scaled artwork now exceeds the
+           frame on that axis. If the scaled artwork is still narrower/shorter
+           than the frame, no panning is allowed on that axis and it stays
+           centered. */
+        const maxX = Math.max(0, (scaledWidth - frameRect.width) / 2);
+        const maxY = Math.max(0, (scaledHeight - frameRect.height) / 2);
 
         mobileTranslateX = clamp(mobileTranslateX, -maxX, maxX);
         mobileTranslateY = clamp(mobileTranslateY, -maxY, maxY);
@@ -4975,6 +5015,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
           currentImage.style.touchAction = "none";
           mobileZoomTarget.style.touchAction = "none";
           resetMobileTouchState(false);
+          refreshFittedImageBox();
         }
         return result;
       };
@@ -5016,6 +5057,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       });
 
       media.addEventListener?.("change", () => resetMobileTouchState(false));
+
+      /* Re-measure the artwork's fitted box whenever the image finishes
+         decoding (in case src changed before layout was ready) and whenever
+         the viewport itself changes shape (rotation), so the pan boundary
+         never drifts out of sync with what is actually on screen. */
+      currentImage.addEventListener("load", refreshFittedImageBox);
+      window.addEventListener("resize", () => {
+        if (isMobileViewerOpen()) refreshFittedImageBox();
+      });
+      window.addEventListener("orientationchange", () => {
+        if (isMobileViewerOpen()) setTimeout(refreshFittedImageBox, 120);
+      });
     })();
   </script>
 </body>
