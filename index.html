@@ -802,6 +802,8 @@
       justify-content:center;
       overflow:hidden;
     }
+    .lightbox-stage.is-zoomed{ cursor: grab; }
+    .lightbox-stage.is-zoomed.is-dragging{ cursor: grabbing; }
     .lightbox-img-wrap{
       position:relative;
       width:100%;
@@ -4785,6 +4787,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         mobileZoomTarget.style.willChange = "transform";
         mobileZoomTarget.style.opacity = "1";
         mobileZoomTarget.style.transition = transition ? "transform 180ms ease, opacity 160ms ease" : "none";
+        if (stage) stage.classList.toggle("is-zoomed", mobileScale > 1.02);
         syncMobileGlobals();
       }
 
@@ -5087,6 +5090,35 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
         }
         applyMobileZoomTransform(false);
       }, { passive: false });
+
+      /* Mouse drag-to-pan when zoomed (desktop). Cursor becomes a hand via
+         the .is-zoomed/.is-dragging classes toggled on the stage. */
+      let mouseDragging = false;
+      let mouseLastX = 0;
+      let mouseLastY = 0;
+
+      stage.addEventListener("mousedown", (e) => {
+        if (!isMobileViewerOpen() || mobileScale <= 1.02 || e.button !== 0) return;
+        e.preventDefault();
+        mouseDragging = true;
+        mouseLastX = e.clientX;
+        mouseLastY = e.clientY;
+        stage.classList.add("is-dragging");
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!mouseDragging || mobileScale <= 1.02) return;
+        mobileTranslateX += e.clientX - mouseLastX;
+        mobileTranslateY += e.clientY - mouseLastY;
+        mouseLastX = e.clientX;
+        mouseLastY = e.clientY;
+        applyMobileZoomTransform(false);
+      });
+
+      document.addEventListener("mouseup", () => {
+        mouseDragging = false;
+        stage.classList.remove("is-dragging");
+      });
     })();
   </script>
 </body>
