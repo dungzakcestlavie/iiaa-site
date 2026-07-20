@@ -5069,6 +5069,24 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       window.addEventListener("orientationchange", () => {
         if (isMobileViewerOpen()) setTimeout(refreshFittedImageBox, 120);
       });
+
+      /* Mouse wheel / trackpad zoom (desktop) — matches dungzak.art /
+         jskim.art / Archive Pro. Reuses the same scale/translate state and
+         wrapper transform as the mobile pinch-zoom above, so desktop and
+         mobile end up perfectly consistent. Wheel events don't fire from
+         touch input, so no extra device guard is needed here. */
+      overlay.addEventListener("wheel", (e) => {
+        if (!isMobileViewerOpen()) return;
+        e.preventDefault();
+        const delta = -e.deltaY * 0.0015;
+        mobileScale = clamp(mobileScale + delta * mobileScale, MIN_SCALE, MAX_SCALE);
+        if (mobileScale <= 1.02) {
+          mobileScale = 1;
+          mobileTranslateX = 0;
+          mobileTranslateY = 0;
+        }
+        applyMobileZoomTransform(false);
+      }, { passive: false });
     })();
   </script>
 </body>
