@@ -6,36 +6,62 @@
 <meta name="theme-color" content="#16364b" />
   <meta name="color-scheme" content="dark" />
   <meta name="format-detection" content="telephone=no,address=no,email=no" />
-  <meta name="description" content="Incheon International Art Association (IIAA) is a public art platform connecting exhibitions and member works through a structured archive system." />
-  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta name="description" content="사단법인 인천국제미술협회(IIAA) 공식 웹사이트. 인천을 기반으로 협회원 작품과 작가 활동, 비전과 공공적 미술 연결을 소개하는 국제 미술 플랫폼입니다. Official website of the Incheon International Art Association." />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
 
-  <title>IIAA | Incheon International Art Association</title>
+  <title>IIAA | 인천국제미술협회 · Incheon International Art Association</title>
 
   <link rel="canonical" href="https://iiaa.or.kr/" />
   <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin />
   <link rel="dns-prefetch" href="//raw.githubusercontent.com" />
 
   <meta property="og:title" content="IIAA | Incheon International Art Association" />
-  <meta property="og:description" content="A public art platform connecting exhibitions and member works through a structured system." />
+  <meta property="og:description" content="사단법인 인천국제미술협회 공식 웹사이트. A public art platform connecting member works, vision and contemporary art." />
+  <meta property="og:site_name" content="IIAA" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://iiaa.or.kr/" />
-  <meta property="og:image" content="https://iiaa.or.kr/og-image.jpg" />
 
-  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:card" content="summary" />
   <meta name="twitter:title" content="IIAA | Incheon International Art Association" />
-  <meta name="twitter:description" content="Public art platform connecting exhibitions and member works." />
-  <meta name="twitter:image" content="https://iiaa.or.kr/og-image.jpg" />
+  <meta name="twitter:description" content="Official website of the Incheon International Art Association, connecting member works, vision and contemporary art." />
 
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Incheon International Art Association",
-    "alternateName": "사단법인 인천국제미술협회",
-    "url": "https://iiaa.or.kr/",
-    "description": "Incheon International Art Association is a public art platform connecting exhibitions and member works through a structured archive system.",
-    "email": "iiaaart2025@gmail.com"
-  }
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://iiaa.or.kr/#organization",
+      "name": "Incheon International Art Association",
+      "alternateName": [
+        "IIAA",
+        "인천국제미술협회",
+        "사단법인 인천국제미술협회"
+      ],
+      "url": "https://iiaa.or.kr/",
+      "description": "The Incheon International Art Association is an art platform connecting member works, vision and public engagement in contemporary art.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "월미로 260번길 7-13",
+        "addressLocality": "제물포구",
+        "addressRegion": "인천광역시",
+        "addressCountry": "KR"
+      },
+      "telephone": "+82-32-773-0713",
+      "email": "iiaaart2025@gmail.com"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://iiaa.or.kr/#website",
+      "url": "https://iiaa.or.kr/",
+      "name": "IIAA",
+      "alternateName": "Incheon International Art Association",
+      "publisher": {
+        "@id": "https://iiaa.or.kr/#organization"
+      }
+    }
+  ]
+}
   </script>
 
   <style>
