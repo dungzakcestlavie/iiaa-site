@@ -2315,6 +2315,11 @@
 .association-event-photos{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(12px,2vw,24px)}
 .association-event-photos figure{min-width:0;margin:0}
 .association-event-photos figcaption{font-size:clamp(13px,1.2vw,15px)}
+
+/* Reuse the existing viewer frame; clip event zoom within that frame. */
+#lightbox.is-association-event-viewer #lightboxStage{overflow:hidden!important;overscroll-behavior:contain}
+#associationEventDetail img[role="button"]{cursor:zoom-in}
+#associationEventDetail img[role="button"]:focus-visible{outline:2px solid var(--gold,#b8963e);outline-offset:4px}
 </style>
 </head>
 <body>
@@ -3988,6 +3993,18 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
 const associationEvents = JSON.parse(document.getElementById('association-events-data').textContent).events;
 let activeAssociationEventId = null;
 let associationEventListScroll = 0;
+let associationEventViewerReturn = null;
+function openAssociationEventImage(event, index, source){
+  if (!event.photos[index]) return;
+  associationEventViewerReturn = {top:window.scrollY,left:window.scrollX,source};
+  lightbox.classList.add('is-association-event-viewer');
+  const items = event.photos.map((photo,i)=>({
+    id:event.id + '-photo-' + i, association_event_id:event.id,
+    image:new URL(photo.src,window.location.href).href,zoom:new URL(photo.src,window.location.href).href,
+    title_kr:photo.alt_kr || event.title_kr,title_en:photo.alt_en || event.title_en
+  }));
+  openLightbox(items,index);
+}
 function publishableAssociationEvents(){
   return associationEvents.filter(event => event.published === true && event.id &&
     ['title_kr','title_en','date_kr','date_en','venue_kr','venue_en','summary_kr','summary_en','description_kr','description_en'].every(key => typeof event[key] === 'string' && event[key].trim()) &&
@@ -4007,6 +4024,11 @@ function renderAssociationEvents(){
   detail.hidden = !active;
   if(active){
     detail.innerHTML = `<button type="button" class="association-event-back">${lang === 'en' ? 'Back to events' : '행사 목록으로'}</button><h3>${text(active,'title')}</h3><figure>${image(active.photos[0],active['title_' + lang])}</figure><p>${text(active,'date')}<br>${text(active,'venue')}</p><p>${text(active,'description')}</p><div class="association-event-photos">${active.photos.slice(1).map(photo => `<figure>${image(photo, active['title_' + lang])}${photo['caption_' + lang] ? `<figcaption>${escapeHtml(photo['caption_' + lang])}</figcaption>` : ''}</figure>`).join('')}</div>`;
+    detail.querySelectorAll('img').forEach((img,index)=>{
+      img.tabIndex=0;img.setAttribute('role','button');
+      img.addEventListener('click',()=>openAssociationEventImage(active,index,img));
+      img.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openAssociationEventImage(active,index,img);}});
+    });
     detail.querySelector('button').addEventListener('click',()=>{
       activeAssociationEventId = null;renderAssociationEvents();
       window.scrollTo({top:associationEventListScroll,behavior:'auto'});
@@ -4356,8 +4378,8 @@ function renderAssociationEvents(){
 
     function updateLightboxNavState(){
       const hasMultipleItems = activeViewerItems.length > 1;
-      if (lightboxPrevBtn) lightboxPrevBtn.disabled = !hasMultipleItems;
-      if (lightboxNextBtn) lightboxNextBtn.disabled = !hasMultipleItems;
+      if (lightboxPrevBtn) lightboxPrevBtn.disabled = !hasMultipleItems || (!!associationEventViewerReturn && activeViewerIndex === 0);
+      if (lightboxNextBtn) lightboxNextBtn.disabled = !hasMultipleItems || (!!associationEventViewerReturn && activeViewerIndex === activeViewerItems.length - 1);
     }
 
     function renderViewerOnly(){
@@ -4379,7 +4401,7 @@ function renderAssociationEvents(){
       lastViewedArtistId = activeViewerArtistId || null;
 
       lightboxImg.src = resolveAssetPath(work.zoom || work.image);
-      lightboxImg.alt = buildArtworkAlt(work, artist, lang);
+      lightboxImg.alt = associationEventViewerReturn ? workTitle(work, lang) : buildArtworkAlt(work, artist, lang);
       lightboxCaption.textContent = [
         workTitle(work, lang),
         workMedium(work, lang),
@@ -4513,6 +4535,9 @@ function renderAssociationEvents(){
         if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
       }
 
+      const eventReturn = associationEventViewerReturn;
+      associationEventViewerReturn = null;
+      lightbox.classList.remove("is-association-event-viewer");
       const returnIndex = lastViewedWorkIndex;
       const returnWorkId = lastViewedWorkId;
       const returnArtistId = lastViewedArtistId;
@@ -4537,7 +4562,14 @@ function renderAssociationEvents(){
       lightboxCaption.textContent = "";
       resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
-      returnToLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId);
+      if (eventReturn) {
+        requestAnimationFrame(()=>{
+          window.scrollTo({top:eventReturn.top,left:eventReturn.left,behavior:'instant'});
+          if(eventReturn.source?.isConnected) eventReturn.source.focus({preventScroll:true});
+        });
+      } else {
+        returnToLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId);
+      }
     }
 
     function closeViewer(e){
@@ -4554,6 +4586,7 @@ function renderAssociationEvents(){
       if (!isViewerOpen || !activeViewerItems.length) return;
       if (isMobileViewerGestureLocked()) return;
 
+      if (associationEventViewerReturn && activeViewerIndex === 0) return;
       activeViewerIndex = (activeViewerIndex - 1 + activeViewerItems.length) % activeViewerItems.length;
       renderViewerOnly();
     }
@@ -4568,6 +4601,7 @@ function renderAssociationEvents(){
       if (!isViewerOpen || !activeViewerItems.length) return;
       if (isMobileViewerGestureLocked()) return;
 
+      if (associationEventViewerReturn && activeViewerIndex === activeViewerItems.length - 1) return;
       activeViewerIndex = (activeViewerIndex + 1) % activeViewerItems.length;
       renderViewerOnly();
     }
@@ -4953,6 +4987,7 @@ function renderAssociationEvents(){
 
       const MIN_SCALE = 1;
       const MAX_SCALE = 4;
+      const maxViewerScale = () => associationEventViewerReturn ? 3 : MAX_SCALE;
       const SWIPE_THRESHOLD = 48;
       const INTENT_THRESHOLD = 10;
       const PINCH_BLOCK_MS = 160;
@@ -5200,7 +5235,7 @@ function renderAssociationEvents(){
           if (typeof e.stopImmediatePropagation === "function") e.stopImmediatePropagation();
           const dist = getTouchDistance(e.touches);
           const nextScale = mobileStartScale * (dist / mobilePinchStartDistance);
-          mobileScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, nextScale));
+          mobileScale = Math.max(MIN_SCALE, Math.min(maxViewerScale(), nextScale));
 
           /* Jump cleanup core: never recalculate or accumulate translate during pinch. */
           mobileTranslateX = mobileStartTranslateX;
@@ -5275,7 +5310,7 @@ function renderAssociationEvents(){
             return;
           }
 
-          mobileScale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, mobileScale));
+          mobileScale = Math.max(MIN_SCALE, Math.min(maxViewerScale(), mobileScale));
           mobileTranslateX = mobileStartTranslateX;
           mobileTranslateY = mobileStartTranslateY;
           applyMobileZoomTransform(false);
@@ -5321,7 +5356,7 @@ function renderAssociationEvents(){
       renderViewerOnly = function(){
         if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         const result = originalRenderViewerOnly.apply(this, arguments);
-        if (useTouchInputViewer() && isMobileViewerOpen()) {
+        if ((useTouchInputViewer() || associationEventViewerReturn) && isMobileViewerOpen()) {
           lockMobileViewer();
           stage.style.touchAction = "none";
           mobileZoomFrame.style.touchAction = "none";
@@ -5335,12 +5370,14 @@ function renderAssociationEvents(){
 
       const originalViewerPrev = viewerPrev;
       viewerPrev = function(){
+        if (associationEventViewerReturn && !mobileIsPinching && !mobileIsPanning) resetMobileTouchState(false);
         if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         return originalViewerPrev.apply(this, arguments);
       };
 
       const originalViewerNext = viewerNext;
       viewerNext = function(){
+        if (associationEventViewerReturn && !mobileIsPinching && !mobileIsPanning) resetMobileTouchState(false);
         if (useTouchInputViewer() && (mobileIsPinching || mobileIsPanning || mobileScale > 1.02 || Date.now() < mobilePinchBlockUntilLocal)) return;
         return originalViewerNext.apply(this, arguments);
       };
@@ -5392,7 +5429,7 @@ function renderAssociationEvents(){
         if (!isMobileViewerOpen()) return;
         e.preventDefault();
         const delta = -e.deltaY * 0.0015;
-        mobileScale = clamp(mobileScale + delta * mobileScale, MIN_SCALE, MAX_SCALE);
+        mobileScale = clamp(mobileScale + delta * mobileScale, MIN_SCALE, maxViewerScale());
         if (mobileScale <= 1.02) {
           mobileScale = 1;
           mobileTranslateX = 0;
