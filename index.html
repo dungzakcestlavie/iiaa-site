@@ -2316,6 +2316,12 @@
 .association-event-photos figure{min-width:0;margin:0}
 .association-event-photos figcaption{font-size:clamp(13px,1.2vw,15px)}
 
+/* 2026-11-06 (iiaapad2) — 본문 협회명: 위 줄(사단법인 / Incorporated Association) 간격과 홈 초기화 터치만. 글꼴·색·크기 기존 그대로. */
+.hero .hero-label{margin:0 0 4px}
+.assoc-home{cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.assoc-home:focus{outline:none}
+.assoc-home:focus-visible{outline:1px solid var(--gold-border);outline-offset:4px;border-radius:6px}
+
 /* Reuse the existing viewer frame; clip event zoom within that frame. */
 #lightbox.is-association-event-viewer #lightboxStage{overflow:hidden!important;overscroll-behavior:contain}
 #associationEventDetail img[role="button"]{cursor:zoom-in}
@@ -2339,16 +2345,11 @@
 
     <section class="mobile-hero" aria-label="Mobile hero">
       <h1 class="sr-only">Incheon International Art Association</h1>
-      <div class="mobile-hero-heading ko">
-        <div class="mobile-hero-label">사단법인</div>
-        <div class="mobile-hero-name">인천국제미술협회</div>
+      <!-- 2026-11-06 (iiaapad2): 협회명 KR/EN은 모든 기기에서 같은 번역 데이터(data-kr/data-en) · 누르면 IIAA 로고와 같은 홈 초기화 · 설명 문구 삭제 -->
+      <div class="mobile-hero-heading assoc-home" role="button" tabindex="0" aria-label="홈으로 · Go to top and reset">
+        <div class="mobile-hero-label" data-kr="사단법인" data-en="Incorporated Association">사단법인</div>
+        <div class="mobile-hero-name" data-kr="인천국제미술협회" data-en="Incheon International Art Association">인천국제미술협회</div>
       </div>
-      <div class="mobile-hero-heading en">
-        <div class="mobile-hero-label">Incorporated Association</div>
-        <div class="mobile-hero-name">Incheon International Art Association</div>
-      </div>
-      <p class="mobile-hero-desc ko">협회원 작품, 비전과 구조를 잇는 공공적 미술 플랫폼</p>
-      <p class="mobile-hero-desc en">A public art platform connecting member works, vision, and structure.</p>
     </section>
 
     <nav class="mobile-primary" aria-label="Primary">
@@ -2393,9 +2394,11 @@
         </div>
 
         <section class="hero" aria-label="Site heading">
-          <h1 class="gold-text">Incheon International Art Association</h1>
-          <div class="hero-subtitle ko">사단법인 인천국제미술협회</div>
-          <div class="hero-subtitle en">A public art platform connecting exhibitions and member works through a structured archive system.</div>
+          <!-- 2026-11-06 (iiaapad2): 모바일과 같은 협회명 두 줄(KR / EN) · 누르면 홈 초기화 · 설명 문구 삭제 -->
+          <div class="assoc-home" role="button" tabindex="0" aria-label="홈으로 · Go to top and reset">
+            <div class="hero-subtitle hero-label" data-kr="사단법인" data-en="Incorporated Association">사단법인</div>
+            <h1 class="gold-text" data-kr="인천국제미술협회" data-en="Incheon International Art Association">인천국제미술협회</h1>
+          </div>
         </section>
 
         <section class="view is-active" data-view="about">
@@ -3940,20 +3943,61 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       return rect.top >= offset && rect.top <= offset + 32;
     }
 
-    function scrollToView(viewName, force = false){
+    /* 2026-11-06 (iiaapad1) — 섹션 이동 위치 보정.
+       - 섹션이 열리고 닫히는 동안(.view-body 0.24s 전환) 위치를 재면 이전 섹션 높이가 남아 있어 엉뚱한 곳에 멈췄다
+         → 섹션을 바꾼 경우 전환이 끝난 뒤(260ms) 위치를 잰다.
+       - 태블릿·PC 화면(769px 이상)에서 맨 위 상태 그대로 고른 섹션 제목이 화면 위쪽 절반 안에 있거나 섹션 전체가 화면 안에 들어오면
+         맨 위로(협회명 헤더 전체가 보이게) — 헤더가 반쯤 잘린 채 멈추지 않게. 그 아래 섹션은 기존처럼 제목을 위에 맞춘다.
+       - 메뉴로 맞춘 섹션은 화면을 돌려도(폭 변경) 같은 기준으로 다시 맞춘다. 사용자가 직접 스크롤하면 그대로 둔다. */
+    let scrollToViewTimer = 0;
+    let scrollAnchorView = null;
+    function viewScrollTop(target){
+      const offset = getHeaderOffset();
+      const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
+      const head = target.querySelector(".view-head") || target;
+      const headBottomAtTop = head.getBoundingClientRect().bottom + window.scrollY;
+      const viewBottomAtTop = target.getBoundingClientRect().bottom + window.scrollY;
+      if (window.innerWidth > 768 && (headBottomAtTop <= window.innerHeight * 0.5 || viewBottomAtTop <= window.innerHeight)) return 0;
+      return top;
+    }
+
+    function scrollToView(viewName, force = false, settleMs = 0){
       if (isViewerOpen) return;
       const target = document.querySelector(`.view[data-view="${viewName}"]`);
       if (!target) return;
       if (!force && isViewCleanlyVisible(viewName)) return;
 
-      const offset = getHeaderOffset();
-      const top = Math.max(target.getBoundingClientRect().top + window.scrollY - offset, 0);
-
-      window.scrollTo({
-        top,
-        behavior: "smooth"
-      });
+      clearTimeout(scrollToViewTimer);
+      const run = () => {
+        if (isViewerOpen) return;
+        window.scrollTo({
+          top: viewScrollTop(target),
+          behavior: "smooth"
+        });
+        scrollAnchorView = viewName;
+      };
+      if (settleMs > 0) scrollToViewTimer = setTimeout(run, settleMs);
+      else run();
     }
+
+    ["pointerdown", "touchstart", "wheel", "keydown"].forEach(type => {
+      window.addEventListener(type, () => { scrollAnchorView = null; }, { passive: true, capture: true });
+    });
+    let lastLayoutWidth = window.innerWidth;
+    let anchorRealignTimer = 0;
+    window.addEventListener("resize", () => {
+      const w = window.innerWidth;
+      if (Math.abs(w - lastLayoutWidth) < 2) return;
+      lastLayoutWidth = w;
+      const viewName = scrollAnchorView;
+      if (!viewName) return;
+      clearTimeout(anchorRealignTimer);
+      anchorRealignTimer = setTimeout(() => {
+        const target = document.querySelector(`.view[data-view="${viewName}"]`);
+        if (isViewerOpen || scrollAnchorView !== viewName || !target || !target.classList.contains("is-active")) return;
+        window.scrollTo({ top: viewScrollTop(target), behavior: "auto" });
+      }, 300);
+    }, { passive: true });
 
 
     function ensureMemberAreaRendered(){
@@ -3978,7 +4022,7 @@ const logoHomeDesktop = document.getElementById("logoHomeDesktop");
       }
 
       requestAnimationFrame(() => {
-        scrollToView(viewName, forceScroll || current !== viewName);
+        scrollToView(viewName, forceScroll || current !== viewName, current !== viewName ? 260 : 0);
       });
     }
 
@@ -4869,13 +4913,13 @@ function renderAssociationEvents(){
 
         if (!isActive) {
           requestAnimationFrame(() => {
-            scrollToView(viewName, true);
+            scrollToView(viewName, true, 260);
           });
         }
       });
     });
 
-    [logoHomeMobile, logoHomeDesktop].forEach(logo => {
+    [logoHomeMobile, logoHomeDesktop, ...document.querySelectorAll(".assoc-home")].forEach(logo => {
       if (!logo) return;
       logo.addEventListener("click", resetToHome);
       logo.addEventListener("keydown", e => {
@@ -4961,6 +5005,9 @@ function renderAssociationEvents(){
       if (lang === "en") savedLang = "en";
       if (view) savedView = view;
     } catch (e) {}
+
+    // 2026-11-06 (iiaapad1): 새로고침·재접속은 맨 위(협회명 헤더)부터 — 이전 스크롤 위치 자동 복원 끔.
+    try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
 
     setLanguage(savedLang);
     setActiveView(savedView);
