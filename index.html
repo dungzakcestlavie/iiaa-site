@@ -4038,9 +4038,39 @@ const associationEvents = JSON.parse(document.getElementById('association-events
 let activeAssociationEventId = null;
 let associationEventListScroll = 0;
 let associationEventViewerReturn = null;
+/* 2026-11-06 (iiaapad3) — 협회 행사 사진: 닫으면 마지막으로 보던 사진 위치로 즉시 복귀.
+   - 열 때: 스크롤 위치 + 사진(순번·화면 속 위치) 저장. 모바일 뒤로가기로도 닫히게 기록 1개 추가.
+   - 닫을 때(X · ESC · 뒤로가기): 사진 기준으로 위치를 다시 계산해 즉시 이동(부드러운 스크롤 X).
+     iPhone·iPad(WebKit)에서 behavior:'instant' 미지원 시 이동이 실패해 맨 위에 남던 문제 → 숫자 좌표로 이동. */
+let associationEventPopClosing = false;
+function restoreAssociationEventScroll(ret, lastIndex){
+  if (!ret) return;
+  const imgs = document.querySelectorAll('#associationEventDetail img');
+  const moved = Number.isInteger(lastIndex) && lastIndex !== ret.index && imgs[lastIndex];
+  const el = moved ? imgs[lastIndex] : ret.source;
+  const resized = Math.abs(window.innerWidth - ret.vw) > 2 || Math.abs(window.innerHeight - ret.vh) > 2;
+  let top = ret.top;
+  if (el && el.isConnected) {
+    const r = el.getBoundingClientRect();
+    const abs = r.top + window.scrollY;
+    // 다른 사진으로 넘겨 봤거나 화면 크기가 바뀌었으면(회전) 그 사진을 화면 가운데에, 아니면 열기 전 위치 그대로
+    top = (moved || resized) ? abs - Math.max(0, (window.innerHeight - r.height) / 2) : abs - ret.offset;
+  }
+  const root = document.documentElement;
+  const prev = root.style.scrollBehavior;
+  root.style.scrollBehavior = 'auto';
+  window.scrollTo(ret.left || 0, Math.max(0, Math.round(top)));
+  root.style.scrollBehavior = prev;
+}
+window.addEventListener('popstate', () => {
+  if (!associationEventViewerReturn || !lightbox.classList.contains('is-open')) return;
+  associationEventPopClosing = true;
+  try { closeLightbox(); } finally { associationEventPopClosing = false; }
+});
 function openAssociationEventImage(event, index, source){
   if (!event.photos[index]) return;
-  associationEventViewerReturn = {top:window.scrollY,left:window.scrollX,source};
+  associationEventViewerReturn = {top:window.scrollY,left:window.scrollX,source,index,offset:source ? source.getBoundingClientRect().top : 0,vw:window.innerWidth,vh:window.innerHeight};
+  try { if (!(history.state && history.state.iiaaEventViewer)) history.pushState(Object.assign({}, history.state, {iiaaEventViewer:true}), ''); } catch (e) {}
   lightbox.classList.add('is-association-event-viewer');
   const items = event.photos.map((photo,i)=>({
     id:event.id + '-photo-' + i, association_event_id:event.id,
@@ -4580,6 +4610,7 @@ function renderAssociationEvents(){
       }
 
       const eventReturn = associationEventViewerReturn;
+      const eventLastIndex = activeViewerIndex;
       associationEventViewerReturn = null;
       lightbox.classList.remove("is-association-event-viewer");
       const returnIndex = lastViewedWorkIndex;
@@ -4607,10 +4638,12 @@ function renderAssociationEvents(){
       resetLightboxDrag();
       document.body.style.overflow = drawer.classList.contains("is-open") ? "hidden" : "";
       if (eventReturn) {
+        restoreAssociationEventScroll(eventReturn, eventLastIndex);
         requestAnimationFrame(()=>{
-          window.scrollTo({top:eventReturn.top,left:eventReturn.left,behavior:'instant'});
+          restoreAssociationEventScroll(eventReturn, eventLastIndex);
           if(eventReturn.source?.isConnected) eventReturn.source.focus({preventScroll:true});
         });
+        try { if (!associationEventPopClosing && history.state && history.state.iiaaEventViewer) history.back(); } catch (e) {}
       } else {
         returnToLastViewedWorkCard(returnIndex, returnWorkId, returnArtistId);
       }
